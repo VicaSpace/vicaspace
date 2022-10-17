@@ -1,0 +1,5 @@
+{
+  "eslint.workingDirectories": ["./banhmi", "./pho"],
+  "git.ignoreLimitWarning": true,
+  "cSpell.words": ["transportclose"]
+}
