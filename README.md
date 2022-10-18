@@ -60,6 +60,23 @@ Go to the server directory:
 cd banhmi
 ```
 
+Generate Prisma client:
+```bash
+yarn generate
+```
+
+Run the migration scripts:
+
+```bash
+yarn migration
+```
+
+Seed the data:
+
+```bash
+yarn seed
+```
+
 Transpile the TypeScript files to JavaScript:
 
 ```bash
