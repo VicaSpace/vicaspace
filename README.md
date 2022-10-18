@@ -60,6 +60,11 @@ Go to the server directory:
 cd banhmi
 ```
 
+Generate Prisma client:
+```bash
+yarn generate
+```
+
 Run the migration scripts:
 
 ```bash
