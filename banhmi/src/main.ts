@@ -6,6 +6,8 @@ import { Server } from 'socket.io';
 
 import { logger } from '@/utils/logger';
 
+import router from './routes';
+
 const pinoHttpMiddleware = pinoHttp();
 
 const main = async () => {
@@ -13,6 +15,9 @@ const main = async () => {
   const app = express();
   // TODO: Create HTTPS server instead of HTTP
   app.use(pinoHttpMiddleware);
+  app.use(express.json());
+
+  app.use('/api', router);
 
   app.get('/', (_req, res) => {
     res.send('<h1>Welcome to the WebRTC Demo App.</h1>');
