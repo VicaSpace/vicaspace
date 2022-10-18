@@ -1,9 +1,13 @@
-import { updateFriendRequest, addFriend } from '@/controllers/friendRequestController';
 import { Router } from 'express';
 
-const router = Router()
+import {
+  acceptFriendRequest,
+  addFriend,
+} from '@/controllers/friendRequestController';
+
+const router = Router();
 
 router.post('/', addFriend);
-router.put('/:id', updateFriendRequest);
+router.put('/:id/accept', acceptFriendRequest);
 
-export { router as friendRequestRouter }
+export { router as friendRequestRouter };

@@ -1,13 +1,17 @@
-import createFriendRequest from '@/services/friendRequestDb';
+import {
+  createFriendRequest,
+  processAcceptedFriendRequest,
+} from '@/services/friendRequestDb';
 
 const addFriend = async (req, res) => {
   const { sender_id: senderId, receiver_id: receiverId } = req.body;
   const request = await createFriendRequest(senderId, receiverId);
-  res.json(request);
+  res.status(201).json(request);
 };
 
-const updateFriendRequest = async (req, res) => {
-  res.json(`friend request update ${req.params.id}`);
+const acceptFriendRequest = async (req, res) => {
+  const friendship = await processAcceptedFriendRequest(Number(req.params.id));
+  res.status(201).json(friendship);
 };
 
-export { addFriend, updateFriendRequest };
+export { addFriend, acceptFriendRequest };
