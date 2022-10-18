@@ -30,7 +30,7 @@ cd vicaspace
 Install yarn globally with npm:
 
 ```bash
-npm i -G yarn
+npm i -g yarn
 ```
 
 Install the dependencies:
