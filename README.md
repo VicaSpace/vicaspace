@@ -71,6 +71,12 @@ Run the migration scripts:
 yarn migration
 ```
 
+Seed the data:
+
+```bash
+yarn seed
+```
+
 Transpile the TypeScript files to JavaScript:
 
 ```bash
