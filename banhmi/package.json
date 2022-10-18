@@ -7,7 +7,9 @@
     "lint": "eslint . --ext .ts",
     "build": "rimraf ./dist && tsc && tsc-alias",
     "dev": "nodemon -e ts,js --exec ts-node -r tsconfig-paths/register ./src/index.ts",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "generate": "prisma generate",
+    "migration": "prisma migrate dev"
   },
   "keywords": [
     "server",
