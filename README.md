@@ -60,6 +60,12 @@ Go to the server directory:
 cd banhmi
 ```
 
+Run the migration scripts:
+
+```bash
+yarn migration
+```
+
 Transpile the TypeScript files to JavaScript:
 
 ```bash
