@@ -4,10 +4,9 @@ import {
   processAcceptedFriendRequest,
 } from '@/services/friendRequestDb';
 import {
+  validateAcceptedFriendRequest,
   validateFriendRequestInput,
-  validateAcceptedFriendRequest
 } from '@/validators/friendRequestValidator';
-
 
 const addFriend = async (req, res, next) => {
   try {
@@ -25,9 +24,9 @@ const addFriend = async (req, res, next) => {
 const acceptFriendRequest = async (req, res, next) => {
   try {
     const requestId = Number(req.params.id);
-  
+
     await validateAcceptedFriendRequest(requestId);
-  
+
     const friendship = await processAcceptedFriendRequest(requestId);
     res.status(200).json(friendship);
   } catch (err: unknown) {
@@ -35,14 +34,14 @@ const acceptFriendRequest = async (req, res, next) => {
   }
 };
 
-const getAllFriendRequests = async (req, res, next) => {
+const getAllFriendRequests = async (_req, res, next) => {
   try {
-    const userId = 1;  // TODO: get id of user in session 
+    const userId = 1; // TODO: get id of user in session
     const friendRequests = await getAllFriendRequestsOfUser(userId);
     res.status(200).json(friendRequests);
   } catch (err: unknown) {
     next(err);
-  } 
-}
+  }
+};
 
 export { addFriend, acceptFriendRequest, getAllFriendRequests };

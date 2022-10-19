@@ -1,5 +1,6 @@
-import { Router } from "express";
-import { friendRequestRouter } from "./friendRequestRoute";
+import { Router } from 'express';
+
+import { friendRequestRouter } from './friendRequestRoute';
 
 const router = Router();
 

@@ -1,15 +1,16 @@
 import { FriendRequestStatus } from '@prisma/client';
+
 import { prisma } from '@/db';
 
 const getAllFriendRequestsOfUser = async (userId: number) => {
   const allRequests = await prisma.friendRequest.findMany({
-    where: { receiverId: userId }
+    where: { receiverId: userId },
   });
 
   return allRequests;
-}
+};
 
-const createFriendRequest = async (senderId, receiverId) => {
+const createFriendRequest = async (senderId: number, receiverId: number) => {
   const frRequest = await prisma.friendRequest.create({
     data: {
       sender: {
@@ -25,7 +26,7 @@ const createFriendRequest = async (senderId, receiverId) => {
   return frRequest;
 };
 
-const processAcceptedFriendRequest = async (id) => {
+const processAcceptedFriendRequest = async (id: number) => {
   const friendShip = await prisma.$transaction(async (prisma: any) => {
     const friendRequest = await prisma.friendRequest.update({
       where: {
@@ -55,4 +56,5 @@ const processAcceptedFriendRequest = async (id) => {
 export {
   createFriendRequest,
   processAcceptedFriendRequest,
-  getAllFriendRequestsOfUser };
+  getAllFriendRequestsOfUser,
+};
