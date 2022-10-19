@@ -1,15 +1,15 @@
 import { Router } from 'express';
 
 import {
-  acceptFriendRequest,
-  addFriend,
-  getAllFriendRequests,
+  acceptFriendRequestHandler,
+  addFriendHandler,
+  getAllFriendRequestsHandler,
 } from '@/controllers/friendRequestController';
 
 const router = Router();
 
-router.get('/', getAllFriendRequests);
-router.post('/', addFriend);
-router.put('/:id/accept', acceptFriendRequest);
+router.get('/', getAllFriendRequestsHandler);
+router.post('/', addFriendHandler);
+router.put('/:id/accept', acceptFriendRequestHandler);
 
 export { router as friendRequestRouter };

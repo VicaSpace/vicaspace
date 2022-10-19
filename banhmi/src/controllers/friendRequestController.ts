@@ -8,7 +8,7 @@ import {
   validateFriendRequestInput,
 } from '@/validators/friendRequestValidator';
 
-const addFriend = async (req, res, next) => {
+const addFriendHandler = async (req, res, next) => {
   try {
     const { sender_id: senderId, receiver_id: receiverId } = req.body;
 
@@ -21,7 +21,7 @@ const addFriend = async (req, res, next) => {
   }
 };
 
-const acceptFriendRequest = async (req, res, next) => {
+const acceptFriendRequestHandler = async (req, res, next) => {
   try {
     const requestId = Number(req.params.id);
 
@@ -34,7 +34,7 @@ const acceptFriendRequest = async (req, res, next) => {
   }
 };
 
-const getAllFriendRequests = async (_req, res, next) => {
+const getAllFriendRequestsHandler = async (_req, res, next) => {
   try {
     const userId = 1; // TODO: get id of user in session
     const friendRequests = await getAllFriendRequestsOfUser(userId);
@@ -44,4 +44,4 @@ const getAllFriendRequests = async (_req, res, next) => {
   }
 };
 
-export { addFriend, acceptFriendRequest, getAllFriendRequests };
+export { addFriendHandler, acceptFriendRequestHandler, getAllFriendRequestsHandler };
