@@ -3,16 +3,10 @@ import {
   getAllFriendRequestsOfUser,
   processAcceptedFriendRequest,
 } from '@/services/friendRequestDb';
-import {
-  validateAcceptedFriendRequest,
-  validateFriendRequestInput,
-} from '@/validators/friendRequestValidator';
 
 const addFriendHandler = async (req, res, next) => {
   try {
     const { sender_id: senderId, receiver_id: receiverId } = req.body;
-
-    await validateFriendRequestInput(senderId, receiverId);
 
     const request = await createFriendRequest(senderId, receiverId);
     res.status(201).json(request);
@@ -24,8 +18,6 @@ const addFriendHandler = async (req, res, next) => {
 const acceptFriendRequestHandler = async (req, res, next) => {
   try {
     const requestId = Number(req.params.id);
-
-    await validateAcceptedFriendRequest(requestId);
 
     const friendship = await processAcceptedFriendRequest(requestId);
     res.status(200).json(friendship);
@@ -44,4 +36,8 @@ const getAllFriendRequestsHandler = async (_req, res, next) => {
   }
 };
 
-export { addFriendHandler, acceptFriendRequestHandler, getAllFriendRequestsHandler };
+export {
+  addFriendHandler,
+  acceptFriendRequestHandler,
+  getAllFriendRequestsHandler,
+};
