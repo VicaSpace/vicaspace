@@ -1,7 +1,7 @@
-import { prisma } from "../db";
+import { prisma } from "@/db";
 
 export const getAllSpacesInfo = async () => {
-  return await prisma.space.findMany({
+  const spacesInfo = await prisma.space.findMany({
     where: {
       active: true
     },
@@ -12,4 +12,5 @@ export const getAllSpacesInfo = async () => {
       longitude: true,
     }
   });
+  return spacesInfo;
 };

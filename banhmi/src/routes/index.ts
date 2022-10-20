@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { spaceRouter } from './spaceRoutes';
+import { spaceRouter } from '@/routes/spaceRoutes';
 
 const router = Router();
 

@@ -1,7 +1,7 @@
 import { Space } from '@prisma/client';
 
-import { prisma } from '../../db';
-import { getAllSpacesInfo } from '../spaceService';
+import { prisma } from '@/db';
+import { getAllSpacesInfo } from '@/services/spaceService';
 
 describe('test space service', () => {
   it('should return a list of space info', async () => {
