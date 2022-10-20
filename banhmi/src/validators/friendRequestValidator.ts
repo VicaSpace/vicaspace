@@ -85,7 +85,7 @@ const validateFriendRequestInput = async (
   }
 };
 
-const validateAcceptedFriendRequest = async (request_id: number) => {
+const validatePendingFriendRequest = async (request_id: number) => {
   const request = await prisma.friendRequest.findUnique({
     where: { id: request_id },
   });
@@ -107,4 +107,5 @@ const validateAcceptedFriendRequest = async (request_id: number) => {
   }
 };
 
-export { validateAcceptedFriendRequest, validateFriendRequestInput };
+
+export { validatePendingFriendRequest, validateFriendRequestInput };

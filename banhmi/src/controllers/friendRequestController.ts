@@ -2,6 +2,7 @@ import {
   createFriendRequest,
   getAllFriendRequestsOfUser,
   processAcceptedFriendRequest,
+  processRejectedFriendRequest,
 } from '@/services/friendRequestDb';
 
 const addFriendHandler = async (req, res, next) => {
@@ -36,8 +37,20 @@ const getAllFriendRequestsHandler = async (_req, res, next) => {
   }
 };
 
+const rejectFriendRequestHandler = async (req, res, next) => {
+  try {
+    const requestId = Number(req.params.id);
+
+    const friendship = await processRejectedFriendRequest(requestId);
+    res.status(200).json(friendship);
+  } catch (err: unknown) {
+    next(err);
+  }
+};
+
 export {
   addFriendHandler,
   acceptFriendRequestHandler,
   getAllFriendRequestsHandler,
+  rejectFriendRequestHandler,
 };

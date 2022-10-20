@@ -2,8 +2,8 @@ import { FriendRequestStatus } from '@prisma/client';
 
 import { prisma } from '@/db';
 import {
-  validateAcceptedFriendRequest,
   validateFriendRequestInput,
+  validatePendingFriendRequest,
 } from '@/validators/friendRequestValidator';
 
 const getAllFriendRequestsOfUser = async (userId: number) => {
@@ -32,7 +32,7 @@ const createFriendRequest = async (senderId: number, receiverId: number) => {
 };
 
 const processAcceptedFriendRequest = async (id: number) => {
-  await validateAcceptedFriendRequest(id);
+  await validatePendingFriendRequest(id);
   const friendShip = await prisma.$transaction(async (prisma: any) => {
     const friendRequest = await prisma.friendRequest.update({
       where: {
@@ -59,8 +59,23 @@ const processAcceptedFriendRequest = async (id: number) => {
   return friendShip;
 };
 
+const processRejectedFriendRequest = async (id: number) => {
+  await validatePendingFriendRequest(id);
+  const friendRequest = await prisma.friendRequest.update({
+    where: {
+      id: id,
+    },
+    data: {
+      status: FriendRequestStatus.REJECTED,
+    },
+  });
+
+  return friendRequest;
+};
+
 export {
   createFriendRequest,
   processAcceptedFriendRequest,
   getAllFriendRequestsOfUser,
+  processRejectedFriendRequest,
 };
