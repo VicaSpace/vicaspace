@@ -49,7 +49,25 @@ async function getSaltHandler(_req: Request, res: Response) {
     res.send({'salt': salt});
 }
 
+async function getUserSaltHandler(_req: Request, res: Response) {
+    const username = _req.params.username;
+    const user = await prisma.user.findUnique({
+        where: {
+            username: username
+        }
+    })
+    if (user == null) return res.status(404).send({
+        'error': 'username is not exists'
+    })
+    
+    res.send({
+        'username': username,
+        'salt': user.salt
+    })
+}
+
 export {
     getSaltHandler,
-    registerHandler
+    registerHandler,
+    getUserSaltHandler
 }
