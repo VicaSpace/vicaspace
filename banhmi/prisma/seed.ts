@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '@prisma/client';
 
 async function createUsers() {
   const richard = await prisma.user.upsert({
@@ -6,19 +6,21 @@ async function createUsers() {
     update: {},
     create: {
       username: 'richard',
-    }
-  })
+      spaceId: 1,
+    },
+  });
   const minh = await prisma.user.upsert({
     where: { username: 'minh' },
     update: {},
     create: {
-      username: 'minh'
+      username: 'minh',
+      spaceId: 1,
     },
-  })
-  console.log({ richard, minh })
+  });
+  console.log({ richard, minh });
 }
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 async function createSpaces() {
   const hochiminh = await prisma.space.upsert({
@@ -35,8 +37,8 @@ async function createSpaces() {
       longBreakDuration: 1800,
       urlVideo: 'https://www.youtube.com/watch?v=HbHAMzv1bUs',
       urlSpotify: '',
-    }
-  })
+    },
+  });
   const hanoi = await prisma.space.upsert({
     where: { id: 2 },
     update: {},
@@ -51,22 +53,22 @@ async function createSpaces() {
       longBreakDuration: 1800,
       urlVideo: 'https://www.youtube.com/watch?v=NtaQfZ1Jaf0',
       urlSpotify: '',
-    }
-  })
-  console.log({ hochiminh, hanoi })
+    },
+  });
+  console.log({ hochiminh, hanoi });
 }
 
 async function main() {
-  await createUsers()
-  await createSpaces()
+  await createSpaces();
+  await createUsers();
 }
 
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
