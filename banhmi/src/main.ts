@@ -5,8 +5,7 @@ import pinoHttp from 'pino-http';
 import { Server } from 'socket.io';
 
 import { logger } from '@/utils/logger';
-
-import router from '@/routes';
+import router from './routes';
 
 const pinoHttpMiddleware = pinoHttp();
 
