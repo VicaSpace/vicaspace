@@ -32,18 +32,21 @@ model Space {
 }
 
 model User {
-  id          Int             @id @default(autoincrement())
-  username    String          @unique
-  space       Space?          @relation("space", fields: [spaceId], references: [id])
-  spaceId     Int?            @map("space_id")
-  friend1     Friendship[]    @relation("friend1")
-  friend2     Friendship[]    @relation("friend2")
-  sendTo      FriendRequest[] @relation("send")
-  receiveFrom FriendRequest[] @relation("receive")
-  categories  UserCategory[]  @relation("category")
-  active      Boolean         @default(true)
-  createdAt   DateTime        @default(now()) @map("created_at")
-  updatedAt   DateTime        @updatedAt @map("updated_at")
+  id            Int             @id @default(autoincrement())
+  username      String          @unique
+  space         Space?          @relation("space", fields: [spaceId], references: [id])
+  spaceId       Int?            @map("space_id")
+  friend1       Friendship[]    @relation("friend1")
+  friend2       Friendship[]    @relation("friend2")
+  sendTo        FriendRequest[] @relation("send")
+  receiveFrom   FriendRequest[] @relation("receive")
+  categories    UserCategory[]  @relation("category")
+  active        Boolean         @default(true)
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  authToken     AuthToken?
+  salt          String
+  hashPassword  String
 
   @@map("users")
 }
@@ -97,6 +100,16 @@ model SpaceCategory {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("space_categories")
+}
+
+model AuthToken {
+  id              Int       @id @default(autoincrement())
+  user            User      @relation(fields: [userId], references: [id])
+  userId          Int       @map("user_id") @unique
+  accessToken     String    
+  refreshToken    String
+
+  @@map("auth_tokens")
 }
 
 enum FriendRequestStatus {
