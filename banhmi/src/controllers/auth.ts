@@ -1,5 +1,5 @@
 import { prisma } from "@/db";
-import { getHashedPasswordWithPepper, getRandomString } from "@/services/auth";
+import { createAccessToken, getHashedPasswordWithPepper, getRandomString, validatePassword } from "@/services/auth";
 import { Request, Response } from "express";
 
 const SALT_LENGTH = 50;
@@ -59,15 +59,28 @@ async function getUserSaltHandler(_req: Request, res: Response) {
     if (user == null) return res.status(404).send({
         'error': 'username is not exists'
     })
-    
+
     res.send({
         'username': username,
         'salt': user.salt
     })
 }
 
+async function loginHandler(_req: Request, res: Response) {
+    const username = _req.body.username;
+    const hashedPassword = _req.body.hashedPassword;
+    const isPasswordValid = await validatePassword(hashedPassword, username);
+    if (isPasswordValid) {
+        const token = await createAccessToken(username);
+        res.send(token)
+    } else {
+        res.status(403).send({'error': 'Invalid username or password'})
+    }
+}
+
 export {
     getSaltHandler,
     registerHandler,
-    getUserSaltHandler
+    getUserSaltHandler,
+    loginHandler
 }

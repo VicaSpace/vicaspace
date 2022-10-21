@@ -108,6 +108,9 @@ model AuthToken {
   userId          Int       @map("user_id") @unique
   accessToken     String    
   refreshToken    String
+  expiredTime     DateTime
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
 
   @@map("auth_tokens")
 }
