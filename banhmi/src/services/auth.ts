@@ -90,9 +90,41 @@ async function createAuthTokenObject(user, accessToken, refreshToken, expiredTim
     })
 }
 
+async function refreshAccessToken(username, refreshToken) {
+    const user = await prisma.user.findUnique({
+        where: {
+            username: username
+        }
+    })
+    if (user == null) return null;
+
+    let token = await prisma.authToken.findFirst({
+        where: {
+            user: user,
+            refreshToken: refreshToken
+        },
+        select: {
+            id: true,
+            userId: true,
+            accessToken: true,
+            refreshToken: true,
+            expiredTime: true
+        }
+    })
+    if (token != null) {
+        const accessToken = jwt.sign({'user': user.username}, process.env.JWT_PRIVATEKEY, {expiresIn: ACCESS_TOKEN_EXPIRES_TIME})
+        const refreshToken = jwt.sign({'user': user.username, accessToken: accessToken}, process.env.JWT_PRIVATEKEY, {expiresIn: REFRESH_TOKEN_EXPIRES_TIME})
+        const expiredTime = Math.floor(Date.now()/1000) + 3 * 24 * 60 * 60;
+
+        token = await updateAuthToken(user, accessToken, refreshToken, expiredTime);
+    }
+    return token;
+}
+
 export {
     getRandomString,
     getHashedPasswordWithPepper,
     validatePassword,
-    createAccessToken
+    createAccessToken,
+    refreshAccessToken
 }

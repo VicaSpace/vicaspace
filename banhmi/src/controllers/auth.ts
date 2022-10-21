@@ -1,5 +1,5 @@
 import { prisma } from "@/db";
-import { createAccessToken, getHashedPasswordWithPepper, getRandomString, validatePassword } from "@/services/auth";
+import { createAccessToken, getHashedPasswordWithPepper, getRandomString, refreshAccessToken, validatePassword } from "@/services/auth";
 import { Request, Response } from "express";
 
 const SALT_LENGTH = 50;
@@ -70,17 +70,30 @@ async function loginHandler(_req: Request, res: Response) {
     const username = _req.body.username;
     const hashedPassword = _req.body.hashedPassword;
     const isPasswordValid = await validatePassword(hashedPassword, username);
+
     if (isPasswordValid) {
         const token = await createAccessToken(username);
+        if (token == null) return res.status(400).send({'error': 'Invalid username or password'});
         res.send(token)
     } else {
         res.status(403).send({'error': 'Invalid username or password'})
     }
 }
 
+async function refreshAccessTokenHandler(_req: Request, res: Response) {
+    const username = _req.body.username;
+    const refreshToken = _req.body.refreshToken;
+
+    const newToken = await refreshAccessToken(username, refreshToken);
+
+    if (newToken == null) return res.status(400).send({'error': 'Invalid refreshToken'});
+    return res.send(newToken);
+}
+
 export {
     getSaltHandler,
     registerHandler,
     getUserSaltHandler,
-    loginHandler
+    loginHandler,
+    refreshAccessTokenHandler
 }
