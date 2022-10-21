@@ -1,4 +1,5 @@
 import { prisma } from '@/db';
+import { logger } from '@/utils/logger';
 
 export const getAllSpacesInfo = async () => {
   try {
@@ -15,6 +16,7 @@ export const getAllSpacesInfo = async () => {
     });
     return spacesInfo;
   } catch (error) {
+    logger.error(error);
     throw new Error('error querying spaces');
   }
 };
@@ -45,6 +47,7 @@ export const getSpaceDetails = async (spaceId) => {
     });
     return spaceDetails;
   } catch (error) {
+    logger.error(error);
     throw new Error('error querying the space');
   }
 };
