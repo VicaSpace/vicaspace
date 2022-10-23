@@ -90,10 +90,15 @@ async function refreshAccessTokenHandler(_req: Request, res: Response) {
     return res.send(newToken);
 }
 
+async function getUserInfoHandler(_req: Request, res: Response) {
+    return res.status(200).json(_req.user)
+}
+
 export {
     getSaltHandler,
     registerHandler,
     getUserSaltHandler,
     loginHandler,
-    refreshAccessTokenHandler
+    refreshAccessTokenHandler,
+    getUserInfoHandler
 }

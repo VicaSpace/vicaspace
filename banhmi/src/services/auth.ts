@@ -54,7 +54,7 @@ async function createAccessToken(username: string) {
 
     const accessToken = jwt.sign({'user': user.username}, process.env.JWT_PRIVATEKEY, {expiresIn: ACCESS_TOKEN_EXPIRES_TIME})
     const refreshToken = jwt.sign({'user': user.username, accessToken: accessToken}, process.env.JWT_PRIVATEKEY, {expiresIn: REFRESH_TOKEN_EXPIRES_TIME})
-    const expiredTime = Math.floor(Date.now()/1000) + 3 * 24 * 60 * 60;
+    const expiredTime = Date.now() + 3 * 24 * 60 * 60 * 1000;
 
     if (token != null) {
         token = await updateAuthToken(user, accessToken, refreshToken, expiredTime);
@@ -114,7 +114,7 @@ async function refreshAccessToken(username, refreshToken) {
     if (token != null) {
         const accessToken = jwt.sign({'user': user.username}, process.env.JWT_PRIVATEKEY, {expiresIn: ACCESS_TOKEN_EXPIRES_TIME})
         const refreshToken = jwt.sign({'user': user.username, accessToken: accessToken}, process.env.JWT_PRIVATEKEY, {expiresIn: REFRESH_TOKEN_EXPIRES_TIME})
-        const expiredTime = Math.floor(Date.now()/1000) + 3 * 24 * 60 * 60;
+        const expiredTime = Date.now()+ 3 * 24 * 60 * 60 * 1000;
 
         token = await updateAuthToken(user, accessToken, refreshToken, expiredTime);
     }
