@@ -12,7 +12,7 @@ async function registerHandler(req: Request, res: Response) {
         'error': 'username is required'
     })
     
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
         where: {
             username: username
         }
@@ -28,25 +28,23 @@ async function registerHandler(req: Request, res: Response) {
     })
 
     const hashedPasswordWithPepper = getHashedPasswordWithPepper(hashedPassword);
-    await prisma.user.create({
+    user = await prisma.user.create({
         data: {
             username: username,
             salt: salt,
             hashPassword: hashedPasswordWithPepper
         }
     })
-    res.send({
-        'username': username,
-        'salt': salt,
-        'hashedPassword': hashedPassword,
-        'pass': hashedPasswordWithPepper
+    res.status(201).send({
+        'id': user.id,
+        'username': username
     })
 }
 
 // Get random salt for register
 async function getSaltHandler(req: Request, res: Response) {
     const salt = getRandomString(SALT_LENGTH);
-    res.send({'salt': salt});
+    res.status(200).send({'salt': salt});
 }
 
 async function getUserSaltHandler(req: Request, res: Response) {
@@ -60,7 +58,7 @@ async function getUserSaltHandler(req: Request, res: Response) {
         'error': 'username is not exists'
     })
 
-    res.send({
+    res.status(200).send({
         'username': username,
         'salt': user.salt
     })
@@ -74,7 +72,7 @@ async function loginHandler(req: Request, res: Response) {
     if (isPasswordValid) {
         const token = await createAccessToken(username);
         if (token == null) return res.status(400).send({'error': 'Invalid username or password'});
-        res.send(token)
+        res.status(200).send(token)
     } else {
         res.status(403).send({'error': 'Invalid username or password'})
     }
@@ -87,7 +85,7 @@ async function refreshAccessTokenHandler(req: Request, res: Response) {
     const newToken = await refreshAccessToken(username, refreshToken);
 
     if (newToken == null) return res.status(400).send({'error': 'Invalid refreshToken'});
-    return res.send(newToken);
+    return res.status(200).send(newToken);
 }
 
 async function getUserInfoHandler(req: Request, res: Response) {
