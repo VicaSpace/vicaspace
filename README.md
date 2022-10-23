@@ -48,6 +48,12 @@ Setup .env for server:
 cp ./banhmi/.env.example ./banhmi/.env
 ```
 
+Setup .env for client:
+
+```bash
+cp ./pho/.env.example ./pho/.env
+```
+
 Then update the necessary environmental variables.
 
 ## Run Locally
