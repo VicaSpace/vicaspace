@@ -1,0 +1,11 @@
+.chat__item {
+  /* display: flex; */
+  justify-content: flex-end;
+  /* align-items: flex-end; */
+  margin-bottom: 15px;
+
+}
+
+.username {
+    color: red;
+}
