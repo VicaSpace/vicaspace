@@ -4,8 +4,8 @@ import http from 'http';
 import pinoHttp from 'pino-http';
 import { Server } from 'socket.io';
 
-import { logger } from '@/utils/logger';
 import router from '@/routes';
+import { logger } from '@/utils/logger';
 
 const pinoHttpMiddleware = pinoHttp();
 

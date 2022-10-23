@@ -107,5 +107,4 @@ const validatePendingFriendRequest = async (request_id: number) => {
   }
 };
 
-
 export { validatePendingFriendRequest, validateFriendRequestInput };

@@ -8,4 +8,4 @@ export const getAllSpacesInfoHandler = async (_req, res) => {
 export const getSpaceDetailsHandler = async (req, res) => {
   const spaceDetails = await getSpaceDetails(req.params.spaceId);
   res.status(200).json(spaceDetails);
-}
+};

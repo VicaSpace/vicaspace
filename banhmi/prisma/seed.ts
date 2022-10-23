@@ -1,20 +1,29 @@
 import { PrismaClient } from '@prisma/client';
+import { sha256 } from 'js-sha256';
+
+import { getRandomString } from '../src/services/auth';
 
 async function createUsers() {
+  let salt = getRandomString(50);
   const richard = await prisma.user.upsert({
     where: { username: 'richard' },
     update: {},
     create: {
       username: 'richard',
       spaceId: 1,
+      salt: salt,
+      hashedPassword: sha256('password' + salt),
     },
   });
+  salt = getRandomString(50);
   const minh = await prisma.user.upsert({
     where: { username: 'minh' },
     update: {},
     create: {
       username: 'minh',
       spaceId: 1,
+      salt: salt,
+      hashedPassword: sha256('password' + salt),
     },
   });
   console.log({ richard, minh });

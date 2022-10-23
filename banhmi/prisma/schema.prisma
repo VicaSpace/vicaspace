@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["interactiveTransactions"]
 }
 
@@ -33,21 +33,22 @@ model Space {
 }
 
 model User {
-  id            Int             @id @default(autoincrement())
-  username      String          @unique
-  space         Space?          @relation("space", fields: [spaceId], references: [id])
-  spaceId       Int?            @map("space_id")
-  friend1       Friendship[]    @relation("friend1")
-  friend2       Friendship[]    @relation("friend2")
-  sendTo        FriendRequest[] @relation("send")
-  receiveFrom   FriendRequest[] @relation("receive")
-  categories    UserCategory[]  @relation("category")
-  active        Boolean         @default(true)
-  createdAt     DateTime        @default(now()) @map("created_at")
-  updatedAt     DateTime        @updatedAt @map("updated_at")
-  authToken     AuthToken?
-  salt          String
-  hashPassword  String
+  id             Int             @id @default(autoincrement())
+  username       String          @unique
+  space          Space?          @relation("space", fields: [spaceId], references: [id])
+  spaceId        Int?            @map("space_id")
+  friend1        Friendship[]    @relation("friend1")
+  friend2        Friendship[]    @relation("friend2")
+  sendTo         FriendRequest[] @relation("send")
+  receiveFrom    FriendRequest[] @relation("receive")
+  categories     UserCategory[]  @relation("category")
+  active         Boolean         @default(true)
+  createdAt      DateTime        @default(now()) @map("created_at")
+  updatedAt      DateTime        @updatedAt @map("updated_at")
+  authToken      AuthToken?
+  authTokenId    Int?            @unique @map("auth_token_id")
+  salt           String
+  hashedPassword String          @map("hashed_password")
 
   @@map("users")
 }
@@ -104,14 +105,14 @@ model SpaceCategory {
 }
 
 model AuthToken {
-  id              Int       @id @default(autoincrement())
-  user            User      @relation(fields: [userId], references: [id])
-  userId          Int       @map("user_id") @unique
-  accessToken     String    @unique @map("access_token")
-  refreshToken    String    @unique @map("refresh_token")
-  expiredTime     DateTime  @map("expired_time")
-  createdAt       DateTime @default(now()) @map("created_at")
-  updatedAt       DateTime @updatedAt @map("updated_at")
+  id           Int      @id @default(autoincrement())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       Int      @unique @map("user_id")
+  accessToken  String   @unique @map("access_token")
+  refreshToken String   @unique @map("refresh_token")
+  expiredTime  DateTime @map("expired_time")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   @@map("auth_tokens")
 }

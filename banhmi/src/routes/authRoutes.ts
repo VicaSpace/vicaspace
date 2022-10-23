@@ -1,6 +1,14 @@
-import {getSaltHandler, getUserInfoHandler, getUserSaltHandler, loginHandler, refreshAccessTokenHandler, registerHandler} from '@/controllers/auth';
-import requireAuth from '@/utils/authenticate';
 import { Router } from 'express';
+
+import {
+  getSaltHandler,
+  getUserInfoHandler,
+  getUserSaltHandler,
+  loginHandler,
+  refreshAccessTokenHandler,
+  registerHandler,
+} from '@/controllers/auth';
+import requireAuth from '@/utils/authenticate';
 
 const router = Router();
 
