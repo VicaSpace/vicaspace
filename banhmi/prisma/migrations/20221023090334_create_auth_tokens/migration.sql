@@ -13,9 +13,9 @@ ADD COLUMN     "salt" TEXT NOT NULL;
 CREATE TABLE "auth_tokens" (
     "id" SERIAL NOT NULL,
     "user_id" INTEGER NOT NULL,
-    "accessToken" TEXT NOT NULL,
-    "refreshToken" TEXT NOT NULL,
-    "expiredTime" TIMESTAMP(3) NOT NULL,
+    "access_token" TEXT NOT NULL,
+    "refresh_token" TEXT NOT NULL,
+    "expired_time" TIMESTAMP(3) NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -26,10 +26,10 @@ CREATE TABLE "auth_tokens" (
 CREATE UNIQUE INDEX "auth_tokens_user_id_key" ON "auth_tokens"("user_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "auth_tokens_accessToken_key" ON "auth_tokens"("accessToken");
+CREATE UNIQUE INDEX "auth_tokens_access_token_key" ON "auth_tokens"("access_token");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "auth_tokens_refreshToken_key" ON "auth_tokens"("refreshToken");
+CREATE UNIQUE INDEX "auth_tokens_refresh_token_key" ON "auth_tokens"("refresh_token");
 
 -- AddForeignKey
 ALTER TABLE "auth_tokens" ADD CONSTRAINT "auth_tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

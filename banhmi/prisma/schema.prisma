@@ -106,9 +106,9 @@ model AuthToken {
   id              Int       @id @default(autoincrement())
   user            User      @relation(fields: [userId], references: [id])
   userId          Int       @map("user_id") @unique
-  accessToken     String    @unique
-  refreshToken    String    @unique
-  expiredTime     DateTime
+  accessToken     String    @unique @map("access_token")
+  refreshToken    String    @unique @map("refresh_token")
+  expiredTime     DateTime  @map("expired_time")
   createdAt       DateTime @default(now()) @map("created_at")
   updatedAt       DateTime @updatedAt @map("updated_at")
 
