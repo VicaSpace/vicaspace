@@ -4,9 +4,9 @@ import { Request, Response } from "express";
 
 const SALT_LENGTH = 50;
 
-async function registerHandler(_req: Request, res: Response) {
+async function registerHandler(req: Request, res: Response) {
     // TODO: middleware to check required fields and its type
-    const username = _req.body.username
+    const username = req.body.username
     // TODO: utils to return error codes
     if (username == null) return res.status(400).send({
         'error': 'username is required'
@@ -21,8 +21,8 @@ async function registerHandler(_req: Request, res: Response) {
         'error': 'username already taken'
     })
 
-    const salt = _req.body.salt
-    const hashedPassword = _req.body.hashedPassword
+    const salt = req.body.salt
+    const hashedPassword = req.body.hashedPassword
     if (salt == null || hashedPassword == null) return res.status(400).send({
         'error': 'salt and hashedPassword is required'
     })
@@ -44,13 +44,13 @@ async function registerHandler(_req: Request, res: Response) {
 }
 
 // Get random salt for register
-async function getSaltHandler(_req: Request, res: Response) {
+async function getSaltHandler(req: Request, res: Response) {
     const salt = getRandomString(SALT_LENGTH);
     res.send({'salt': salt});
 }
 
-async function getUserSaltHandler(_req: Request, res: Response) {
-    const username = _req.params.username;
+async function getUserSaltHandler(req: Request, res: Response) {
+    const username = req.params.username;
     const user = await prisma.user.findUnique({
         where: {
             username: username
@@ -66,9 +66,9 @@ async function getUserSaltHandler(_req: Request, res: Response) {
     })
 }
 
-async function loginHandler(_req: Request, res: Response) {
-    const username = _req.body.username;
-    const hashedPassword = _req.body.hashedPassword;
+async function loginHandler(req: Request, res: Response) {
+    const username = req.body.username;
+    const hashedPassword = req.body.hashedPassword;
     const isPasswordValid = await validatePassword(hashedPassword, username);
 
     if (isPasswordValid) {
@@ -80,9 +80,9 @@ async function loginHandler(_req: Request, res: Response) {
     }
 }
 
-async function refreshAccessTokenHandler(_req: Request, res: Response) {
-    const username = _req.body.username;
-    const refreshToken = _req.body.refreshToken;
+async function refreshAccessTokenHandler(req: Request, res: Response) {
+    const username = req.body.username;
+    const refreshToken = req.body.refreshToken;
 
     const newToken = await refreshAccessToken(username, refreshToken);
 
@@ -90,8 +90,8 @@ async function refreshAccessTokenHandler(_req: Request, res: Response) {
     return res.send(newToken);
 }
 
-async function getUserInfoHandler(_req: Request, res: Response) {
-    return res.status(200).json(_req.user)
+async function getUserInfoHandler(req: Request, res: Response) {
+    return res.status(200).json(req.user)
 }
 
 export {
