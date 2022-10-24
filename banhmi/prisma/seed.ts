@@ -15,7 +15,7 @@ function getRandomString(length: number) {
 
 async function createUsers() {
   let salt = getRandomString(50);
-  const richard = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { username: 'richard' },
     update: {},
     create: {
@@ -26,7 +26,7 @@ async function createUsers() {
     },
   });
   salt = getRandomString(50);
-  const minh = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { username: 'minh' },
     update: {},
     create: {
@@ -36,13 +36,12 @@ async function createUsers() {
       hashedPassword: sha256('password' + salt),
     },
   });
-  console.log({ richard, minh });
 }
 
 const prisma = new PrismaClient();
 
 async function createSpaces() {
-  const hochiminh = await prisma.space.upsert({
+  await prisma.space.upsert({
     where: { id: 1 },
     update: {},
     create: {
@@ -58,7 +57,7 @@ async function createSpaces() {
       urlSpotify: '',
     },
   });
-  const hanoi = await prisma.space.upsert({
+  await prisma.space.upsert({
     where: { id: 2 },
     update: {},
     create: {
@@ -74,7 +73,6 @@ async function createSpaces() {
       urlSpotify: '',
     },
   });
-  console.log({ hochiminh, hanoi });
 }
 
 async function main() {
@@ -86,8 +84,7 @@ main()
   .then(async () => {
     await prisma.$disconnect();
   })
-  .catch(async (e) => {
-    console.error(e);
+  .catch(async (_) => {
     await prisma.$disconnect();
     process.exit(1);
   });
