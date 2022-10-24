@@ -1,7 +1,17 @@
 import { PrismaClient } from '@prisma/client';
 import { sha256 } from 'js-sha256';
 
-import { getRandomString } from '../src/services/auth';
+const characters =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+function getRandomString(length: number) {
+  let result = ' ';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
 
 async function createUsers() {
   let salt = getRandomString(50);
