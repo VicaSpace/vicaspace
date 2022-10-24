@@ -22,6 +22,7 @@ function DrawerComponent() {
         aria-label="drawer opener"
         icon={<HamburgerIcon />}
         onClick={onOpen}
+        position="absolute"
       />
 
       <Drawer
