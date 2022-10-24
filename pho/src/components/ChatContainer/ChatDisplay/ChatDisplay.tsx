@@ -47,7 +47,7 @@ const ChatDisplay: React.FC<{ username: string }> = ({ username }) => {
   return (
     <div className="content__body">
       <div className="chat__items">
-        {chatList.map((item, index) => {
+        {chatList.map((item) => {
           return (
             <ChatBubble
               key={item.id}
