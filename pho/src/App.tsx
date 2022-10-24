@@ -4,6 +4,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
+import DrawerComponent from '@/components/DrawerComponent';
 import WebSocketProvider from '@/modules/ws/WebSocketProvider';
 import IndexPage from '@/pages';
 import AboutPage from '@/pages/about';
@@ -31,6 +32,7 @@ const App: React.FC<{}> = () => {
           <WebSocketProvider>
             <ChakraProvider>
               <RouterProvider router={router} />
+              <DrawerComponent />
             </ChakraProvider>
           </WebSocketProvider>
         </Provider>
