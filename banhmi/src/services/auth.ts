@@ -27,9 +27,9 @@ async function validatePassword(hashedPassword: string, username: string) {
       username: username,
     },
   });
-  if (user === null) return false;
+  if (!user) return false;
   const hashedPasswordWithPepper = getHashedPasswordWithPepper(hashedPassword);
-  if (user.hashedPassword != hashedPasswordWithPepper) return false;
+  if (user.hashedPassword !== hashedPasswordWithPepper) return false;
   else return true;
 }
 
@@ -39,7 +39,7 @@ async function createAccessToken(username: string) {
       username: username,
     },
   });
-  if (user === null) return null;
+  if (!user) return null;
 
   let token = await prisma.authToken.findFirst({
     where: {
@@ -66,7 +66,7 @@ async function createAccessToken(username: string) {
   );
   const expiredTime = Date.now() + 3 * 24 * 60 * 60 * 1000;
 
-  if (token != null) {
+  if (token) {
     token = await updateAuthToken(user, accessToken, refreshToken, expiredTime);
   } else {
     // create new token
@@ -116,7 +116,7 @@ async function refreshAccessToken(username, refreshToken) {
       username: username,
     },
   });
-  if (user === null) return null;
+  if (!user) return null;
 
   let token = await prisma.authToken.findFirst({
     where: {
@@ -131,7 +131,7 @@ async function refreshAccessToken(username, refreshToken) {
       expiredTime: true,
     },
   });
-  if (token != null) {
+  if (token) {
     const accessToken = jwt.sign(
       { user: user.username },
       process.env.JWT_PRIVATEKEY,
