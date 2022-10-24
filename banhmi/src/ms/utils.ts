@@ -43,7 +43,7 @@ export const createWebRtcTransport = async (
     logger.info(`Transport ID: ${transport.id}`);
 
     transport.on('dtlsstatechange', (dtlsState) => {
-      if (dtlsState == 'closed') transport.close();
+      if (dtlsState === 'closed') transport.close();
     });
 
     transport.on('@close', () => {

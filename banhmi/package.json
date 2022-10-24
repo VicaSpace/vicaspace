@@ -30,6 +30,8 @@
     "express-async-handler": "^1.2.0",
     "httpolyglot": "^0.1.2",
     "joi": "^17.6.3",
+    "js-sha256": "^0.9.0",
+    "jsonwebtoken": "^8.5.1",
     "mediasoup": "^3.10.8",
     "pg": "^8.8.0",
     "pino": "^8.6.1",
