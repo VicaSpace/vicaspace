@@ -1,5 +1,5 @@
 import { Router } from 'express';
-
+import requireAuth from '@/middlewares/authenticate';
 import {
   getSaltHandler,
   getUserInfoHandler,
@@ -8,7 +8,6 @@ import {
   refreshAccessTokenHandler,
   registerHandler,
 } from '@/controllers/auth';
-import requireAuth from '@/utils/authenticate';
 
 const router = Router();
 
