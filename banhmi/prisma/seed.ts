@@ -1,11 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 import { sha256 } from 'js-sha256';
 
-import { getRandomString } from '../src/services/auth';
+const characters =
+  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+function getRandomString(length: number) {
+  let result = ' ';
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
 
 async function createUsers() {
   let salt = getRandomString(50);
-  const richard = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { username: 'richard' },
     update: {},
     create: {
@@ -16,7 +26,7 @@ async function createUsers() {
     },
   });
   salt = getRandomString(50);
-  const minh = await prisma.user.upsert({
+  await prisma.user.upsert({
     where: { username: 'minh' },
     update: {},
     create: {
@@ -26,13 +36,12 @@ async function createUsers() {
       hashedPassword: sha256('password' + salt),
     },
   });
-  console.log({ richard, minh });
 }
 
 const prisma = new PrismaClient();
 
 async function createSpaces() {
-  const hochiminh = await prisma.space.upsert({
+  await prisma.space.upsert({
     where: { id: 1 },
     update: {},
     create: {
@@ -48,7 +57,7 @@ async function createSpaces() {
       urlSpotify: '',
     },
   });
-  const hanoi = await prisma.space.upsert({
+  await prisma.space.upsert({
     where: { id: 2 },
     update: {},
     create: {
@@ -64,7 +73,6 @@ async function createSpaces() {
       urlSpotify: '',
     },
   });
-  console.log({ hochiminh, hanoi });
 }
 
 async function main() {
@@ -76,8 +84,8 @@ main()
   .then(async () => {
     await prisma.$disconnect();
   })
-  .catch(async (e) => {
-    console.error(e);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  .catch(async (_err) => {
     await prisma.$disconnect();
     process.exit(1);
   });
