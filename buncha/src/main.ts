@@ -1,17 +1,17 @@
 import 'dotenv/config';
-import express, { NextFunction, Request, Response } from 'express';
-import { readFileSync } from 'fs';
+import express, {NextFunction, Request, Response} from 'express';
+import {readFileSync} from 'fs';
 import https from 'httpolyglot';
-import { ServerOptions } from 'https';
-import { createWorker } from 'mediasoup';
-import { Router } from 'mediasoup/node/lib/Router';
-import { RtpCodecCapability } from 'mediasoup/node/lib/RtpParameters';
+import {ServerOptions} from 'https';
+import {createWorker} from 'mediasoup';
+import {Router} from 'mediasoup/node/lib/Router';
+import {RtpCodecCapability} from 'mediasoup/node/lib/RtpParameters';
 import path from 'path';
 import pinoHttp from 'pino-http';
-import { Server } from 'socket.io';
+import {Server} from 'socket.io';
 
-import { spaceCollection } from '@/data/collections';
-import { logger } from '@/utils/logger';
+import {spaceCollection} from '@/data/collections';
+import {logger} from '@/utils/logger';
 
 const pinoHttpMiddleware = pinoHttp();
 
@@ -48,8 +48,6 @@ const main = async () => {
   });
 
   // TODO: Add some middleware for socket authentication
-  // TODO: Setup Prisma for project
-
   const worker = await createWorker();
   const mediaCodecs: RtpCodecCapability[] = [
     {
