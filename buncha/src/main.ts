@@ -10,12 +10,27 @@ import path from 'path';
 import pinoHttp from 'pino-http';
 import { Server } from 'socket.io';
 
-import { spaceCollection } from '@/data/collections';
+import { socketCollection, spaceCollection } from '@/data/collections';
+import { registerConnHandlers } from '@/handlers/conn';
+import { registerRtcHandlers } from '@/handlers/rtc';
+import { registerSpaceHandlers } from '@/handlers/space';
 import { getAllSpaces } from '@/lib/apis/space';
 import { logger } from '@/lib/logger';
 
-const pinoHttpMiddleware = pinoHttp();
+const pinoHttpMiddleware = pinoHttp({
+  ...(process.env.NODE_ENV !== 'production' && {
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
+      },
+    },
+  }),
+});
 
+/**
+ * Main Program Execution
+ */
 const main = async () => {
   /* Express App setup */
   const app = express();
@@ -65,7 +80,7 @@ const main = async () => {
     const spaces = await getAllSpaces();
     spaceIds = spaces.map((space) => space.id);
   } catch (err) {
-    logger.error('Failed to get list of spaces');
+    logger.error('Failed to get list of spaces from API ❌');
     logger.error(err);
   }
 
@@ -81,17 +96,24 @@ const main = async () => {
       router,
     };
   });
-  logger.info(`Initialized routers for ${spaceIds.length} spaces 🚀`);
+  logger.info(`Initialized routers for ${spaceIds.length} spaces ✅`);
 
   /* Socket setup */
   io.on('connection', async (socket) => {
-    logger.info('A user has connected');
+    /// Socket Initialization
+    logger.info(`User (sId: ${socket.id}) has connected to socket ✅`);
+    socketCollection[socket.id] = {
+      id: socket.id,
+    };
     socket.emit('connect-success', { socketId: socket.id });
 
-    socket.on('disconnect', () => {
-      logger.info('User has disconnected');
-    });
+    /* Register handlers */
+    registerConnHandlers(io, socket);
+    registerSpaceHandlers(io, socket);
+    registerRtcHandlers(io, socket);
   });
+
+  logger.info('Initialized WebSocket along with registered handlers ✅');
 
   server.listen(process.env.APP_PORT, () => {
     logger.info(

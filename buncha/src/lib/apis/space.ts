@@ -8,6 +8,6 @@ import { GetAllSpacesResponse } from '@/lib/types/apis/space';
  * @returns List of spaces
  */
 export const getAllSpaces = async (): Promise<GetAllSpacesResponse> => {
-  const res = await axios.get(`${config.apiUrl.banhmi}/spaces`);
+  const res = await axios.get(`${config.endpoint.banhmiApi}/spaces`);
   return res.data;
 };
