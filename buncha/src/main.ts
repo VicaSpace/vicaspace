@@ -10,6 +10,7 @@ import path from 'path';
 import pinoHttp from 'pino-http';
 import { Server } from 'socket.io';
 
+import config from '@/config';
 import { socketCollection, spaceCollection } from '@/data/collections';
 import { registerConnHandlers } from '@/handlers/conn';
 import { registerRtcHandlers } from '@/handlers/rtc';
@@ -115,9 +116,9 @@ const main = async () => {
 
   logger.info('Initialized WebSocket along with registered handlers ✅');
 
-  server.listen(process.env.APP_PORT, () => {
+  server.listen(config.app.port, () => {
     logger.info(
-      `Communication Server listening on ${process.env.APP_HOST}:${process.env.APP_PORT} ✅`
+      `Communication Server listening on ${config.app.host}:${config.app.port} ✅`
     );
   });
 };
