@@ -1,6 +1,7 @@
-import { HamburgerIcon } from '@chakra-ui/icons';
+import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
 import {
+  Center,
   Drawer,
   DrawerCloseButton,
   DrawerContent,
@@ -13,17 +14,15 @@ function DrawerComponent() {
 
   return (
     <>
-      <IconButton
-        top={0}
-        left={0}
-        marginTop="15px"
-        marginLeft="15px"
-        backgroundColor="#EEF1FF"
-        aria-label="drawer opener"
-        icon={<HamburgerIcon />}
-        onClick={onOpen}
-      />
-
+      <Center width="40px" height="100vh">
+        <IconButton
+          marginLeft="15px"
+          backgroundColor="#EEF1FF"
+          aria-label="drawer opener"
+          icon={<ChevronRightIcon />}
+          onClick={onOpen}
+        />
+      </Center>
       <Drawer
         id="drawer-container"
         isOpen={isOpen}
@@ -32,7 +31,14 @@ function DrawerComponent() {
         size="md"
       >
         <DrawerContent backgroundColor="#EEF1FF">
-          <DrawerCloseButton />
+          <DrawerCloseButton top="50vh" right="-45px">
+            <IconButton
+              backgroundColor="#EEF1FF"
+              aria-label="drawer closer"
+              icon={<ChevronLeftIcon />}
+              onClick={onOpen}
+            />
+          </DrawerCloseButton>
         </DrawerContent>
       </Drawer>
     </>
