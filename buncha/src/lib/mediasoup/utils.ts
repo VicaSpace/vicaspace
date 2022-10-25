@@ -1,13 +1,18 @@
 import * as mediasoup from 'mediasoup';
 import { Router } from 'mediasoup/node/lib/Router';
 
+import config from '@/config';
+import { logger } from '@/lib/logger';
 import { CreateWebRtcTransportResponse } from '@/lib/types/handlers/rtc';
-import { logger } from '@/lib/utils/logger';
 
+/**
+ * Create a worker using mediasoup on specific port range
+ * @returns Mediasoup Worker
+ */
 export const createWorker = async () => {
   const worker = await mediasoup.createWorker({
-    rtcMinPort: 2000,
-    rtcMaxPort: 2020,
+    rtcMinPort: config.rtc.minPort,
+    rtcMaxPort: config.rtc.maxPort,
   });
   logger.info(`Worker PID: ${worker.pid}`);
 

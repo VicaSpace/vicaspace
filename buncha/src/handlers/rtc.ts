@@ -6,7 +6,8 @@ import {
   spaceCollection,
   transportCollection,
 } from '@/data/collections';
-import { createWebRtcTransport } from '@/lib/ms/utils';
+import { logger } from '@/lib/logger';
+import { createWebRtcTransport } from '@/lib/mediasoup/utils';
 import {
   ConnectWebRtcTransportPayload,
   CreateConsumerPayload,
@@ -19,7 +20,6 @@ import {
   GetRtpCapabilitiesResponse,
 } from '@/lib/types/handlers/rtc';
 import { IOConnection, SocketConnection } from '@/lib/types/ws';
-import { logger } from '@/lib/utils/logger';
 
 /**
  * Register RTC Handlers for Space communication

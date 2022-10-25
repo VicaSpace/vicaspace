@@ -1,4 +1,5 @@
 import { producerCollection, socketCollection } from '@/data/collections';
+import { logger } from '@/lib/logger';
 import {
   GetParticipantsErrorResponse,
   GetParticipantsPayload,
@@ -7,7 +8,6 @@ import {
   ParticipantDetails,
 } from '@/lib/types/handlers/space';
 import { IOConnection, SocketConnection } from '@/lib/types/ws';
-import { logger } from '@/lib/utils/logger';
 
 export const registerSpaceHandlers = (
   io: IOConnection,
