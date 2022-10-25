@@ -30,7 +30,7 @@ describe('test getAllSpaces', () => {
 
     // then
     expect(mockAxios.get).toHaveBeenCalledWith(
-      `${config.apiUrl.banhmi}/spaces`
+      `${config.endpoint.banhmiApi}/spaces`
     );
     expect(result).toEqual(spaces);
   });
