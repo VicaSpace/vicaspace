@@ -84,7 +84,8 @@ main()
   .then(async () => {
     await prisma.$disconnect();
   })
-  .catch(async (_) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  .catch(async (_err) => {
     await prisma.$disconnect();
     process.exit(1);
   });
