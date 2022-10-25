@@ -8,5 +8,5 @@ export const logger = pino({
       colorize: true,
     },
   },
-  enabled: !!process.env.NOLOG,
+  enabled: !process.env.NOLOG ? true : false,
 });
