@@ -48,6 +48,12 @@ Setup .env for server:
 cp ./banhmi/.env.example ./banhmi/.env
 ```
 
+Setup .env for client:
+
+```bash
+cp ./pho/.env.example ./pho/.env
+```
+
 Then update the necessary environmental variables.
 
 ## Run Locally
@@ -94,3 +100,19 @@ Or, you can run using nodemon during development:
 ```bash
 yarn dev
 ```
+
+### Client
+
+Go to the frontend directory:
+
+```bash
+cd pho
+```
+
+Run the React app in development mode:
+
+```bash
+npm run start
+```
+
+Please refer to [this README document](./pho/README.md) for more information.
