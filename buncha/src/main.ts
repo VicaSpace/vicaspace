@@ -11,6 +11,7 @@ import pinoHttp from 'pino-http';
 import { Server } from 'socket.io';
 
 import { spaceCollection } from '@/data/collections';
+import { getAllSpaces } from '@/lib/apis/space';
 import { logger } from '@/lib/logger';
 
 const pinoHttpMiddleware = pinoHttp();
@@ -59,19 +60,28 @@ const main = async () => {
   ];
 
   // NOTE: Each space has its own router for separate communication
-  // TODO: Fetch spaces from API (Call the API from)
-  const spaceIds = [1, 2];
+  let spaceIds: number[] = [];
+  try {
+    const spaces = await getAllSpaces();
+    spaceIds = spaces.map((space) => space.id);
+  } catch (err) {
+    logger.error('Failed to get list of spaces');
+    logger.error(err);
+  }
+
+  // Populate mediasoup's router for each space id
   const routers = await Promise.all(
     new Array<Promise<Router>>(spaceIds.length).fill(
       worker.createRouter({ mediaCodecs })
     )
   );
-  // Init routers for spaces
-  routers.forEach((router, idx) => {
-    spaceCollection[spaceIds[idx]] = {
+  // Associate routers to space collection
+  routers.forEach((router, i) => {
+    spaceCollection[spaceIds[i]] = {
       router,
     };
   });
+  logger.info(`Initialized routers for ${spaceIds.length} spaces 🚀`);
 
   /* Socket setup */
   io.on('connection', async (socket) => {
@@ -85,7 +95,7 @@ const main = async () => {
 
   server.listen(process.env.APP_PORT, () => {
     logger.info(
-      `Communication Server listening on ${process.env.APP_HOST}:${process.env.APP_PORT}`
+      `Communication Server listening on ${process.env.APP_HOST}:${process.env.APP_PORT} ✅`
     );
   });
 };

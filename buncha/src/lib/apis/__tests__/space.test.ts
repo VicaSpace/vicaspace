@@ -26,7 +26,6 @@ describe('test getAllSpaces', () => {
     ];
 
     mockAxios.get.mockResolvedValueOnce({ data: spaces });
-
     const result = await getAllSpaces();
 
     // then
@@ -38,6 +37,7 @@ describe('test getAllSpaces', () => {
 
   it('should throw error when call made to API failed', async () => {
     mockAxios.get.mockRejectedValueOnce(new Error('Network Error'));
+
     expect(getAllSpaces()).rejects.toThrow();
     expect(getAllSpaces()).rejects.toMatchObject({
       message: 'Network Error',
