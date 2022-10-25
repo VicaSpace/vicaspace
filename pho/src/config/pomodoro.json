@@ -1,0 +1,18 @@
+[
+    {
+        "sessionInterval": 2,
+        "sessionName": "On Pomodoro 1"
+    },
+    {
+        "sessionInterval": 3,
+        "sessionName": "On Pomodoro 2"
+    },
+    {
+        "sessionInterval": 5,
+        "sessionName": "On Pomodoro 3"
+    },
+    {
+        "sessionInterval": 8,
+        "sessionName": "On Pomodoro 4"
+    }
+]
