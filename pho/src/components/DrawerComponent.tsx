@@ -1,6 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
 import {
+  Box,
   Center,
   Drawer,
   DrawerCloseButton,
@@ -13,7 +14,7 @@ function DrawerComponent() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <>
+    <Box zIndex={99} position="absolute">
       <Center width="40px" height="100vh">
         <IconButton
           marginLeft="15px"
@@ -41,7 +42,7 @@ function DrawerComponent() {
           </DrawerCloseButton>
         </DrawerContent>
       </Drawer>
-    </>
+    </Box>
   );
 }
 
