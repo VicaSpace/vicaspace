@@ -10,9 +10,6 @@ const IndexPage: React.FC<{}> = () => {
         <meta name="Let's chill in this McHouse Lounge" content="VicaSpace" />
       </Helmet>
       {/* Page Body */}
-      <div>
-        <h1>Index Page</h1>
-      </div>
     </>
   );
 };
