@@ -1,6 +1,6 @@
 import { socketCollection } from '@/data/collections';
-import { IOConnection, SocketConnection } from '@/types/ws';
-import { logger } from '@/utils/logger';
+import { IOConnection, SocketConnection } from '@/lib/types/ws';
+import { logger } from '@/lib/utils/logger';
 
 export const registerConnHandlers = (
   _io: IOConnection,

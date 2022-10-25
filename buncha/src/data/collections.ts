@@ -4,7 +4,7 @@ import {
   SocketCollection,
   SpaceCollection,
   TransportCollection,
-} from '@/types/collection';
+} from '@/lib/types/collection';
 
 export const socketCollection: SocketCollection = {};
 

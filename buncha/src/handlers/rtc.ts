@@ -6,7 +6,7 @@ import {
   spaceCollection,
   transportCollection,
 } from '@/data/collections';
-import { createWebRtcTransport } from '@/ms/utils';
+import { createWebRtcTransport } from '@/lib/ms/utils';
 import {
   ConnectWebRtcTransportPayload,
   CreateConsumerPayload,
@@ -17,9 +17,9 @@ import {
   CreateWebRtcTransportResponse,
   GetRtpCapabilitiesPayload,
   GetRtpCapabilitiesResponse,
-} from '@/types/handlers/rtc';
-import { IOConnection, SocketConnection } from '@/types/ws';
-import { logger } from '@/utils/logger';
+} from '@/lib/types/handlers/rtc';
+import { IOConnection, SocketConnection } from '@/lib/types/ws';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * Register RTC Handlers for Space communication

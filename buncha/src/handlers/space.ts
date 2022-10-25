@@ -5,9 +5,9 @@ import {
   GetParticipantsResponse,
   JoinPayload,
   ParticipantDetails,
-} from '@/types/handlers/space';
-import { IOConnection, SocketConnection } from '@/types/ws';
-import { logger } from '@/utils/logger';
+} from '@/lib/types/handlers/space';
+import { IOConnection, SocketConnection } from '@/lib/types/ws';
+import { logger } from '@/lib/utils/logger';
 
 export const registerSpaceHandlers = (
   io: IOConnection,

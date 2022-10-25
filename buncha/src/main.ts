@@ -11,7 +11,7 @@ import pinoHttp from 'pino-http';
 import { Server } from 'socket.io';
 
 import { spaceCollection } from '@/data/collections';
-import { logger } from '@/utils/logger';
+import { logger } from '@/lib/utils/logger';
 
 const pinoHttpMiddleware = pinoHttp();
 
