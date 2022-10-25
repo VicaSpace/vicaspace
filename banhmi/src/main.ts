@@ -6,14 +6,7 @@ import pinoHttp from 'pino-http';
 import router from '@/routes';
 import { logger } from '@/utils/logger';
 
-const pinoHttpMiddleware = pinoHttp({
-  transport: {
-    target: 'pino-pretty',
-    options: {
-      colorize: true,
-    },
-  },
-});
+const pinoHttpMiddleware = pinoHttp();
 
 const main = async () => {
   /* Express App setup */
