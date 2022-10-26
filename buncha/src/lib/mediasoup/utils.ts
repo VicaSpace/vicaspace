@@ -39,7 +39,8 @@ export const createWebRtcTransport = async (
   const webRtcTransportOptions = {
     listenIps: [
       {
-        ip: process.env.APP_SERVER_IP as string, // replace with relevant IP address
+        // Replace with relevant IP address
+        ip: config.app.ip as string,
       },
     ],
     enableUdp: true,

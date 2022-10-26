@@ -7,6 +7,7 @@ export default {
     env: process.env.NODE_ENV,
     port: Number(process.env.APP_PORT),
     host: process.env.APP_HOST,
+    ip: process.env.APP_IP,
   },
   endpoint: {
     banhmiApi: process.env.ENDPOINT_BANHMI_API,
