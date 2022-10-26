@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.index/
+*.log
+.idea/
+.vscode/
+coverage/
+
+# Cert & Key
+ssl/cert.pem
+ssl/key.pem
