@@ -1,3 +1,4 @@
+import cors from 'cors';
 import 'dotenv/config';
 import express from 'express';
 import http from 'http';
@@ -13,6 +14,7 @@ const main = async () => {
   /* Server Setup */
   const app = express();
   // TODO: Create HTTPS server instead of HTTP
+  app.use(cors());
   app.use(pinoHttpMiddleware);
   app.use(express.json());
 
