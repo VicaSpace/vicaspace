@@ -25,7 +25,9 @@ const router = createBrowserRouter([
   },
   {
     path: '/pomo',
-    element: <PomodoroComponent />,
+    element: (
+      <PomodoroComponent timestamp={1666794382000} serverTime={Date.now()} />
+    ),
   },
 ]);
 
