@@ -3,15 +3,15 @@ import axios from 'axios';
 
 import { ThunkFetchState } from '@/states/store';
 
-interface SpaceLatLng {
+export interface SpaceLocation {
   id: number;
   name: string;
   latitude: number;
   longitude: number;
 }
 
-interface SpaceState {
-  data: null | SpaceLatLng[];
+export interface SpaceState {
+  data: null | SpaceLocation[];
   error: null | string;
 }
 
