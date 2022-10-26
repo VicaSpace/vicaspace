@@ -3,18 +3,21 @@ import React, { useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 
 import pomodoroConfig from '@/config/pomodoro.json';
+import { useAppDispatch, useAppSelector } from '@/states/hooks';
+import { setSessionId } from '@/states/pomodoro/slice';
 
 import sessionIcon from '../PomodoroComponent/session.png';
 import './PomodoroComponent.css';
 
 const PomodoroComponent: React.FC<{}> = () => {
-  const [sessionId, setSessionId] = useState(pomodoroConfig.length - 1);
+  const { sessionId } = useAppSelector((state) => state.pomodoroSlice);
+  const dispatch = useAppDispatch();
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
   const onSessionEnded = () => {
-    if (sessionId > 0) setSessionId(sessionId - 1);
-    else setSessionId(pomodoroConfig.length - 1);
+    if (sessionId > 0) dispatch(setSessionId(sessionId - 1));
+    else dispatch(setSessionId(pomodoroConfig.length - 1));
   };
 
   useEffect(() => {

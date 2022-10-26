@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import DrawerComponent from '@/components/DrawerComponent';
+import PomodoroComponent from '@/components/PomodoroComponent/PomodoroComponent';
 import WebSocketProvider from '@/modules/ws/WebSocketProvider';
 import IndexPage from '@/pages';
 import AboutPage from '@/pages/about';
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: '/about',
     element: <AboutPage />,
+  },
+  {
+    path: '/pomo',
+    element: <PomodoroComponent />,
   },
 ]);
 
