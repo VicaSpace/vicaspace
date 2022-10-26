@@ -3,45 +3,50 @@ import React, { useEffect, useState } from 'react';
 import Draggable from 'react-draggable';
 
 import pomodoroConfig from '@/config/pomodoro.json';
+import { calculatePomodoroSession } from '@/lib/pomodoro';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
-import { setSessionId } from '@/states/pomodoro/slice';
+import { setSessionId, setStartTime } from '@/states/pomodoro/slice';
 
 import sessionIcon from '../PomodoroComponent/session.png';
 import './PomodoroComponent.css';
 
-const PomodoroComponent: React.FC<{}> = () => {
-  const { sessionId } = useAppSelector((state) => state.pomodoroSlice);
+const PomodoroComponent: React.FC<{
+  timestamp: number;
+  serverTime: number;
+}> = ({ timestamp, serverTime }) => {
+  const { sessionId, startTime } = useAppSelector(
+    (state) => state.pomodoroSlice
+  );
   const dispatch = useAppDispatch();
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
-  const onSessionEnded = () => {
-    if (sessionId > 0) dispatch(setSessionId(sessionId - 1));
-    else dispatch(setSessionId(pomodoroConfig.length - 1));
-  };
-
   useEffect(() => {
-    const interval = pomodoroConfig[sessionId].sessionInterval;
+    dispatch(setStartTime(timestamp));
+    const sessionInfo = calculatePomodoroSession(startTime, serverTime);
+    dispatch(setSessionId(sessionInfo.sessionId));
+    setMinutes(sessionInfo.minutes);
+    setSeconds(sessionInfo.seconds);
+  }, []);
+
+  const onSessionEnded = () => {
+    const newSessionId =
+      sessionId > 0 ? sessionId - 1 : pomodoroConfig.length - 1;
+    dispatch(setSessionId(newSessionId));
+    const interval = pomodoroConfig[newSessionId].sessionInterval;
     setMinutes(Math.floor(interval / 60));
     setSeconds(interval % 60);
-  }, [sessionId]);
+  };
 
   useEffect(() => {
     const pomodorpInterval = setInterval(() => {
       if (seconds === 0 && minutes === 0) {
+        clearInterval(pomodorpInterval);
         onSessionEnded();
         return;
       }
       if (seconds > 0) {
         setSeconds(seconds - 1);
-      }
-      if (seconds === 0) {
-        if (minutes === 0) {
-          clearInterval(pomodorpInterval);
-        } else {
-          setMinutes(minutes - 1);
-          setSeconds(59);
-        }
       }
     }, 1000);
     return () => {
