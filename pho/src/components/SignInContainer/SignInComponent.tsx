@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
 import { sha256 } from 'js-sha256';
 
@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
+import { getSaltViaAPI, signInViaAPI } from '@/lib/apis/auth';
 import { signIn as signInAction } from '@/states/auth/slice';
 import { useAppDispatch } from '@/states/hooks';
 
@@ -68,20 +69,16 @@ function SignInComponent() {
 
   const signIn = async (username: string, password: string) => {
     try {
-      const url: string = 'http://localhost:4000';
-      const getSaltResponse = await axios.get(
-        `${url}/api/auth/${username}/get_salt`
-      );
-      const salt: string = getSaltResponse.data.salt;
+      const salt: string = await getSaltViaAPI(username);
       const hashedPassword = sha256(password + salt);
 
-      const signInResponse = await axios.post(`${url}/api/auth/login`, {
-        username,
-        hashedPassword,
-      });
+      // const signInResponse = await axios.post(`${url}/api/auth/login`, {
+      //   username,
+      //   hashedPassword,
+      // });
 
       const { accessToken, refreshToken, userId, expiredTime } =
-        signInResponse.data;
+        await signInViaAPI(username, hashedPassword);
 
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
