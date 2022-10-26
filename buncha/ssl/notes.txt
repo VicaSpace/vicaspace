@@ -1,0 +1,1 @@
+This folder is for containing certificate & key on development server only.
