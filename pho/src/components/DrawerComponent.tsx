@@ -10,8 +10,14 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 
+import SignInComponent from '@/components/SignInComponent';
+
 function DrawerComponent() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const renderContent = () => {
+    return <SignInComponent />;
+  };
 
   return (
     <Box zIndex={99} position="absolute">
@@ -40,6 +46,7 @@ function DrawerComponent() {
               onClick={onOpen}
             />
           </DrawerCloseButton>
+          {renderContent()}
         </DrawerContent>
       </Drawer>
     </Box>
