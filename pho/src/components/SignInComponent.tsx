@@ -12,10 +12,15 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
+import { signIn as signInAction } from '@/states/auth/slice';
+import { useAppDispatch } from '@/states/hooks';
+
 import './SignInComponent.css';
 
 function SignInComponent() {
   const [signInError, setSignInError] = useState('');
+  const dispatch = useAppDispatch();
+
   const renderUsernamePlaceholder = (props: FormikProps<any>) => (
     <FormControl>
       <FormLabel fontWeight="400" fontSize="24px" className="form-label">
@@ -74,6 +79,15 @@ function SignInComponent() {
         username,
         hashedPassword,
       });
+
+      const { accessToken, refreshToken, userId, expiredTime } =
+        signInResponse.data;
+
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('expiredTime', expiredTime);
+
+      dispatch(signInAction(userId));
     } catch (error: any) {
       if (error instanceof AxiosError) {
         setSignInError(error.response?.data.error);
@@ -88,7 +102,7 @@ function SignInComponent() {
       <h1 className="sign-in-title">Sign in</h1>
       <Formik
         initialValues={{ username: '', password: '' }}
-        onSubmit={async (values, actions) => {
+        onSubmit={async (values: any, actions: any) => {
           await signIn(values.username, values.password);
           actions.setSubmitting(false);
         }}
@@ -107,7 +121,7 @@ function SignInComponent() {
               validate={validatePlaceholder('password')}
             />
             <ErrorMessage name="password" />
-            <div>{props.errors}</div>
+            <div>{signInError}</div>
             <Center>
               <Button
                 className="login-button"

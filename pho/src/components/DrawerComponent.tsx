@@ -1,4 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import axios from 'axios';
 
 import {
   Box,
@@ -9,14 +10,42 @@ import {
   IconButton,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
 
 import SignInComponent from '@/components/SignInComponent';
+import { signIn, signOut } from '@/states/auth/slice';
+import { useAppDispatch, useAppSelector } from '@/states/hooks';
 
 function DrawerComponent() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(
+    (state) => state.authSlice.isAuthenticated
+  );
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!isAuthenticated && accessToken != null) {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
+      axios
+        .get('http://localhost:4000/api/auth/info', config)
+        .then((response) => {
+          const { id } = response.data;
+          dispatch(signIn(id.toString()));
+        })
+        .catch((err) => {
+          console.log(err);
+          dispatch(signOut());
+        });
+    }
+  }, []);
 
   const renderContent = () => {
-    return <SignInComponent />;
+    return !isAuthenticated && <SignInComponent />;
   };
 
   return (
