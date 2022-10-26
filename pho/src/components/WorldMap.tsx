@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Map } from 'react-map-gl';
 
 import DrawerComponent from '@/components/DrawerComponent';
+import { useAppDispatch, useAppSelector } from '@/states/hooks';
+import { fetchAllSpaces } from '@/states/spaces/slice';
 
 const WorldMap: React.FC<{}> = () => {
+  const spaces = useAppSelector((state) => state.spacesSlice);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    void dispatch(fetchAllSpaces());
+  }, []);
+
+  console.log(spaces);
+
   return (
     <>
       <DrawerComponent />
