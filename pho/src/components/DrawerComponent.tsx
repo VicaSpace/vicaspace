@@ -61,14 +61,14 @@ function DrawerComponent() {
         size="md"
       >
         <DrawerContent backgroundColor="#EEF1FF">
-          <DrawerCloseButton top="50vh" right="-45px">
+          <Box position="absolute" top="50vh" left="520px">
             <IconButton
               backgroundColor="#EEF1FF"
               aria-label="drawer closer"
               icon={<ChevronLeftIcon />}
-              onClick={onOpen}
+              onClick={onClose}
             />
-          </DrawerCloseButton>
+          </Box>
           {renderContent()}
         </DrawerContent>
       </Drawer>

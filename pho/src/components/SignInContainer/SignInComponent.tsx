@@ -72,11 +72,6 @@ function SignInComponent() {
       const salt: string = await getSaltViaAPI(username);
       const hashedPassword = sha256(password + salt);
 
-      // const signInResponse = await axios.post(`${url}/api/auth/login`, {
-      //   username,
-      //   hashedPassword,
-      // });
-
       const { accessToken, refreshToken, userId, expiredTime } =
         await signInViaAPI(username, hashedPassword);
 
