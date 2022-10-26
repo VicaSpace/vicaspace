@@ -2,10 +2,11 @@
 
 ## Structure
 
-| Codebase         | Description |
-| :--------------- | :---------: |
-| [banhmi](banhmi) |   Server    |
-| [pho](pho)       |   Client    |
+| Codebase         |     Description      |
+| :--------------- | :------------------: |
+| [banhmi](banhmi) |      API Server      |
+| [buncha](buncha) | Communication Server |
+| [pho](pho)       |        Client        |
 
 ## Installation
 
@@ -58,7 +59,7 @@ Then update the necessary environmental variables.
 
 ## Run Locally
 
-### Server
+### API Server
 
 Go to the server directory:
 
@@ -67,6 +68,7 @@ cd banhmi
 ```
 
 Generate Prisma client:
+
 ```bash
 yarn generate
 ```
@@ -101,6 +103,32 @@ Or, you can run using nodemon during development:
 yarn dev
 ```
 
+### Communication Server
+
+Go to the server directory:
+
+```bash
+cd buncha
+```
+
+Transpile the TypeScript files to JavaScript:
+
+```bash
+yarn build
+```
+
+Run the transpiled JavaScript files:
+
+```bash
+yarn start
+```
+
+Or, you can run using nodemon during development:
+
+```bash
+yarn dev
+```
+
 ### Client
 
 Go to the frontend directory:
@@ -112,7 +140,7 @@ cd pho
 Run the React app in development mode:
 
 ```bash
-npm run start
+yarn start
 ```
 
 Please refer to [this README document](./pho/README.md) for more information.
