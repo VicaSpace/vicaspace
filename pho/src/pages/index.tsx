@@ -9,9 +9,8 @@ const IndexPage: React.FC<{}> = () => {
       {/* Meta section */}
       <Helmet>
         <title>VicaSpace - Chill lounge</title>
-        <meta name="Let's chill in this McHouse Lounge" content="VicaSpace" />
+        <meta name="Let's chill in this VicaSpace Lounge" content="VicaSpace" />
       </Helmet>
-      {/* Page Body */}
       <WorldMap />
     </>
   );

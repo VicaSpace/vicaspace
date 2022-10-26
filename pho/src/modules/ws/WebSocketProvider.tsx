@@ -2,15 +2,17 @@ import { Socket, io } from 'socket.io-client';
 
 import React, { useEffect, useState } from 'react';
 
-const socket = io('ws://localhost:4000');
+const socket = io(process.env.REACT_APP_BUNCHA_WS_URL as string, {
+  closeOnBeforeunload: false,
+});
 
 export const WebSocketContext = React.createContext<{
-  socket: Socket<any, any> | null;
+  socket: Socket<any, any>;
   isConnected: boolean;
   socketId: string | null;
   setIsConnected: React.Dispatch<React.SetStateAction<boolean>>;
 }>({
-  socket: null,
+  socket,
   isConnected: false,
   socketId: null,
   setIsConnected: () => {},
