@@ -10,7 +10,10 @@ import {
 } from '@/states/spaces/slice';
 
 const WorldMap: React.FC<{}> = () => {
-  const spaceState: SpaceState = useAppSelector((state) => state.spacesSlice);
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+  const spaceState: SpaceState = useAppSelector(
+    (state) => state.spacesSlice
+  ) as SpaceState;
   const dispatch = useAppDispatch();
 
   useEffect(() => {
