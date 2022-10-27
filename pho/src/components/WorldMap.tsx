@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import ReactMapGL, { Marker } from 'react-map-gl';
+import { Link } from 'react-router-dom';
 
 import DrawerComponent from '@/components/DrawerComponent';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
@@ -8,6 +9,8 @@ import {
   SpaceState,
   fetchAllSpaces,
 } from '@/states/spaces/slice';
+
+import './WorldMap.css';
 
 const WorldMap: React.FC<{}> = () => {
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
@@ -35,10 +38,15 @@ const WorldMap: React.FC<{}> = () => {
       >
         {spaceState.data?.map((space: SpaceLocation) => (
           <Marker
-            key={space.name}
+            key={space.id}
             latitude={space.latitude}
             longitude={space.longitude}
-          ></Marker>
+          >
+            <Link to={`/spaces/${space.id}`}>
+              <div className="pin bounce" />
+              <div className="pulse" />
+            </Link>
+          </Marker>
         ))}
       </ReactMapGL>
     </>

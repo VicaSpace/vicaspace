@@ -2,26 +2,34 @@ import { Heading } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-/**
- * Page for Voice From Space. DEMO ONLY! Might be removed
- * or replaced in the future merge.
- */
+import { isNumeric } from '@/lib/number';
+import { useAppDispatch, useAppSelector } from '@/states/hooks';
+import { joinSpace } from '@/states/spaceDetail/slice';
+
 const SpacePage: React.FC<{}> = () => {
-  const { spaceId } = useParams();
+  const { id } = useParams();
+  const dispatch = useAppDispatch();
+
+  const { data, error } = useAppSelector((state) => state.spaceDetailSlice);
+  const { name, spaceId } = data;
 
   /**
-   * Let's just assume that when you're on this page, you'll
-   * first navigate through the URL to this space. However,
-   * for UX, should enable a button for User to click to join.
+   * Assume that you'll be assigned the pageId when u first access
+   * the parameterized route of space
    */
 
   useEffect(() => {
-    //
+    if (!id || !isNumeric(id)) {
+      console.error('Space ID is not a valid.');
+      return;
+    }
+    dispatch(joinSpace(Number(id)));
   }, []);
 
   return (
     <div>
-      <Heading>Space #{spaceId}</Heading>
+      <Heading>Space #{id}</Heading>
+      <p>#Bg-Video-Component</p>
     </div>
   );
 };

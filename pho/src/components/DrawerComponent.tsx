@@ -11,6 +11,7 @@ import {
 import { useEffect } from 'react';
 
 import SignInComponent from '@/components/SignInContainer/SignInComponent';
+import SpaceSpeakerSection from '@/components/SpaceSpeakerSection';
 import { getUserInfoViaAPI } from '@/lib/apis/auth';
 import { signIn, signOut } from '@/states/auth/slice';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
@@ -22,9 +23,11 @@ function DrawerComponent() {
     (state) => state.authSlice.isAuthenticated
   );
 
+  const { spaceId } = useAppSelector((state) => state.spaceDetailSlice.data);
+
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
-    if (!isAuthenticated && accessToken != null) {
+    if (!isAuthenticated && accessToken) {
       getUserInfoViaAPI(accessToken)
         .then((response) => {
           const { id } = response.data;
@@ -38,6 +41,13 @@ function DrawerComponent() {
   }, []);
 
   const renderContent = () => {
+    // Protected route
+    if (!isAuthenticated) {
+      return <SignInComponent />;
+    }
+    if (!spaceId) {
+      return <SpaceSpeakerSection />;
+    }
     return !isAuthenticated && <SignInComponent />;
   };
 
@@ -52,6 +62,7 @@ function DrawerComponent() {
           onClick={onOpen}
         />
       </Center>
+      {/* Drawer Container */}
       <Drawer
         id="drawer-container"
         isOpen={isOpen}
@@ -68,6 +79,7 @@ function DrawerComponent() {
               onClick={onClose}
             />
           </Box>
+          {/* Drawer's Content */}
           {renderContent()}
         </DrawerContent>
       </Drawer>

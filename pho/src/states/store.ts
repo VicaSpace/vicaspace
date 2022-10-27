@@ -3,6 +3,7 @@ import logger from 'redux-logger';
 
 import authSlice from '@/states/auth/slice';
 import counterSlice from '@/states/counter/slice';
+import spaceDetailSlice from '@/states/spaceDetail/slice';
 import spaceSpeakerSlice from '@/states/spaceSpeaker/slice';
 import spacesSlice from '@/states/spaces/slice';
 
@@ -15,6 +16,7 @@ export const store = configureStore({
     spaceSpeakerSlice,
     authSlice,
     spacesSlice,
+    spaceDetailSlice,
   },
 });
 

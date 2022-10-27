@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 export interface SpaceDetail {
   spaceId: number;
@@ -6,19 +6,31 @@ export interface SpaceDetail {
 }
 
 export interface SpaceDetailState {
-  data: SpaceDetail | null;
+  data: Partial<SpaceDetail>;
   error: null | string;
 }
 
 const initialState: SpaceDetailState = {
-  data: null,
+  data: {},
   error: null,
 };
 
-const spacesSlice = createSlice({
+const spaceDetailSlice = createSlice({
   name: 'spaceDetail',
   initialState,
-  reducers: {},
+  reducers: {
+    /**
+     * Join a Space (specified by ID)
+     * @param state State
+     * @param action Action
+     */
+    joinSpace(state, action: PayloadAction<number>) {
+      state.data.spaceId = action.payload;
+      console.log(`You have joined space (id: ${state.data.spaceId}) ✅`);
+    },
+  },
 });
 
-export default spacesSlice.reducer;
+export const { joinSpace } = spaceDetailSlice.actions;
+
+export default spaceDetailSlice.reducer;

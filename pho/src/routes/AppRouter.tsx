@@ -16,7 +16,7 @@ const AppRouter: React.FC = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
-          <Route path="/spaces/:spaceId/voice" element={<SpacePage />} />
+          <Route path="/spaces/:id" element={<SpacePage />} />
           <Route path="*" element={<NotFound404 />} />
         </Routes>
       </Router>
