@@ -5,7 +5,7 @@ import Draggable from 'react-draggable';
 import pomodoroConfig from '@/config/pomodoro.json';
 import { calculatePomodoroSession } from '@/lib/pomodoro';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
-import { setSessionId, setStartTime } from '@/states/pomodoro/slice';
+import { setBreak, setSessionId, setStartTime } from '@/states/pomodoro/slice';
 
 import sessionIcon from '../PomodoroComponent/session.png';
 import './PomodoroComponent.css';
@@ -14,7 +14,7 @@ const PomodoroComponent: React.FC<{
   timestamp: number;
   serverTime: number;
 }> = ({ timestamp, serverTime }) => {
-  const { sessionId, startTime } = useAppSelector(
+  const { sessionId, startTime, isBreak } = useAppSelector(
     (state) => state.pomodoroSlice
   );
   const dispatch = useAppDispatch();
@@ -24,16 +24,23 @@ const PomodoroComponent: React.FC<{
   useEffect(() => {
     dispatch(setStartTime(timestamp));
     const sessionInfo = calculatePomodoroSession(startTime, serverTime);
+    dispatch(setBreak(sessionInfo.isBreak));
     dispatch(setSessionId(sessionInfo.sessionId));
     setMinutes(sessionInfo.minutes);
     setSeconds(sessionInfo.seconds);
   }, []);
 
   const onSessionEnded = () => {
-    const newSessionId =
-      sessionId > 0 ? sessionId - 1 : pomodoroConfig.length - 1;
-    dispatch(setSessionId(newSessionId));
-    const interval = pomodoroConfig[newSessionId].sessionInterval;
+    let interval = 0;
+    if (isBreak) {
+      const newSessionId =
+        sessionId > 0 ? sessionId - 1 : pomodoroConfig.length - 1;
+      dispatch(setSessionId(newSessionId));
+      interval = pomodoroConfig[newSessionId].sessionInterval;
+    } else {
+      interval = pomodoroConfig[sessionId].breakInterval;
+    }
+    dispatch(setBreak(!isBreak));
     setMinutes(Math.floor(interval / 60));
     setSeconds(interval % 60);
   };
@@ -92,7 +99,7 @@ const PomodoroComponent: React.FC<{
           )}
         </Center>
         <Center className="sessionName">
-          {pomodoroConfig[sessionId].sessionName}
+          {isBreak ? 'Break!!!' : pomodoroConfig[sessionId].sessionName}
         </Center>
       </Box>
     </Draggable>
