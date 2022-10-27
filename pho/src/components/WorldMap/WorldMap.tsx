@@ -1,16 +1,14 @@
-import { Box } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
-import ReactMapGL, { Marker } from 'react-map-gl';
+import ReactMapGL from 'react-map-gl';
 
 import DrawerComponent from '@/components/DrawerComponent';
+import CustomMarker from '@/components/WorldMap/CustomMarker/CustomMarker';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
 import {
   SpaceLocation,
   SpaceState,
   fetchAllSpaces,
 } from '@/states/spaces/slice';
-
-import './WorldMap.css';
 
 const WorldMap: React.FC<{}> = () => {
   const spaceState: SpaceState = useAppSelector((state) => state.spacesSlice);
@@ -34,14 +32,7 @@ const WorldMap: React.FC<{}> = () => {
         mapboxAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
       >
         {spaceState.data?.map((space: SpaceLocation) => (
-          <Marker
-            key={space.name}
-            latitude={space.latitude}
-            longitude={space.longitude}
-          >
-            <Box as="div" className="pin bounce" />
-            <Box as="div" className="pulse" />
-          </Marker>
+          <CustomMarker key={space.id} space={space} />
         ))}
       </ReactMapGL>
     </>
