@@ -22,7 +22,7 @@ async function createUsers() {
       username: 'richard',
       spaceId: 1,
       salt: salt,
-      hashedPassword: sha256('password' + salt),
+      hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
     },
   });
   salt = getRandomString(50);
@@ -33,7 +33,7 @@ async function createUsers() {
       username: 'minh',
       spaceId: 1,
       salt: salt,
-      hashedPassword: sha256('password' + salt),
+      hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
     },
   });
 }

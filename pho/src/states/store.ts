@@ -1,6 +1,7 @@
 import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 
+import authSlice from '@/states/auth/slice';
 import counterSlice from '@/states/counter/slice';
 import spacesSlice from '@/states/spaces/slice';
 
@@ -10,6 +11,7 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
   reducer: {
     counterSlice,
+    authSlice,
     spacesSlice,
   },
 });
