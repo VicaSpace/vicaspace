@@ -1,0 +1,35 @@
+.video-container {
+  position: fixed;
+}
+
+#video {
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  pointer-events: none;
+  position: absolute;
+  z-index: -1;
+}
+
+.loading-screen {
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+
+  z-index: 1;
+  display: 'flex';
+  position: 'absolute';
+
+  background-image: url('./loader.gif');
+  background-size: cover;
+
+  opacity: 1;
+  transition: opacity 2s;
+}
+
+.loading-screen.hide {
+  opacity: 0;
+  pointer-events: none;
+}
