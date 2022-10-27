@@ -1,9 +1,10 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
-import IndexPage from '@/pages';
-import AboutPage from '@/pages/about';
-import NotFoundPage from '@/pages/notfound';
+import AboutPage from '@/pages/About';
+import HomePage from '@/pages/Home';
+import NotFoundPage from '@/pages/NotFound';
+import SpacePage from '@/pages/Space';
 
 /**
  * Handles the routing of SPA
@@ -13,8 +14,9 @@ const AppRouter: React.FC = () => {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<IndexPage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/spaces/:spaceId/voice" element={<SpacePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>

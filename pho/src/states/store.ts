@@ -2,6 +2,7 @@ import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 
 import counterSlice from '@/states/counter/slice';
+import spaceSpeakerSlice from '@/states/spaceSpeaker/slice';
 
 /* Main Redux Global Store configurations */
 export const store = configureStore({
@@ -9,6 +10,7 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
   reducer: {
     counterSlice,
+    spaceSpeakerSlice,
   },
 });
 
