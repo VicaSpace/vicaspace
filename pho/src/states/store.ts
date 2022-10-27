@@ -1,6 +1,7 @@
 import { Action, ThunkAction, configureStore } from '@reduxjs/toolkit';
 import logger from 'redux-logger';
 
+import authSlice from '@/states/auth/slice';
 import counterSlice from '@/states/counter/slice';
 import pomodoroSlice from '@/states/pomodoro/slice';
 import spacesSlice from '@/states/spaces/slice';
@@ -12,6 +13,7 @@ export const store = configureStore({
   reducer: {
     counterSlice,
     pomodoroSlice,
+    authSlice,
     spacesSlice,
   },
 });
