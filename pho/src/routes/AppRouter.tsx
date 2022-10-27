@@ -3,7 +3,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import AboutPage from '@/pages/About';
 import HomePage from '@/pages/Home';
-import NotFoundPage from '@/pages/NotFound';
+import NotFound404 from '@/pages/NotFound404';
 import SpacePage from '@/pages/Space';
 
 /**
@@ -17,7 +17,7 @@ const AppRouter: React.FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/spaces/:spaceId/voice" element={<SpacePage />} />
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path="*" element={<NotFound404 />} />
         </Routes>
       </Router>
     </>

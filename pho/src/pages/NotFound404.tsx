@@ -1,9 +1,9 @@
 import React from 'react';
 import { useRouteError } from 'react-router-dom';
 
-import './NotFound.css';
+import './NotFound404.css';
 
-const NotFoundPage: React.FC<{}> = () => {
+const NotFound404: React.FC<{}> = () => {
   const error = useRouteError();
   console.error(error);
 
@@ -140,4 +140,4 @@ const NotFoundPage: React.FC<{}> = () => {
   );
 };
 
-export default NotFoundPage;
+export default NotFound404;

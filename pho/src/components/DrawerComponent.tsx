@@ -4,14 +4,42 @@ import {
   Box,
   Center,
   Drawer,
-  DrawerCloseButton,
   DrawerContent,
   IconButton,
   useDisclosure,
 } from '@chakra-ui/react';
+import { useEffect } from 'react';
+
+import SignInComponent from '@/components/SignInContainer/SignInComponent';
+import { getUserInfoViaAPI } from '@/lib/apis/auth';
+import { signIn, signOut } from '@/states/auth/slice';
+import { useAppDispatch, useAppSelector } from '@/states/hooks';
 
 function DrawerComponent() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(
+    (state) => state.authSlice.isAuthenticated
+  );
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!isAuthenticated && accessToken != null) {
+      getUserInfoViaAPI(accessToken)
+        .then((response) => {
+          const { id } = response.data;
+          dispatch(signIn(id.toString()));
+        })
+        .catch((err) => {
+          console.log(err);
+          dispatch(signOut());
+        });
+    }
+  }, []);
+
+  const renderContent = () => {
+    return !isAuthenticated && <SignInComponent />;
+  };
 
   return (
     <Box zIndex={99} position="absolute">
@@ -32,14 +60,15 @@ function DrawerComponent() {
         size="md"
       >
         <DrawerContent backgroundColor="#EEF1FF">
-          <DrawerCloseButton top="50vh" right="-45px">
+          <Box position="absolute" top="50vh" left="520px">
             <IconButton
               backgroundColor="#EEF1FF"
               aria-label="drawer closer"
               icon={<ChevronLeftIcon />}
-              onClick={onOpen}
+              onClick={onClose}
             />
-          </DrawerCloseButton>
+          </Box>
+          {renderContent()}
         </DrawerContent>
       </Drawer>
     </Box>
