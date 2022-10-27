@@ -3,6 +3,7 @@ import logger from 'redux-logger';
 
 import authSlice from '@/states/auth/slice';
 import counterSlice from '@/states/counter/slice';
+import spacesSlice from '@/states/spaces/slice';
 
 /* Main Redux Global Store configurations */
 export const store = configureStore({
@@ -11,6 +12,7 @@ export const store = configureStore({
   reducer: {
     counterSlice,
     authSlice,
+    spacesSlice,
   },
 });
 
@@ -26,7 +28,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 
 export enum ThunkFetchState {
   Idle = 'idle',
-  Pending = 'pending',
+  Loading = 'loading',
   Fulfilled = 'fulfilled',
   Rejected = 'rejected',
 }
