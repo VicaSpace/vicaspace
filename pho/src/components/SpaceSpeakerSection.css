@@ -1,4 +1,28 @@
+.space-speaker-section {
+  width: 100%;
+  height: 380px;
+  padding: 20px;
+}
+
 .space-speaker-container {
-  background-color: violet;
-  height: 300px;
+  background-color: #d2daff;
+  border-radius: 12px;
+  width: 100%;
+  height: 400px;
+}
+
+.space-speaker-participant-list {
+  position: relative;
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 50px;
+  padding: 24px;
+  padding-left: 51px;
+}
+
+.space-speaker-participant-img {
+  width: 91px;
+  height: 91px;
+  border-radius: 48px;
 }

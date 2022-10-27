@@ -2,7 +2,7 @@ import { Socket, io } from 'socket.io-client';
 
 import React, { useEffect, useState } from 'react';
 
-const socket = io(process.env.REACT_APP_BUNCHA_WS_URL as string, {
+const socket = io(process.env.REACT_APP_ENDPOINT_BUNCHA_WS as string, {
   closeOnBeforeunload: false,
 });
 

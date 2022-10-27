@@ -45,7 +45,9 @@ function DrawerComponent() {
     if (!isAuthenticated) {
       return <SignInComponent />;
     }
-    if (!spaceId) {
+    // Space ID is allocated or not
+    if (spaceId) {
+      console.log('Joined SpaceId: ', spaceId);
       return <SpaceSpeakerSection />;
     }
     return !isAuthenticated && <SignInComponent />;
