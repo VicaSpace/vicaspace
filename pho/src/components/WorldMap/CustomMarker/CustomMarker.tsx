@@ -2,7 +2,7 @@ import { Box, useDisclosure } from '@chakra-ui/react';
 import React from 'react';
 import { Marker } from 'react-map-gl';
 
-import SpaceModal from '@/components/WorldMap/SpaceModal/SpaceModal';
+import SpaceModal from '@/components/WorldMap/SpaceModal';
 import { SpaceLocation } from '@/states/spaces/slice';
 
 import './CustomMarker.css';
