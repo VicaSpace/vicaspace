@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-import WorldMap from '@/components/WorldMap';
+import WorldMap from '@/components/WorldMap/WorldMap';
 
 const IndexPage: React.FC<{}> = () => {
   return (

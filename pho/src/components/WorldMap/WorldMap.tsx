@@ -1,3 +1,4 @@
+import { Box } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 import ReactMapGL, { Marker } from 'react-map-gl';
 
@@ -9,11 +10,10 @@ import {
   fetchAllSpaces,
 } from '@/states/spaces/slice';
 
+import './WorldMap.css';
+
 const WorldMap: React.FC<{}> = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const spaceState: SpaceState = useAppSelector(
-    (state) => state.spacesSlice
-  ) as SpaceState;
+  const spaceState: SpaceState = useAppSelector((state) => state.spacesSlice);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const WorldMap: React.FC<{}> = () => {
         initialViewState={{
           longitude: 105.8067,
           latitude: 15.9031,
-          zoom: 1,
+          zoom: 3.5,
         }}
         style={{ height: '100vh' }}
         mapStyle="mapbox://styles/mapbox/navigation-day-v1"
@@ -38,7 +38,10 @@ const WorldMap: React.FC<{}> = () => {
             key={space.name}
             latitude={space.latitude}
             longitude={space.longitude}
-          ></Marker>
+          >
+            <Box as="div" className="pin bounce" />
+            <Box as="div" className="pulse" />
+          </Marker>
         ))}
       </ReactMapGL>
     </>
