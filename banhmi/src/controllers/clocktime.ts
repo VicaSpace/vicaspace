@@ -1,4 +1,4 @@
-import { getSpaceDetails } from '@/services/spaceService';
+import { getSpaceTime } from '@/services/clocktime';
 import { Request, Response } from 'express';
 
 async function getServerTime(req:Request, res: Response) {
@@ -9,7 +9,7 @@ async function getServerTime(req:Request, res: Response) {
 
 async function getSpaceClocktime(req: Request, res: Response) {
     try {
-        const space = await getSpaceDetails(req.params.spaceId)
+        const space = await getSpaceTime(parseInt(req.params.spaceId))
         res.status(200).json({
             spaceId: space.id,
             startTime: space.startTime,
