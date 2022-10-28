@@ -26,7 +26,7 @@
 .login-text {
   font-family: 'Inconsolata';
   font-style: normal;
-  color: #FFFFFF;
+  color: #ffffff;
 }
 
 .login-button {
@@ -38,7 +38,7 @@
 .register-text {
   width: 96px;
   height: 25px;
-  
+
   font-family: 'Inconsolata';
   font-style: normal;
   font-weight: 400;
@@ -47,6 +47,6 @@
   text-decoration-line: underline;
 
   padding-top: 40px;
-  
+
   color: #333333;
 }
