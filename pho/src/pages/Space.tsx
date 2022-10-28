@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom';
 import { isNumeric } from '@/lib/number';
 import { WebSocketContext } from '@/modules/ws/WebSocketProvider';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
-import { joinSpace } from '@/states/spaceDetail/slice';
+import { fetchSpaceDetail } from '@/states/spaceDetail/slice';
 
 const SpacePage: React.FC<{}> = () => {
   const { id } = useParams();
@@ -14,8 +14,10 @@ const SpacePage: React.FC<{}> = () => {
   // WebSocket
   const { socket, isConnected } = useContext(WebSocketContext);
 
-  const { data, error } = useAppSelector((state) => state.spaceDetailSlice);
-  const { name, spaceId } = data;
+  const { data, error, status } = useAppSelector(
+    (state) => state.spaceDetailSlice
+  );
+  const { name, id: spaceId } = data;
 
   /**
    * Assume that you'll be assigned the pageId when u first access
@@ -27,12 +29,21 @@ const SpacePage: React.FC<{}> = () => {
       console.error('Space ID is not a valid.');
       return;
     }
-    dispatch(joinSpace(Number(id)));
+    // fetch Space here
+    void dispatch(fetchSpaceDetail(Number(id)));
   }, []);
+
+  useEffect(() => {
+    if (data) {
+      console.log('data fetched:', data);
+    }
+  }, [data]);
 
   return (
     <div>
-      <Heading>Space #{id}</Heading>
+      <Heading>
+        Space #{id} - {name}
+      </Heading>
       <p>#Bg-Video-Component</p>
       <p>Socket ID: {socket.id}</p>
       <p>Socket Connection: {isConnected ? 'OK' : 'NO'}</p>

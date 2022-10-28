@@ -13,16 +13,21 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
         {/* Participants list */}
         <div className="space-speaker-participant-list">
           {/* Participant Img */}
-          {new Array(6).fill(0).map((_) => {
+          {new Array(6).fill(0).map((_, idx) => {
             return (
               // eslint-disable-next-line react/jsx-key
               <img
+                // Dummy key
+                key={`${idx}-1`}
                 className="space-speaker-participant-img"
                 src="https://pickaface.net/gallery/avatar/Garret22785730d3a8d5525.png"
                 alt="participant"
               />
             );
           })}
+        </div>
+        <div className="space-speaker-action-container">
+          <div className="space-speaker-action-btn">#ActionButton</div>
         </div>
       </div>
     </section>
