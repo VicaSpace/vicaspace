@@ -1,39 +1,30 @@
+import { createError } from 'http-errors';
 import { sha256 } from 'js-sha256';
 import jwt from 'jsonwebtoken';
 
 import { prisma } from '@/db';
+import { validateRegistrationRequest } from '@/validators/authValidator';
 
-const characters =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 const ACCESS_TOKEN_EXPIRES_TIME = '3d';
 const REFRESH_TOKEN_EXPIRES_TIME = '30d';
 
-function getRandomString(length: number) {
-  let result = ' ';
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
+const getHashedPasswordWithPepper = (saltedPassword: string) => {
+  return sha256(saltedPassword + process.env.PEPPER);
 }
 
-function getHashedPasswordWithPepper(hashedPassword: string) {
-  return sha256(hashedPassword + process.env.PEPPER);
-}
-
-async function validatePassword(hashedPassword: string, username: string) {
+const checkPassword = async (saltedPassword: string, username: string) => {
   const user = await prisma.user.findUnique({
     where: {
       username: username,
     },
   });
   if (!user) return false;
-  const hashedPasswordWithPepper = getHashedPasswordWithPepper(hashedPassword);
+  const hashedPasswordWithPepper = getHashedPasswordWithPepper(saltedPassword);
   if (user.hashedPassword !== hashedPasswordWithPepper) return false;
   else return true;
 }
 
-async function createAccessToken(username: string) {
+const createAccessToken = async (username: string) => {
   const user = await prisma.user.findUnique({
     where: {
       username: username,
@@ -94,12 +85,12 @@ async function updateAuthToken(user, accessToken, refreshToken, expiredTime) {
   });
 }
 
-async function createAuthTokenObject(
+const createAuthTokenObject = async (
   user,
   accessToken,
   refreshToken,
   expiredTime
-) {
+) => {
   return await prisma.authToken.create({
     data: {
       expiredTime: new Date(expiredTime),
@@ -110,7 +101,7 @@ async function createAuthTokenObject(
   });
 }
 
-async function refreshAccessToken(username, refreshToken) {
+const refreshAccessToken = async (username, refreshToken) => {
   const user = await prisma.user.findUnique({
     where: {
       username: username,
@@ -149,10 +140,42 @@ async function refreshAccessToken(username, refreshToken) {
   return token;
 }
 
+const register = async (username, saltedPassword, salt) => {
+  await validateRegistrationRequest(username);
+  const hashedPasswordWithPepper = getHashedPasswordWithPepper(saltedPassword);
+  return await prisma.user.create({
+    data: {
+      username: username,
+      salt: salt,
+      hashedPassword: hashedPasswordWithPepper,
+    },
+  });
+}
+
+const login = async (username, saltedPassword) => {
+  const passwordIsMatched = await checkPassword(saltedPassword, username);
+
+  if (!passwordIsMatched) {
+    const error = createError(
+      400,
+      `invalid username or password`,
+    );
+    throw error;
+  }
+
+  const token = await createAccessToken(username);
+  if (token === null) {
+    const error = createError(
+      403,
+      `invalid username or password`,
+    );
+    throw error;
+  }
+  return token;
+}
+
 export {
-  getRandomString,
-  getHashedPasswordWithPepper,
-  validatePassword,
-  createAccessToken,
+  register,
+  login,
   refreshAccessToken,
 };
