@@ -1,6 +1,8 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
+import WorldMap from '@/components/WorldMap';
+
 const IndexPage: React.FC<{}> = () => {
   return (
     <>
@@ -10,6 +12,7 @@ const IndexPage: React.FC<{}> = () => {
         <meta name="Let's chill in this McHouse Lounge" content="VicaSpace" />
       </Helmet>
       {/* Page Body */}
+      <WorldMap />
     </>
   );
 };
