@@ -42,7 +42,7 @@ const getUserSaltHandler = async (req, res) => {
 }
 
 const loginHandler = async (req, res) => {
-  const accessToken = await login(req.body.username, req.body.password);
+  const accessToken = await login(req.body.username, req.body.hashedPassword);
   res.status(201).json(accessToken);
 }
 
