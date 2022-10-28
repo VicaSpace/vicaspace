@@ -13,11 +13,6 @@ import {
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 
-import pomodoroConfig from '@/config/pomodoro.json';
-import { calculatePomodoroSession } from '@/lib/pomodoro';
-import { useAppDispatch, useAppSelector } from '@/states/hooks';
-import { setBreak, setSessionId, setStartTime } from '@/states/pomodoro/slice';
-
 interface Member {
   id: number;
   username: string;
@@ -32,6 +27,9 @@ interface SpaceDetail {
   serverTime: string;
   members: Member[];
   timezone: string;
+  pomodoroDuration: number;
+  shortBreakDuration: number;
+  longBreakDuration: number;
 }
 
 const SpaceModal: React.FC<{
@@ -42,25 +40,19 @@ const SpaceModal: React.FC<{
   const [spaceDetail, setSpaceDetail] = useState<SpaceDetail | undefined>();
   const [currentLocalTime, setCurrentLocalTime] = useState<string>('');
 
-  const { sessionId, startTime, isBreak } = useAppSelector(
-    (state) => state.pomodoroSlice
-  );
+  const [isBreak, setBreak] = useState<boolean>(false);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
-  const dispatch = useAppDispatch();
-
   const onSessionEnded = () => {
+    if (typeof spaceDetail === 'undefined') return;
     let interval = 0;
     if (isBreak) {
-      const newSessionId =
-        sessionId > 0 ? sessionId - 1 : pomodoroConfig.length - 1;
-      dispatch(setSessionId(newSessionId));
-      interval = pomodoroConfig[newSessionId].sessionInterval;
+      interval = spaceDetail.pomodoroDuration;
     } else {
-      interval = pomodoroConfig[sessionId].breakInterval;
+      interval = spaceDetail.shortBreakDuration;
     }
-    dispatch(setBreak(!isBreak));
+    setBreak(!isBreak);
     setMinutes(Math.floor(interval / 60));
     setSeconds(interval % 60);
   };
@@ -83,22 +75,16 @@ const SpaceModal: React.FC<{
       })
     );
 
-    dispatch(setStartTime(new Date(spaceDetail.startTime).getTime()));
-    console.log('startTime', spaceDetail.startTime);
-    console.log('serverTime', spaceDetail.serverTime);
-    const sessionInfo = calculatePomodoroSession(
-      startTime,
-      new Date(spaceDetail.serverTime).getTime()
-    );
-    console.log('sessionInfo:', sessionInfo);
-    dispatch(setBreak(sessionInfo.isBreak));
-    dispatch(setSessionId(sessionInfo.sessionId));
-    setMinutes(sessionInfo.minutes);
-    setSeconds(sessionInfo.seconds);
+    const interval = spaceDetail.pomodoroDuration;
+    setBreak(false);
+    setMinutes(Math.floor(interval / 60));
+    setSeconds(interval % 60);
   }, [spaceDetail]);
 
   useEffect(() => {
+    if (typeof spaceDetail === 'undefined') return;
     const pomodorpInterval = setInterval(() => {
+      console.log(isBreak);
       if (seconds === 0 && minutes === 0) {
         clearInterval(pomodorpInterval);
         onSessionEnded();
@@ -110,11 +96,22 @@ const SpaceModal: React.FC<{
         setSeconds(59);
         setMinutes(minutes - 1);
       }
+      setCurrentLocalTime(
+        new Date().toLocaleTimeString('en-US', {
+          timeZone: spaceDetail.timezone,
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      );
     }, 1000);
     return () => {
       clearInterval(pomodorpInterval);
     };
   });
+
+  useEffect(() => {
+    console.log(isBreak);
+  }, [isBreak]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>

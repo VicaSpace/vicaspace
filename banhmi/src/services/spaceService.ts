@@ -44,6 +44,9 @@ export const getSpaceDetails = async (spaceId) => {
         urlVideo: true,
         urlSpotify: true,
         timezone: true,
+        pomodoroDuration: true,
+        shortBreakDuration: true,
+        longBreakDuration: true,
       },
     });
     return spaceDetails;
