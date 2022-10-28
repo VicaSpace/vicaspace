@@ -10,7 +10,7 @@ import {
   fetchAllSpaces,
 } from '@/states/spaces/slice';
 
-const WorldMap: React.FC<{}> = () => {
+const WorldMapTile: React.FC<{}> = () => {
   const spaceState: SpaceState = useAppSelector((state) => state.spacesSlice);
   const dispatch = useAppDispatch();
 
@@ -39,4 +39,4 @@ const WorldMap: React.FC<{}> = () => {
   );
 };
 
-export default WorldMap;
+export default WorldMapTile;

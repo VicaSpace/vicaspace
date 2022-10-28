@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-import WorldMap from '@/components/WorldMap/WorldMap';
+import WorldMapTile from '@/components/WorldMap/WorldMapTile';
 
 const HomePage: React.FC<{}> = () => {
   return (
@@ -12,7 +12,7 @@ const HomePage: React.FC<{}> = () => {
         <meta name="Let's chill in this McHouse Lounge" content="VicaSpace" />
       </Helmet>
       {/* Page Body */}
-      <WorldMap />
+      <WorldMapTile />
     </>
   );
 };
