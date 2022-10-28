@@ -1,4 +1,4 @@
-import { createError } from 'http-errors';
+import createError from 'http-errors';
 import { sha256 } from 'js-sha256';
 import jwt from 'jsonwebtoken';
 
