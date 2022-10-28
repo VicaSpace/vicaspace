@@ -7,9 +7,9 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import DrawerComponent from '@/components/DrawerComponent';
 import Pomodoro from '@/components/Pomodoro/Pomodoro';
 import WebSocketProvider from '@/modules/ws/WebSocketProvider';
-import IndexPage from '@/pages';
 import AboutPage from '@/pages/about';
 import ErrorPage from '@/pages/error';
+import IndexPage from '@/pages/home';
 import { store } from '@/states/store';
 
 /// Routes config

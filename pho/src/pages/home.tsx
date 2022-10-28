@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 
 import WorldMap from '@/components/WorldMap/WorldMap';
 
-const IndexPage: React.FC<{}> = () => {
+const HomePage: React.FC<{}> = () => {
   return (
     <>
       {/* Meta section */}
@@ -17,4 +17,4 @@ const IndexPage: React.FC<{}> = () => {
   );
 };
 
-export default IndexPage;
+export default HomePage;
