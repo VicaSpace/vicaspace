@@ -7,10 +7,10 @@ import { calculatePomodoroSession } from '@/lib/pomodoro';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
 import { setBreak, setSessionId, setStartTime } from '@/states/pomodoro/slice';
 
-import sessionIcon from '../PomodoroComponent/session.png';
-import './PomodoroComponent.css';
+import sessionIcon from '../Pomodoro/session.png';
+import './Pomodoro.css';
 
-const PomodoroComponent: React.FC<{
+const Pomodoro: React.FC<{
   timestamp: number;
   serverTime: number;
 }> = ({ timestamp, serverTime }) => {
@@ -106,4 +106,4 @@ const PomodoroComponent: React.FC<{
   );
 };
 
-export default PomodoroComponent;
+export default Pomodoro;

@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import DrawerComponent from '@/components/DrawerComponent';
-import PomodoroComponent from '@/components/PomodoroComponent/PomodoroComponent';
+import Pomodoro from '@/components/Pomodoro/Pomodoro';
 import WebSocketProvider from '@/modules/ws/WebSocketProvider';
 import IndexPage from '@/pages';
 import AboutPage from '@/pages/about';
@@ -25,9 +25,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/pomo',
-    element: (
-      <PomodoroComponent timestamp={1666794382000} serverTime={Date.now()} />
-    ),
+    element: <Pomodoro timestamp={1666794382000} serverTime={Date.now()} />,
   },
 ]);
 
