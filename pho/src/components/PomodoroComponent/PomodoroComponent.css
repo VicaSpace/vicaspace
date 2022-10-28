@@ -1,34 +1,34 @@
 .handle {
-    width: 200px;
-    height: 100px;
-    background-color: rgb(210, 218, 255);
+  width: 200px;
+  height: 100px;
+  background-color: rgb(210, 218, 255);
 }
 
 .sessionTitle {
-    font-family: "Lucida Console", "Courier New", monospace;
-    padding-left: 10px;
-    padding-top: 5px;
-    margin-right: 10px;
+  font-family: 'Lucida Console', 'Courier New', monospace;
+  padding-left: 10px;
+  padding-top: 5px;
+  margin-right: 10px;
 }
 
 .sessionIcon {
-    margin-left: 5px;
-    margin-top: 5px;
+  margin-left: 5px;
+  margin-top: 5px;
 }
 
 .hr {
-    border: 1px solid black;
-    margin-left: 5px;
-    margin-right: 5px;
+  border: 1px solid black;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 .countdownTimer {
-    font-family: "Lucida Console", "Courier New", monospace;
-    font-size: 28px;
-    font-weight: bold;
+  font-family: 'Lucida Console', 'Courier New', monospace;
+  font-size: 28px;
+  font-weight: bold;
 }
 
 .sessionName {
-    font-family: "Lucida Console", "Courier New", monospace;
-    font-size: 14px;
+  font-family: 'Lucida Console', 'Courier New', monospace;
+  font-size: 14px;
 }
