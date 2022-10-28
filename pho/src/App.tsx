@@ -9,14 +9,14 @@ import Pomodoro from '@/components/Pomodoro/Pomodoro';
 import WebSocketProvider from '@/modules/ws/WebSocketProvider';
 import AboutPage from '@/pages/about';
 import ErrorPage from '@/pages/error';
-import IndexPage from '@/pages/home';
+import HomePage from '@/pages/home';
 import { store } from '@/states/store';
 
 /// Routes config
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <IndexPage />,
+    element: <HomePage />,
     errorElement: <ErrorPage />,
   },
   {
