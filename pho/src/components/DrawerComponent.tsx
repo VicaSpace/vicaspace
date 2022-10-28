@@ -43,7 +43,7 @@ function DrawerComponent() {
   };
 
   return (
-    <Box zIndex={99} position="absolute">
+    <Box top={0} zIndex={99} position="absolute">
       <Center width="40px" height="100vh">
         <IconButton
           marginLeft="15px"
