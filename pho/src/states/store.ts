@@ -5,6 +5,7 @@ import authSlice from '@/states/auth/slice';
 import counterSlice from '@/states/counter/slice';
 import pomodoroSlice from '@/states/pomodoro/slice';
 import spacesSlice from '@/states/spaces/slice';
+import timeSlice from '@/states/time/slice';
 
 /* Main Redux Global Store configurations */
 export const store = configureStore({
@@ -15,6 +16,7 @@ export const store = configureStore({
     pomodoroSlice,
     authSlice,
     spacesSlice,
+    timeSlice,
   },
 });
 
