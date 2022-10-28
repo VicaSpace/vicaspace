@@ -43,7 +43,7 @@ export const getSpaceDetails = async (spaceId) => {
         },
         urlVideo: true,
         urlSpotify: true,
-        timezone: true
+        timezone: true,
       },
     });
     return spaceDetails;
