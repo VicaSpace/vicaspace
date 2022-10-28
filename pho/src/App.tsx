@@ -7,6 +7,7 @@ import DrawerComponent from '@/components/DrawerComponent';
 import WebSocketProvider from '@/modules/ws/WebSocketProvider';
 import AppRouter from '@/routes/AppRouter';
 import { store } from '@/states/store';
+import { theme } from '@/theme';
 
 const App: React.FC<{}> = () => {
   return (
@@ -14,7 +15,7 @@ const App: React.FC<{}> = () => {
       <HelmetProvider>
         <Provider store={store}>
           <WebSocketProvider>
-            <ChakraProvider>
+            <ChakraProvider theme={theme}>
               <AppRouter />
               <DrawerComponent />
             </ChakraProvider>
