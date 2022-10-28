@@ -4,13 +4,13 @@ import {
   Box,
   Center,
   Drawer,
-  DrawerCloseButton,
   DrawerContent,
   IconButton,
   useDisclosure,
 } from '@chakra-ui/react';
 import { useEffect } from 'react';
 
+import ChatArea from '@/components/ChatArea/ChatArea';
 import SignInComponent from '@/components/SignInContainer/SignInComponent';
 import { getUserInfoViaAPI } from '@/lib/apis/auth';
 import { signIn, signOut } from '@/states/auth/slice';
@@ -22,14 +22,15 @@ function DrawerComponent() {
   const isAuthenticated = useAppSelector(
     (state) => state.authSlice.isAuthenticated
   );
+  const username = useAppSelector((state) => state.authSlice.username);
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
     if (!isAuthenticated && accessToken != null) {
       getUserInfoViaAPI(accessToken)
         .then((response) => {
-          const { id } = response.data;
-          dispatch(signIn(id.toString()));
+          const user = response.data;
+          dispatch(signIn(user));
         })
         .catch((err) => {
           console.log(err);
@@ -39,7 +40,9 @@ function DrawerComponent() {
   }, []);
 
   const renderContent = () => {
-    return !isAuthenticated && <SignInComponent />;
+    // return !isAuthenticated && <SignInComponent />;
+    if (!isAuthenticated) return <SignInComponent />;
+    else return <ChatArea username={username} />;
   };
 
   return (
