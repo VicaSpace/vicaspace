@@ -8,9 +8,9 @@ import './ChatContainer.css';
 
 const ChatContainer: React.FC<{ username: string }> = ({ username }) => {
   return (
-    <Flex w="100%" h="68%" mt="7" justify="center" align="center">
+    <Flex w="100%" h="68%" mt="5" justify="center" align="center">
       <Flex
-        w="90%"
+        w="96%"
         h="100%"
         flexDir="column"
         justify="center"

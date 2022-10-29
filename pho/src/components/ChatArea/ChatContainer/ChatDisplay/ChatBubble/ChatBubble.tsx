@@ -20,6 +20,7 @@ const ChatBubble: React.FC<{
           my="1"
           p="3"
           mt="2"
+          borderRadius="10px"
         >
           <Text fontSize="13">{message}</Text>
         </Flex>
@@ -30,7 +31,7 @@ const ChatBubble: React.FC<{
       <Flex w="100%">
         <Avatar
           name="Computer"
-          src="https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
+          src={`https://i.pravatar.cc/150?u=${username}`}
           bg="blue.300"
         ></Avatar>
         <Flex
@@ -43,6 +44,7 @@ const ChatBubble: React.FC<{
           ml="2"
           mt="2"
           fontSize="13"
+          borderRadius="10px"
         >
           <Text>
             <Text fontWeight="bold">{username}:</Text>

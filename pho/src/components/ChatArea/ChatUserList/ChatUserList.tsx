@@ -1,14 +1,34 @@
+import { AddIcon } from '@chakra-ui/icons';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 
-import { Button, Flex } from '@chakra-ui/react';
+import { Avatar, Button, Flex, SimpleGrid, Text } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 
 import UserCell from '@/components/ChatArea/ChatUserList/UserCell/UserCell';
 
 const ChatUserList: React.FC<{ username: string }> = ({ username }) => {
+  const URL = process.env.REACT_APP_BACKEND_URL ?? '';
+  const [spaceUserList, setSpaceUserList] = useState<
+    Array<{ id: number; username: string }>
+  >([]);
+
+  useEffect(() => {
+    const fetchSpaceInfo = async (spaceId: number) => {
+      const res = await axios.get(`${URL}/api/spaces/${spaceId}`);
+      const userList = res.data.members;
+      setSpaceUserList(userList);
+    };
+
+    fetchSpaceInfo(1).catch((e) => {
+      console.log(e);
+    });
+  }, []);
+
   return (
-    <Flex w="100%" h="28%" justify="center" align="center">
+    <Flex w="100%" h="30%" justify="center" align="center">
       <Flex
-        w="90%"
+        w="96%"
         h="100%"
         flexDir="column"
         justify="center"
@@ -16,13 +36,30 @@ const ChatUserList: React.FC<{ username: string }> = ({ username }) => {
         backgroundColor="#D2DAFF"
         mt="5"
       >
-        <Flex w="95%" h="75%" justify="center" align="center">
-          <UserCell />
-          <UserCell />
-          <UserCell />
-          <UserCell />
-          <UserCell />
-        </Flex>
+        <SimpleGrid
+          w="90%"
+          h="80%"
+          minChildWidth="70px"
+          gap="5"
+          alignItems="center"
+          justifyItems="center"
+        >
+          {spaceUserList.slice(0, 9).map((member) => {
+            return <UserCell key={member.id} username={member.username} />;
+          })}
+          {spaceUserList.length > 9 ? (
+            <Avatar
+              size="lg"
+              alignItems="center"
+              icon={<AddIcon fontSize="12" />}
+              bg="#B1B2FF"
+            >
+              <Text ml="1" fontSize="22">
+                {spaceUserList.length - 9}
+              </Text>
+            </Avatar>
+          ) : null}
+        </SimpleGrid>
         <Flex w="95%" h="20%" justifyContent="flex-end" mt="2">
           <Button
             bg="#B1B2FF"

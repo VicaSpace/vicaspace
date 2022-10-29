@@ -1,16 +1,21 @@
-import { Avatar, Flex, Text, VStack } from '@chakra-ui/react';
+import PropTypes from 'prop-types';
 
-const UserCell: React.FC = () => {
+import { Avatar, Text, VStack } from '@chakra-ui/react';
+
+const UserCell: React.FC<{ username: string }> = ({ username }) => {
   return (
-    <VStack w="80%">
+    <VStack>
       <Avatar
-        name="Computer"
-        src="https://avataaars.io/?avatarStyle=Transparent&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light"
+        src={`https://i.pravatar.cc/150?u=${username}`}
         bg="blue.300"
       ></Avatar>
-      <Text>Test</Text>
+      <Text>{username}</Text>
     </VStack>
   );
+};
+
+UserCell.propTypes = {
+  username: PropTypes.string.isRequired,
 };
 
 export default UserCell;
