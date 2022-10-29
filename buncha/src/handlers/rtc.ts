@@ -219,6 +219,8 @@ export const registerRtcHandlers = (
       rtpParameters: consumer?.rtpParameters,
     };
 
+    logger.info(`Consumer (id: ${consumer.id}) created ✅`);
+
     callback({
       params,
     });

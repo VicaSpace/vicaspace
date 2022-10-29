@@ -72,6 +72,8 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
   const localAudioRef = useRef<HTMLAudioElement | null>(null);
   const peerAudioRefs = useRef<PeerAudioRefs>({});
 
+  // TODO: Remember to deal with mute/unmute
+
   // On component unmount
   useEffect(() => {
     if (!spaceSpeakerId || !audioParams) return;
