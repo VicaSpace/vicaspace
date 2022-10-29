@@ -14,10 +14,13 @@ const SpacePage: React.FC<{}> = () => {
   // WebSocket
   const { socket, isConnected } = useContext(WebSocketContext);
 
+  // Space Slice
   const { data, error, status } = useAppSelector(
     (state) => state.spaceDetailSlice
   );
-  const { name, id: spaceId } = data;
+  const { name } = data;
+
+  // SpaceSpeaker Slice
 
   /**
    * Assume that you'll be assigned the pageId when u first access
@@ -32,12 +35,6 @@ const SpacePage: React.FC<{}> = () => {
     // fetch Space here
     void dispatch(fetchSpaceDetail(Number(id)));
   }, []);
-
-  useEffect(() => {
-    if (data) {
-      console.log('data fetched:', data);
-    }
-  }, [data]);
 
   return (
     <div>

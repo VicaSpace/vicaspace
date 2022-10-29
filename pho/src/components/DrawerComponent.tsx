@@ -11,7 +11,7 @@ import {
 import { useEffect } from 'react';
 
 import SignInComponent from '@/components/SignInContainer/SignInComponent';
-import SpaceSpeakerSection from '@/components/SpaceSpeakerSection';
+import SpaceSpeakerSection from '@/components/SpaceSpeaker/SpaceSpeakerSection';
 import { getUserInfoViaAPI } from '@/lib/apis/auth';
 import { signIn, signOut } from '@/states/auth/slice';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
@@ -49,14 +49,13 @@ function DrawerComponent() {
     }
     // Space ID is allocated or not
     if (spaceId) {
-      console.log('Joined SpaceId: ', spaceId);
       return <SpaceSpeakerSection />;
     }
     return !isAuthenticated && <SignInComponent />;
   };
 
   return (
-    <Box zIndex={99} position="absolute">
+    <Box top={0} zIndex={99} position="absolute">
       <Center width="40px" height="100vh">
         <IconButton
           marginLeft="15px"

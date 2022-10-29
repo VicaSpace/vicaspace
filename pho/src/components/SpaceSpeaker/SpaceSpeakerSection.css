@@ -43,4 +43,20 @@
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
   background: #b1b2ff;
+  /* Display Flex */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Font props */
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 25px;
+  color: #ffffff;
+  margin-bottom: 14px;
+}
+
+.space-speaker-action-btn:hover {
+  background: rgb(139, 140, 211);
+  cursor: pointer;
 }

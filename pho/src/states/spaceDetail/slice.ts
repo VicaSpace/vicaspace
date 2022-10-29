@@ -38,7 +38,6 @@ export const fetchSpaceDetail = createAsyncThunk<
   let spaceDetail: SpaceDetail | null = null;
   try {
     spaceDetail = await getSpaceDetail(id);
-    console.log('fetched space detail api:', spaceDetail);
   } catch (err) {
     // eslint-disable-next-line no-console
     console.log(err);
@@ -62,7 +61,6 @@ const spaceDetailSlice = createSlice({
     builder.addCase(fetchSpaceDetail.fulfilled, (state, action) => {
       state.status = 'fulfilled';
       state.data = action.payload ?? {};
-      console.log('state.data:', state.data);
     });
     builder.addCase(fetchSpaceDetail.rejected, (state, action) => {
       state.status = 'rejected';
