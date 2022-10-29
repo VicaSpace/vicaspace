@@ -12,6 +12,7 @@ import {
   ModalOverlay,
 } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Member {
   id: number;
@@ -44,8 +45,10 @@ const SpaceModal: React.FC<{
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
+  const navigate = useNavigate();
+
   const onSessionEnded = () => {
-    if (typeof spaceDetail === 'undefined') return;
+    if (!spaceDetail) return;
     let interval = 0;
     if (isBreak) {
       interval = spaceDetail.pomodoroDuration;
@@ -82,11 +85,10 @@ const SpaceModal: React.FC<{
   }, [spaceDetail]);
 
   useEffect(() => {
-    if (typeof spaceDetail === 'undefined') return;
-    const pomodorpInterval = setInterval(() => {
-      console.log(isBreak);
+    if (!spaceDetail) return;
+    const pomodoroInterval = setInterval(() => {
       if (seconds === 0 && minutes === 0) {
-        clearInterval(pomodorpInterval);
+        clearInterval(pomodoroInterval);
         onSessionEnded();
         return;
       }
@@ -105,13 +107,9 @@ const SpaceModal: React.FC<{
       );
     }, 1000);
     return () => {
-      clearInterval(pomodorpInterval);
+      clearInterval(pomodoroInterval);
     };
   });
-
-  useEffect(() => {
-    console.log(isBreak);
-  }, [isBreak]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -185,7 +183,7 @@ const SpaceModal: React.FC<{
             <ModalFooter display="flex" justifyContent="center">
               <Button
                 color="black"
-                onClick={onClose}
+                onClick={() => navigate(`/spaces/${spaceId}`)}
                 background="#B1B2FF"
                 pl="10"
                 pr="10"

@@ -12,7 +12,7 @@ const SpacePage: React.FC<{}> = () => {
   const dispatch = useAppDispatch();
 
   // WebSocket
-  const { socket, isConnected } = useContext(WebSocketContext);
+  const { socket } = useContext(WebSocketContext);
 
   // Space Slice
   const { data, error, status } = useAppSelector(
@@ -43,7 +43,6 @@ const SpacePage: React.FC<{}> = () => {
       </Heading>
       <p>#Bg-Video-Component</p>
       <p>Socket ID: {socket.id}</p>
-      <p>Socket Connection: {isConnected ? 'OK' : 'NO'}</p>
     </div>
   );
 };
