@@ -7,4 +7,6 @@ module.exports = {
   rootDir: './src',
   testEnvironment: 'node',
   moduleNameMapper,
+  collectCoverage: true,
+  collectCoverageFrom: ["**/*.ts"]
 };

@@ -28,6 +28,7 @@ model Space {
   updatedAt          DateTime        @updatedAt @map("updated_at")
   members            User[]          @relation("space")
   categories         SpaceCategory[] @relation("category")
+  timezone           String
 
   @@map("spaces")
 }

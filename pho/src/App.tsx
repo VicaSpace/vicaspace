@@ -8,16 +8,16 @@ import DrawerComponent from '@/components/DrawerComponent';
 import Pomodoro from '@/components/Pomodoro/Pomodoro';
 import Video from '@/components/VideoContainer/Video';
 import WebSocketProvider from '@/modules/ws/WebSocketProvider';
-import IndexPage from '@/pages';
 import AboutPage from '@/pages/about';
 import ErrorPage from '@/pages/error';
+import HomePage from '@/pages/home';
 import { store } from '@/states/store';
 
 /// Routes config
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <IndexPage />,
+    element: <HomePage />,
     errorElement: <ErrorPage />,
   },
   {

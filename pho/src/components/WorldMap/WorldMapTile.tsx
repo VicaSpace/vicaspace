@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
-import ReactMapGL, { Marker } from 'react-map-gl';
+import ReactMapGL from 'react-map-gl';
 
 import DrawerComponent from '@/components/DrawerComponent';
+import CustomMarker from '@/components/WorldMap/CustomMarker/CustomMarker';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
 import {
   SpaceLocation,
@@ -9,11 +10,8 @@ import {
   fetchAllSpaces,
 } from '@/states/spaces/slice';
 
-const WorldMap: React.FC<{}> = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-  const spaceState: SpaceState = useAppSelector(
-    (state) => state.spacesSlice
-  ) as SpaceState;
+const WorldMapTile: React.FC<{}> = () => {
+  const spaceState: SpaceState = useAppSelector((state) => state.spacesSlice);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -27,22 +25,18 @@ const WorldMap: React.FC<{}> = () => {
         initialViewState={{
           longitude: 105.8067,
           latitude: 15.9031,
-          zoom: 1,
+          zoom: 3.5,
         }}
         style={{ height: '100vh' }}
         mapStyle="mapbox://styles/mapbox/navigation-day-v1"
         mapboxAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
       >
         {spaceState.data?.map((space: SpaceLocation) => (
-          <Marker
-            key={space.name}
-            latitude={space.latitude}
-            longitude={space.longitude}
-          ></Marker>
+          <CustomMarker key={space.id} space={space} />
         ))}
       </ReactMapGL>
     </>
   );
 };
 
-export default WorldMap;
+export default WorldMapTile;
