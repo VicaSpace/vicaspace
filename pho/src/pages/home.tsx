@@ -1,9 +1,9 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-import WorldMap from '@/components/WorldMap';
+import WorldMapTile from '@/components/WorldMap/WorldMapTile';
 
-const IndexPage: React.FC<{}> = () => {
+const HomePage: React.FC<{}> = () => {
   return (
     <>
       {/* Meta section */}
@@ -12,9 +12,9 @@ const IndexPage: React.FC<{}> = () => {
         <meta name="Let's chill in this McHouse Lounge" content="VicaSpace" />
       </Helmet>
       {/* Page Body */}
-      <WorldMap />
+      <WorldMapTile />
     </>
   );
 };
 
-export default IndexPage;
+export default HomePage;

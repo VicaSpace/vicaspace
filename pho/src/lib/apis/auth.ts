@@ -15,7 +15,7 @@ export const signInViaAPI = async (
 };
 
 export const getSaltViaAPI = async (username: string) => {
-  const res = await axios.get(`${URL}/api/auth/${username}/get_salt`);
+  const res = await axios.get(`${URL}/api/auth/users/${username}/salt`);
   return res.data.salt;
 };
 

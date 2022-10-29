@@ -29,6 +29,7 @@
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
     "express-async-handler": "^1.2.0",
+    "http-errors": "^2.0.0",
     "httpolyglot": "^0.1.2",
     "joi": "^17.6.3",
     "js-sha256": "^0.9.0",

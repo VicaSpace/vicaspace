@@ -3,6 +3,7 @@ import logger from 'redux-logger';
 
 import authSlice from '@/states/auth/slice';
 import counterSlice from '@/states/counter/slice';
+import pomodoroSlice from '@/states/pomodoro/slice';
 import spacesSlice from '@/states/spaces/slice';
 
 /* Main Redux Global Store configurations */
@@ -11,6 +12,7 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
   reducer: {
     counterSlice,
+    pomodoroSlice,
     authSlice,
     spacesSlice,
   },
