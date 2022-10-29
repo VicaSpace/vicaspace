@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import requireAuth from '@/middlewares/authenticate';
+
+import authenticate from '@/middlewares/auth';
 import {
   getSaltHandler,
   getUserInfoHandler,
@@ -8,14 +9,17 @@ import {
   refreshAccessTokenHandler,
   registerHandler,
 } from '@/controllers/auth';
+import validateRegisterRequest from '@/middlewares/schemas/registrationSchema';
+import validateLoginFormRequest from '@/middlewares/schemas/loginFormSchema';
+import asyncHandler from 'express-async-handler';
 
 const router = Router();
 
-router.get('/get_salt', getSaltHandler);
-router.post('/register', registerHandler);
-router.get('/:username/get_salt', getUserSaltHandler);
-router.post('/login', loginHandler);
-router.post('/refresh', refreshAccessTokenHandler);
-router.get('/info', requireAuth, getUserInfoHandler);
+router.get('/salt', asyncHandler(getSaltHandler));
+router.post('/register', validateRegisterRequest, asyncHandler(registerHandler));
+router.get('/users/:username/salt', asyncHandler(getUserSaltHandler));
+router.post('/login', validateLoginFormRequest, asyncHandler(loginHandler));
+router.post('/refresh', asyncHandler(refreshAccessTokenHandler));
+router.get('/info', authenticate, asyncHandler(getUserInfoHandler));
 
 export { router as authRouter };

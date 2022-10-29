@@ -1,7 +1,7 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
-import WorldMap from '@/components/WorldMap';
+import WorldMapTile from '@/components/WorldMap/WorldMapTile';
 
 const HomePage: React.FC<{}> = () => {
   return (
@@ -9,9 +9,10 @@ const HomePage: React.FC<{}> = () => {
       {/* Meta section */}
       <Helmet>
         <title>VicaSpace - Chill lounge</title>
-        <meta name="Let's chill in this VicaSpace Lounge" content="VicaSpace" />
+        <meta name="Let's chill in this McHouse Lounge" content="VicaSpace" />
       </Helmet>
-      <WorldMap />
+      {/* Page Body */}
+      <WorldMapTile />
     </>
   );
 };

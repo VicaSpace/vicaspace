@@ -7,7 +7,7 @@ import {
   getAllFriendRequestsHandler,
   rejectFriendRequestHandler,
 } from '@/controllers/friendRequestController';
-import checkFriendRequest from '@/middlewares/friendRequestSchema';
+import checkFriendRequest from '@/middlewares/schemas/friendRequestSchema';
 
 const router = Router();
 

@@ -56,6 +56,7 @@ async function createSpaces() {
       longBreakDuration: 1800,
       urlVideo: 'https://www.youtube.com/watch?v=HbHAMzv1bUs',
       urlSpotify: '',
+      timezone: 'Asia/Bangkok',
     },
   });
   await prisma.space.upsert({
@@ -72,6 +73,7 @@ async function createSpaces() {
       longBreakDuration: 1800,
       urlVideo: 'https://www.youtube.com/watch?v=NtaQfZ1Jaf0',
       urlSpotify: '',
+      timezone: 'Asia/Bangkok',
     },
   });
 }

@@ -1,65 +1,31 @@
-import { Request, Response } from 'express';
-
 import { prisma } from '@/db';
 import {
-  createAccessToken,
-  getHashedPasswordWithPepper,
-  getRandomString,
+  login,
   refreshAccessToken,
-  validatePassword,
+  register,
 } from '@/services/auth';
+import { getRandomString } from '@/utils/utilities';
 
 const SALT_LENGTH = 50;
 
-async function registerHandler(req: Request, res: Response) {
-  // TODO: middleware to check required fields and its type
-  const username = req.body.username;
-  // TODO: utils to return error codes
-  if (username === null)
-    return res.status(400).json({
-      error: 'username is required',
-    });
-
-  let user = await prisma.user.findUnique({
-    where: {
-      username: username,
-    },
-  });
-  if (user != null)
-    return res.status(400).json({
-      error: 'username already taken',
-    });
-
-  const salt = req.body.salt;
-  const hashedPassword = req.body.hashedPassword;
-  if (salt === null || hashedPassword === null)
-    return res.status(400).json({
-      error: 'salt and hashedPassword is required',
-    });
-
-  const hashedPasswordWithPepper = getHashedPasswordWithPepper(hashedPassword);
-  user = await prisma.user.create({
-    data: {
-      username: username,
-      salt: salt,
-      hashedPassword: hashedPasswordWithPepper,
-    },
-  });
+const registerHandler = async (req, res) => {
+  const user = await register(req.body.username, req.body.hashedPassword, req.body.salt);
   res.status(201).json({
     id: user.id,
-    username: username,
+    username: user.username,
   });
 }
 
 // Get random salt for register
-async function getSaltHandler(req: Request, res: Response) {
+const getSaltHandler = async (_req, res) => {
   const salt = getRandomString(SALT_LENGTH);
   res.status(200).json({ salt: salt });
 }
 
-async function getUserSaltHandler(req: Request, res: Response) {
+const getUserSaltHandler = async (req, res) => {
   const username = req.params.username;
   const user = await prisma.user.findUnique({
+    select: { salt: true },
     where: {
       username: username,
     },
@@ -75,22 +41,12 @@ async function getUserSaltHandler(req: Request, res: Response) {
   });
 }
 
-async function loginHandler(req: Request, res: Response) {
-  const username = req.body.username;
-  const hashedPassword = req.body.hashedPassword;
-  const isPasswordValid = await validatePassword(hashedPassword, username);
-
-  if (isPasswordValid) {
-    const token = await createAccessToken(username);
-    if (token === null)
-      return res.status(400).json({ error: 'Invalid username or password' });
-    res.status(200).json(token);
-  } else {
-    res.status(403).json({ error: 'Invalid username or password' });
-  }
+const loginHandler = async (req, res) => {
+  const accessToken = await login(req.body.username, req.body.hashedPassword);
+  res.status(201).json(accessToken);
 }
 
-async function refreshAccessTokenHandler(req: Request, res: Response) {
+async function refreshAccessTokenHandler(req, res) {
   const username = req.body.username;
   const refreshToken = req.body.refreshToken;
 
@@ -101,7 +57,7 @@ async function refreshAccessTokenHandler(req: Request, res: Response) {
   return res.status(200).json(newToken);
 }
 
-async function getUserInfoHandler(req: Request, res: Response) {
+const getUserInfoHandler = async (req, res) => {
   return res.status(200).json(req.user);
 }
 
