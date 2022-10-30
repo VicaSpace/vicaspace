@@ -69,6 +69,7 @@ function DrawerComponent() {
       <Drawer
         id="drawer-container"
         isOpen={isOpen}
+        closeOnOverlayClick={false}
         placement="left"
         onClose={onClose}
         size="md"

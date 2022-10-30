@@ -3,7 +3,7 @@ import { Producer } from 'mediasoup/node/lib/Producer';
 import { Router } from 'mediasoup/node/lib/Router';
 import { WebRtcTransport } from 'mediasoup/node/lib/WebRtcTransport';
 
-export interface SpaceCollection {
+export interface SpaceSpeakerCollection {
   [id: string]: {
     router: Router;
   };
@@ -12,7 +12,7 @@ export interface SpaceCollection {
 export interface SocketCollection {
   [id: string]: {
     id: string;
-    spaceId?: number;
+    spaceSpeakerId?: number;
   };
 }
 
@@ -21,7 +21,7 @@ export interface TransportCollection {
     id: string;
     transport: WebRtcTransport;
     socketId: string;
-    spaceId: number;
+    spaceSpeakerId: number;
   };
 }
 
@@ -30,7 +30,7 @@ export interface ProducerCollection {
     id: string;
     producer: Producer;
     socketId: string;
-    spaceId: number;
+    spaceSpeakerId: number;
   };
 }
 
@@ -39,6 +39,6 @@ export interface ConsumerCollection {
     id: string;
     consumer: Consumer;
     socketId: string;
-    spaceId: number;
+    spaceSpeakerId: number;
   };
 }

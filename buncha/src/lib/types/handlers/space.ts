@@ -1,25 +1,25 @@
 export interface JoinPayload {
-  spaceId: number;
+  spaceSpeakerId: number;
   producerId: string;
 }
 
 // type LeavePayload = JoinPayload;
 
-export interface GetParticipantsPayload {
-  spaceId: number;
+export interface GetSpeakersPayload {
+  spaceSpeakerId: number;
 }
 
-export interface ParticipantDetails {
+export interface SpeakerDetails {
   [id: string]: {
     id: string;
     producerId: string;
   };
 }
 
-export interface GetParticipantsResponse {
-  participants: ParticipantDetails;
+export interface GetSpeakersResponse {
+  speakers: SpeakerDetails;
 }
 
-export interface GetParticipantsErrorResponse {
+export interface GetSpeakersErrorResponse {
   error: string;
 }

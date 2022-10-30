@@ -1,10 +1,10 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { ParticipantDetails } from '@/types/spaceSpeaker';
+import { SpeakerDetails } from '@/types/spaceSpeaker';
 
 interface SpaceSpeakerData {
   spaceSpeakerId: number;
-  participants: ParticipantDetails;
+  speakers: SpeakerDetails;
 }
 
 interface SpaceSpeakerState {
@@ -49,23 +49,23 @@ const spaceSpeakerSlice = createSlice({
      * @param state State
      * @param action Action
      */
-    initParticipants(state, action: PayloadAction<ParticipantDetails>) {
-      state.data.participants = action.payload;
+    initSpeakers(state, action: PayloadAction<SpeakerDetails>) {
+      state.data.speakers = action.payload;
     },
 
     /**
-     * Add Participant to the current SpaceSpeaker section
+     * Insert a new Speaker to the current SpaceSpeaker section
      * @param state State
      * @param action Action
      */
-    addParticipant(
+    insertSpeaker(
       state,
       action: PayloadAction<{ id: string; producerId: string }>
     ) {
       console.log('Adding a new participant... ⏰');
       const { id, producerId } = action.payload;
-      state.data.participants = {
-        ...state.data.participants,
+      state.data.speakers = {
+        ...state.data.speakers,
         [id]: {
           id,
           producerId,
@@ -77,8 +77,8 @@ const spaceSpeakerSlice = createSlice({
 
 export const {
   joinSpaceSpeaker,
-  initParticipants,
-  addParticipant,
+  initSpeakers,
+  insertSpeaker,
   leaveSpaceSpeaker,
 } = spaceSpeakerSlice.actions;
 

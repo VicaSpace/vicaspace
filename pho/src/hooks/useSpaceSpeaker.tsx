@@ -7,29 +7,32 @@ import { useToast } from '@chakra-ui/react';
 import { createRef, useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
+import config from '@/config';
 import { countObjectKeys } from '@/lib/object';
 import { WebSocketContext } from '@/modules/ws/WebSocketProvider';
 import {
-  addParticipant,
-  initParticipants,
+  initSpeakers,
+  insertSpeaker,
   leaveSpaceSpeaker,
 } from '@/states/spaceSpeaker/slice';
 import {
   AudioParams,
   ClientConsumeResponse,
   CreateTransportResponse,
-  GetParticipantsResponse,
   GetRTPCapabilitiesData,
-  ParticipantDetails,
+  GetSpeakersResponse,
   PeerAudioRefs,
   RecentUserJoinPayload,
   RecentUserLeavePayload,
   RecvTransports,
+  SpeakerDetails,
 } from '@/types/spaceSpeaker';
+
+const { handlerNamespace } = config;
 
 export const useSpaceSpeaker = (
   spaceSpeakerId?: number,
-  participants?: ParticipantDetails
+  speakers?: SpeakerDetails
 ) => {
   const { socket } = useContext(WebSocketContext);
   const toast = useToast();
@@ -56,8 +59,8 @@ export const useSpaceSpeaker = (
     if (!spaceSpeakerId || !audioParams) return;
     return () => {
       // Offload socket on unmount
-      socket.off('space:recent-user-join');
-      socket.off('space:recent-user-leave');
+      socket.off(`${handlerNamespace.spaceSpeaker}:recent-user-join`);
+      socket.off(`${handlerNamespace.spaceSpeaker}:recent-user-leave`);
 
       toast({
         title: `Leave SpaceSpeaker`,
@@ -76,9 +79,9 @@ export const useSpaceSpeaker = (
   // On component initial phase
   useEffect(() => {
     if (!spaceSpeakerId || !audioParams) return;
-    // Handle recent user join to space
+    // Handle recent user join to SpaceSpeaker
     socket.on(
-      'space:recent-user-join',
+      `${handlerNamespace.spaceSpeaker}:recent-user-join`,
       ({ socketId, producerId }: RecentUserJoinPayload) => {
         // Skip client ID
         if (socket.id === socketId) return;
@@ -87,7 +90,7 @@ export const useSpaceSpeaker = (
           `A recent user (sid: ${socketId}) (with pId: ${producerId}) has joined.`
         );
 
-        // Add new audio ref for incoming participants
+        // Add new audio ref for incoming speakers
         peerAudioRefs.current[socketId] = {
           id: socketId,
           ref: createRef<HTMLAudioElement>(),
@@ -100,9 +103,9 @@ export const useSpaceSpeaker = (
         );
         createRecvTransport(socketId).catch(console.error);
 
-        // Add newcomer to the participants state
+        // Add newcomer to the speaker state
         dispatch(
-          addParticipant({
+          insertSpeaker({
             id: socketId,
             producerId,
           })
@@ -112,8 +115,14 @@ export const useSpaceSpeaker = (
 
     /// Handle latest user leave space
     socket.on(
-      'space:recent-user-leave',
+      `${handlerNamespace.spaceSpeaker}:recent-user-leave`,
       ({ msg, socketId }: RecentUserLeavePayload) => {
+        // TODO: Handle remove speaker on leaving
+        /**
+         * 1. Get the broadcasted leave speaker detail (socketId, etc.)
+         * 2. Remove speaker by removing the key (by copying state as object and delete that key)
+         * 3. Remember to remove the RecTransport for that leaving speaker as well
+         */
         if (socketId !== socket.id) {
           console.log(msg);
         }
@@ -163,17 +172,19 @@ export const useSpaceSpeaker = (
   };
 
   /*
-   * Join a Space by space Id
-   * @param spaceSpeakerId Space ID to join
+   * Join a SpaceSpeaker by Id
+   * @param spaceSpeakerId ID to join
    * @returns void | Throw error if error raised
    */
-  const joinSpace = async (spaceSpeakerId: number): Promise<void> => {
+  const joinSpaceSpeaker = async (spaceSpeakerId: number): Promise<void> => {
     return new Promise((resolve) => {
       socket.emit(
-        'space:join',
-        { spaceId: spaceSpeakerId, producerId: localProducerId },
+        `${handlerNamespace.spaceSpeaker}:join`,
+        { spaceSpeakerId, producerId: localProducerId },
         () => {
-          console.log(`Join space (id: ${spaceSpeakerId}) successfully.`);
+          console.log(
+            `Join SpaceSpeaker (id: ${spaceSpeakerId}) successfully.`
+          );
           resolve();
         }
       );
@@ -181,25 +192,23 @@ export const useSpaceSpeaker = (
   };
 
   /**
-   * Fetch initial list of space's participants (on join)
-   * @param spaceSpeakerId Space ID
-   * @returns Get participants of a space
+   * Fetch initial list of SpaceSpeaker's speakers (on join)
+   * @param spaceSpeakerId SpaceSpeaker ID
+   * @returns Get speakers of a SpaceSpeaker session
    */
-  const fetchParticipantDetails = async (
-    spaceSpeakerId: number
-  ): Promise<void> => {
+  const fetchSpeakers = async (spaceSpeakerId: number): Promise<void> => {
     return new Promise((resolve, reject) => {
       socket.emit(
-        'space:get-participants',
-        { spaceId: spaceSpeakerId },
-        async (res: GetParticipantsResponse) => {
+        `${handlerNamespace.spaceSpeaker}:get-speakers`,
+        { spaceSpeakerId },
+        async (res: GetSpeakersResponse) => {
           if (res.error) {
             return reject(res.error);
           }
-          if (!res.participants) return;
+          if (!res.speakers) return;
 
-          // Initialize participants audio refs
-          Object.keys(res.participants).forEach((sId) => {
+          // Initialize speaker audio refs
+          Object.keys(res.speakers).forEach((sId) => {
             if (socket.id === sId) return; // Skip client id
             peerAudioRefs.current[sId] = {
               id: sId,
@@ -209,7 +218,7 @@ export const useSpaceSpeaker = (
             createRecvTransport(sId).catch(console.error);
           });
 
-          dispatch(initParticipants(res.participants));
+          dispatch(initSpeakers(res.speakers));
           resolve();
         }
       );
@@ -217,11 +226,11 @@ export const useSpaceSpeaker = (
   };
 
   useEffect(() => {
-    if (!participants) return;
+    if (!speakers) return;
     if (
       recvTransportId &&
       countObjectKeys(recvTransports) > 0 &&
-      countObjectKeys(participants) > 0
+      countObjectKeys(speakers) > 0
     ) {
       // Find peer id from given transport
       const matchKey = Object.keys(recvTransports).find((k) => {
@@ -231,7 +240,7 @@ export const useSpaceSpeaker = (
 
       // Find peer with given recvTransports
       const { peerSocketId } = recvTransports[matchKey];
-      const peerProducerId = participants[peerSocketId].producerId;
+      const peerProducerId = speakers[peerSocketId].producerId;
 
       // Connect Recv Transports
       connectRecvTransport(
@@ -240,19 +249,19 @@ export const useSpaceSpeaker = (
         peerProducerId
       ).catch(console.error);
     }
-  }, [recvTransportId, recvTransports, participants]);
+  }, [recvTransportId, recvTransports, speakers]);
 
   /**
-   * Get SpaceId's RTP Capabilities
-   * @param spaceSpeakerId SpaceID
+   * Get SpaceSpeaker Id's RTP Capabilities
+   * @param spaceSpeakerId SpaceSpeakerID
    */
   const getSpaceRtpCapabilities = async (
     spaceSpeakerId: number
   ): Promise<void> => {
     return new Promise((resolve) => {
       socket.emit(
-        'rtc:get-rtpCapabilities',
-        { spaceId: spaceSpeakerId },
+        `${handlerNamespace.rtc}:get-rtpCapabilities`,
+        { spaceSpeakerId },
         ({ rtpCapabilities }: GetRTPCapabilitiesData) => {
           setRtpCapabilities(rtpCapabilities);
           resolve();
@@ -304,10 +313,9 @@ export const useSpaceSpeaker = (
    */
   const createSendTransport = async (spaceSpeakerId: number): Promise<void> => {
     return new Promise((resolve, reject) => {
-      console.log('[Send] spaceSpeakerId upon send: ', spaceSpeakerId);
       socket.emit(
-        'rtc:create-webrtcTransport',
-        { spaceId: spaceSpeakerId },
+        `${handlerNamespace.rtc}:create-webrtcTransport`,
+        { spaceSpeakerId },
         ({ params }: CreateTransportResponse) => {
           // The server sends back the params needed
           // to create the transport client-side
@@ -330,9 +338,9 @@ export const useSpaceSpeaker = (
               async ({ dtlsParameters }, callback, errback) => {
                 try {
                   // Signal local DTLS parameters to the server side transport
-                  socket.emit('rtc:connect-transport', {
+                  socket.emit(`${handlerNamespace.rtc}:connect-transport`, {
                     transportId: sendTransport.id,
-                    spaceId: spaceSpeakerId,
+                    spaceSpeakerId,
                     dtlsParameters,
                   });
                   // Tell the transport that parameters were transmitted.
@@ -345,17 +353,16 @@ export const useSpaceSpeaker = (
 
             // Attach on send transport produces listener
             sendTransport.on('produce', (parameters, callback, errback) => {
-              console.log(parameters);
               try {
                 // Tell the server to create a Producer
                 // with the following parameters and produce,
                 // and expect back a server-side producer id
                 // see server's socket.on('rtc:create-producer', ...)
                 socket.emit(
-                  'rtc:create-producer',
+                  `${handlerNamespace.rtc}:create-producer`,
                   {
                     transportId: sendTransport.id,
-                    spaceId: spaceSpeakerId,
+                    spaceSpeakerId,
                     kind: parameters.kind,
                     rtpParameters: parameters.rtpParameters,
                     // appData: parameters.appData,
@@ -386,7 +393,7 @@ export const useSpaceSpeaker = (
   /**
    * Connect Send Transport to the server for sending media
    */
-  const connectSpaceSendTransport = async () => {
+  const connectSendTransport = async () => {
     // We now call produce() to instruct the producer transport
     // to send media to the Router
     // https://mediasoup.org/documentation/v3/mediasoup-client/api/#transport-produce
@@ -414,13 +421,13 @@ export const useSpaceSpeaker = (
   };
 
   /**
-   * On Join Space Setup action
+   * On Join SpaceSpeaker Setup action
    */
-  const onJoinSpaceSetup = async () => {
+  const onJoinSpaceSpeaker = async () => {
     // Get user's mic ref
     await getLocalUserMedia();
 
-    // Get RTP Capabilities of spaceId after joining
+    // Get RTP Capabilities of spaceSpeakerId after joining
     await getSpaceRtpCapabilities(spaceSpeakerId as number);
 
     // Set/Initialize device
@@ -428,11 +435,11 @@ export const useSpaceSpeaker = (
   };
 
   /**
-   * On joining space
+   * On joining SpaceSpeaker
    */
   useEffect(() => {
     if (!spaceSpeakerId) return;
-    onJoinSpaceSetup().catch(console.error);
+    onJoinSpaceSpeaker().catch(console.error);
   }, [spaceSpeakerId]);
 
   /* * * Device lifecycle for Send Transport * * */
@@ -451,7 +458,7 @@ export const useSpaceSpeaker = (
    */
   useEffect(() => {
     if (!sendTransport) return;
-    connectSpaceSendTransport().catch(console.error);
+    connectSendTransport().catch(console.error);
   }, [sendTransport]);
 
   /**
@@ -460,15 +467,15 @@ export const useSpaceSpeaker = (
   useEffect(() => {
     if (!localProducerId) return;
     if (!spaceSpeakerId) {
-      throw new Error('Space Speaker ID is invalid.');
+      throw new Error('SpaceSpeaker ID is invalid.');
     }
-    joinSpace(spaceSpeakerId)
-      .then(async () => fetchParticipantDetails(spaceSpeakerId))
+    joinSpaceSpeaker(spaceSpeakerId)
+      .then(async () => fetchSpeakers(spaceSpeakerId))
       .then(() =>
-        // Announce successfully join the space from client
+        // Announce successfully join the SpaceSpeaker from client
         toast({
           title: `Join SpaceSpeaker`,
-          description: `You've joined space ${spaceSpeakerId}  successfully.`,
+          description: `You've joined SpaceSpeaker ${spaceSpeakerId}  successfully.`,
           status: 'success',
           duration: 5000,
           isClosable: true,
@@ -478,11 +485,14 @@ export const useSpaceSpeaker = (
   }, [localProducerId]);
 
   /**
-   * Unload Cleanup for Space
+   * Unload Cleanup for SpaceSpeaker
    */
   const unloadCleanup = () => {
-    socket.emit('space:leave');
-    console.log('Left the space.');
+    // TODO: Send client's socketId & producerId to terminate
+    socket.emit(`${handlerNamespace.spaceSpeaker}:leave`, {
+      producerId: localProducerId,
+    });
+    console.log('Left SpaceSpeaker.');
   };
 
   useEffect(() => {
@@ -502,21 +512,17 @@ export const useSpaceSpeaker = (
    */
   const createRecvTransport = async (peerSocketId: string): Promise<void> => {
     if (!spaceSpeakerId) {
-      throw new Error('Space Speaker ID is invalid.');
+      throw new Error('SpaceSpeaker ID is invalid.');
     }
     return new Promise((resolve, reject) => {
-      console.log('[Recv] spaceSpeakerId before create:', spaceSpeakerId);
       socket.emit(
-        'rtc:create-webrtcTransport',
-        { spaceId: spaceSpeakerId },
+        `${handlerNamespace.rtc}:create-webrtcTransport`,
+        { spaceSpeakerId },
         ({ params }: CreateTransportResponse) => {
           if (params.error) {
             console.error(params.error);
             return reject(new Error(params.error as any));
           }
-          console.log('RecvTransport Params:', params);
-
-          console.log('[RECV] Device when creating: ', device);
           if (!device) {
             return reject(new Error('Device is not found!'));
           }
@@ -529,7 +535,7 @@ export const useSpaceSpeaker = (
           // Attach on connect listener
           recvTsp.on('connect', ({ dtlsParameters }, callback, errback) => {
             try {
-              socket.emit('rtc:connect-transport', {
+              socket.emit(`${handlerNamespace.rtc}:connect-transport`, {
                 dtlsParameters,
                 transportId: recvTsp.id,
                 spaceSpeakerId,
@@ -559,7 +565,7 @@ export const useSpaceSpeaker = (
 
   /**
    * Connect Recv Transport to create a consumer from server
-   * @param spaceSpeakerId Space ID
+   * @param spaceSpeakerId SpaceSpeaker ID
    * @param transportId Transport ID to connect
    * @param producerId Producer ID to be connected with
    */
@@ -575,7 +581,6 @@ export const useSpaceSpeaker = (
       }
       // Retrieve Receiver Transport for consuming Peer's producer
       // NOTE: Error here because state has not been updated yet
-      console.log('recvTransports in connect:', recvTransports);
       const { transport: recvTransport, peerSocketId } =
         recvTransports[transportId];
 
@@ -585,9 +590,9 @@ export const useSpaceSpeaker = (
 
       // Emit create consumer event
       socket.emit(
-        'rtc:create-consumer',
+        `${handlerNamespace.rtc}:create-consumer`,
         {
-          spaceId: spaceSpeakerId,
+          spaceSpeakerId,
           transportId,
           producerId,
           rtpCapabilities: device.rtpCapabilities,

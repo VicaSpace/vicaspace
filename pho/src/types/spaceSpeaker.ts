@@ -52,15 +52,15 @@ export interface ParticipantInfo {
   producerId: string;
 }
 
-export interface ParticipantDetails {
+export interface SpeakerDetails {
   [id: string]: {
     id: string;
     producerId: string;
   };
 }
 
-export interface GetParticipantsResponse {
-  participants?: ParticipantDetails;
+export interface GetSpeakersResponse {
+  speakers?: SpeakerDetails;
   error?: string;
 }
 
