@@ -12,7 +12,7 @@
     "migration": "prisma migrate dev",
     "seed": "ts-node prisma/seed.ts",
     "test": "NOLOG=true jest",
-    "test:coverage": "NOLOG=true jest --coverage"
+    "test:coverage": "NOLOG=true jest --coverage --collectCoverageFrom '**/*.ts'"
   },
   "keywords": [
     "server",
