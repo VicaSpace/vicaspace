@@ -33,6 +33,11 @@ const spaceSpeakerSlice = createSlice({
       );
     },
 
+    /**
+     * Leave current SpaceSpeaker
+     * @param state State
+     * @returns void
+     */
     leaveSpaceSpeaker(state) {
       if (!state.data.spaceSpeakerId) {
         console.error(
@@ -72,6 +77,17 @@ const spaceSpeakerSlice = createSlice({
         },
       };
     },
+
+    /**
+     * Delete a Speaker from session
+     * @param state State
+     * @param action Action (with payload)
+     */
+    deleteSpeaker(state, action: PayloadAction<string>) {
+      const filteredSpeakers = { ...state.data.speakers };
+      delete filteredSpeakers[action.payload];
+      state.data.speakers = filteredSpeakers;
+    },
   },
 });
 
@@ -79,6 +95,7 @@ export const {
   joinSpaceSpeaker,
   initSpeakers,
   insertSpeaker,
+  deleteSpeaker,
   leaveSpaceSpeaker,
 } = spaceSpeakerSlice.actions;
 

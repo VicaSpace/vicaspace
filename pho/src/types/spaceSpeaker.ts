@@ -44,7 +44,6 @@ export interface RecentUserJoinPayload {
 
 export interface RecentUserLeavePayload {
   socketId: string;
-  msg: string;
 }
 
 export interface ParticipantInfo {

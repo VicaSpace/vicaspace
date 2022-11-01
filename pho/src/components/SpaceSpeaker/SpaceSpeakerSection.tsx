@@ -11,11 +11,17 @@ import './SpaceSpeakerSection.css';
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface SpaceSpeakerSectionProps {}
 
+/**
+ * Active section for SpaceSpeaker on current space
+ * @returns SpaceSpeakerSection Component
+ */
 const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
   const { socket } = useContext(WebSocketContext);
   const dispatch = useAppDispatch();
   // SpaceDetail Slice
-  const { id } = useAppSelector((state) => state.spaceDetailSlice.data);
+  const { id: spaceId } = useAppSelector(
+    (state) => state.spaceDetailSlice.data
+  );
 
   // SpaceSpeaker Slice
   const { data: spaceSpeakerData } = useAppSelector(
@@ -63,7 +69,8 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
             <div
               className="space-speaker-action-btn"
               onClick={() => {
-                dispatch(joinSpaceSpeaker(id as number));
+                // NOTE: Join with same spaceId
+                dispatch(joinSpaceSpeaker(spaceId as number));
               }}
             >
               JOIN SPACESPEAKER 🗣

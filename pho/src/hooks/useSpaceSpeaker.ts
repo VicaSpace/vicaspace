@@ -1,6 +1,4 @@
-import * as mediasoupClient from 'mediasoup-client';
 import { Consumer } from 'mediasoup-client/lib/Consumer';
-import { RtpCapabilities } from 'mediasoup-client/lib/RtpParameters';
 import { Transport } from 'mediasoup-client/lib/Transport';
 
 import { useToast } from '@chakra-ui/react';
@@ -8,18 +6,20 @@ import { createRef, useContext, useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import config from '@/config';
+import { useDevice } from '@/hooks/useDevice';
+import { useLocalAudioRef } from '@/hooks/useLocalAudioRef';
+import { useSpaceRtpCapabilities } from '@/hooks/useSpaceRtpCapabilities';
 import { countObjectKeys } from '@/lib/object';
 import { WebSocketContext } from '@/modules/ws/WebSocketProvider';
 import {
+  deleteSpeaker,
   initSpeakers,
   insertSpeaker,
   leaveSpaceSpeaker,
 } from '@/states/spaceSpeaker/slice';
 import {
-  AudioParams,
   ClientConsumeResponse,
   CreateTransportResponse,
-  GetRTPCapabilitiesData,
   GetSpeakersResponse,
   PeerAudioRefs,
   RecentUserJoinPayload,
@@ -38,21 +38,19 @@ export const useSpaceSpeaker = (
   const toast = useToast();
   const dispatch = useDispatch();
 
+  /// Custom hooks
+  const { audioParams, getLocalUserMedia, localAudioRef } = useLocalAudioRef();
+  const { getSpaceRtpCapabilities, rtpCapabilities } =
+    useSpaceRtpCapabilities();
+  const { device, initDevice } = useDevice();
+
   /* * Local States * */
-  const [rtpCapabilities, setRtpCapabilities] =
-    useState<RtpCapabilities | null>(null);
-  const [device, setDevice] = useState<mediasoupClient.Device | undefined>();
-  const [audioParams, setAudioParams] = useState<AudioParams | null>(null);
   const [sendTransport, setSendTransport] = useState<Transport | undefined>();
   const [localProducerId, setLocalProducerId] = useState<string | null>(null);
   const [recvTransportId, setRecvTransportId] = useState<string | undefined>();
   const [recvTransports, setRecvTransports] = useState<RecvTransports>({});
 
-  /* Refs */
-  const localAudioRef = useRef<HTMLAudioElement | null>(null);
   const peerAudioRefs = useRef<PeerAudioRefs>({});
-
-  // TODO: Remember to deal with mute/unmute
 
   // On component unmount
   useEffect(() => {
@@ -66,24 +64,24 @@ export const useSpaceSpeaker = (
         title: `Leave SpaceSpeaker`,
         description: `Leaving SpaceSpeaker (ID: ${spaceSpeakerId}) upon closing...`,
         status: 'info',
-        duration: 2000,
+        duration: 3000,
         isClosable: true,
       });
       // Leave Space Speaker when unmount component
       dispatch(leaveSpaceSpeaker());
-      // Remove audio when leave
+      // Remove client audio when leave
       audioParams.track.stop();
     };
   }, [socket, audioParams]);
 
-  // On component initial phase
+  // Socket setup handlers
   useEffect(() => {
     if (!spaceSpeakerId || !audioParams) return;
     // Handle recent user join to SpaceSpeaker
     socket.on(
       `${handlerNamespace.spaceSpeaker}:recent-user-join`,
       ({ socketId, producerId }: RecentUserJoinPayload) => {
-        // Skip client ID
+        // Skip client's own ID
         if (socket.id === socketId) return;
 
         console.log(
@@ -98,7 +96,7 @@ export const useSpaceSpeaker = (
 
         // // Create Receiver Transports upon new comer
         console.log(
-          'Add receiver on new join in this room with spaceSpeakerId:',
+          'Add a receiver on new join in this room with spaceSpeakerId:',
           spaceSpeakerId
         );
         createRecvTransport(socketId).catch(console.error);
@@ -116,60 +114,23 @@ export const useSpaceSpeaker = (
     /// Handle latest user leave space
     socket.on(
       `${handlerNamespace.spaceSpeaker}:recent-user-leave`,
-      ({ msg, socketId }: RecentUserLeavePayload) => {
-        // TODO: Handle remove speaker on leaving
+      ({ socketId }: RecentUserLeavePayload) => {
         /**
          * 1. Get the broadcasted leave speaker detail (socketId, etc.)
          * 2. Remove speaker by removing the key (by copying state as object and delete that key)
          * 3. Remember to remove the RecTransport for that leaving speaker as well
          */
-        if (socketId !== socket.id) {
-          console.log(msg);
-        }
+        // Skip client's own ID
+        if (socketId === socket.id || !speakers) return;
+        console.log(`User (${socketId}) left the space.`);
+
+        // Delete speaker from participant info
+        dispatch(deleteSpeaker(socketId));
+
+        // Delete RecvTransport for deleted speaker
       }
     );
   }, [socket, device, spaceSpeakerId]);
-
-  /**
-   * Get Local User Audio stream
-   */
-  const getLocalUserMedia = async () => {
-    const constraints: MediaStreamConstraints | undefined = {
-      audio: true,
-    };
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      if (localAudioRef.current) {
-        // Assign audio stream to view
-        localAudioRef.current.srcObject = stream;
-        localAudioRef.current.volume = 0;
-
-        // Create Audio Context from MediaStream
-        const audioCtx = new AudioContext();
-        const source = audioCtx.createMediaStreamSource(stream);
-
-        // Create gain node
-        const gainNode = audioCtx.createGain();
-
-        // Connect AudioBufferSourceNode to Gain Node
-        source.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-
-        // Set local audio volume to 0 (avoid echo)
-        gainNode.gain.value = 0;
-
-        // Update audio params from stream track
-        setAudioParams({
-          track: source.mediaStream.getAudioTracks()[0],
-        });
-      }
-    } catch (err) {
-      console.error(err);
-      throw new Error(
-        'Cannot get user media from microphone. Please grant the required permission.'
-      );
-    }
-  };
 
   /*
    * Join a SpaceSpeaker by Id
@@ -225,6 +186,9 @@ export const useSpaceSpeaker = (
     });
   };
 
+  /**
+   * Connect Recv Transport from peer's Producer
+   */
   useEffect(() => {
     if (!speakers) return;
     if (
@@ -250,34 +214,6 @@ export const useSpaceSpeaker = (
       ).catch(console.error);
     }
   }, [recvTransportId, recvTransports, speakers]);
-
-  /**
-   * Get SpaceSpeaker Id's RTP Capabilities
-   * @param spaceSpeakerId SpaceSpeakerID
-   */
-  const getSpaceRtpCapabilities = async (
-    spaceSpeakerId: number
-  ): Promise<void> => {
-    return new Promise((resolve) => {
-      socket.emit(
-        `${handlerNamespace.rtc}:get-rtpCapabilities`,
-        { spaceSpeakerId },
-        ({ rtpCapabilities }: GetRTPCapabilitiesData) => {
-          setRtpCapabilities(rtpCapabilities);
-          resolve();
-        }
-      );
-    });
-  };
-
-  /**
-   * Initialize new device
-   */
-  const initDevice = () => {
-    const createdDevice = new mediasoupClient.Device();
-    console.log('createdDevice:', createdDevice);
-    setDevice(createdDevice);
-  };
 
   /**
    * Load a new device for user's (to create transport)
@@ -490,8 +426,16 @@ export const useSpaceSpeaker = (
   const unloadCleanup = () => {
     // TODO: Send client's socketId & producerId to terminate
     socket.emit(`${handlerNamespace.spaceSpeaker}:leave`, {
+      spaceSpeakerId,
       producerId: localProducerId,
+      sendTransportId: sendTransport?.id,
     });
+    /**
+     * Steps to remove:
+     * 1. retrieve producer collection and remove by localProducerId
+     * 2. retrieve transport collection and remove by transportId
+     * 3. (remove consumer?)
+     */
     console.log('Left SpaceSpeaker.');
   };
 
@@ -579,8 +523,6 @@ export const useSpaceSpeaker = (
       if (!device) {
         return reject(new Error('Device is not found.'));
       }
-      // Retrieve Receiver Transport for consuming Peer's producer
-      // NOTE: Error here because state has not been updated yet
       const { transport: recvTransport, peerSocketId } =
         recvTransports[transportId];
 
