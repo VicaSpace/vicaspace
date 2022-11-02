@@ -6,7 +6,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, { useState } from 'react';
 
 import './Toolbar.css';
 
@@ -16,6 +16,7 @@ const Toolbar: React.FC<{
   isMuted: boolean;
   visible: boolean;
 }> = ({ numberOfParticipants, setIsMuted, isMuted, visible }) => {
+  const [isFullscreen, setIsFullscreen] = useState(false);
   return (
     <div
       className="toolbar-container"
@@ -32,7 +33,21 @@ const Toolbar: React.FC<{
         />
       </div>
       <div className="toobar-item">
-        <FontAwesomeIcon icon={faCompress} />
+        <FontAwesomeIcon
+          icon={faCompress}
+          onClick={() => {
+            if (isFullscreen) {
+              document.exitFullscreen().catch(console.log);
+            } else {
+              const element = document.getElementById('root');
+
+              if (element !== null) {
+                element.requestFullscreen().catch(console.log);
+              }
+            }
+            setIsFullscreen(!isFullscreen);
+          }}
+        />
       </div>
     </div>
   );
