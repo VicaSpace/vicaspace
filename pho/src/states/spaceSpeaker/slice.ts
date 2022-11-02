@@ -54,7 +54,7 @@ const spaceSpeakerSlice = createSlice({
      * @param state State
      * @param action Action
      */
-    initSpeakers(state, action: PayloadAction<SpeakerDetails>) {
+    setSpeakers(state, action: PayloadAction<SpeakerDetails>) {
       state.data.speakers = action.payload;
     },
 
@@ -93,7 +93,7 @@ const spaceSpeakerSlice = createSlice({
 
 export const {
   joinSpaceSpeaker,
-  initSpeakers,
+  setSpeakers,
   insertSpeaker,
   deleteSpeaker,
   leaveSpaceSpeaker,

@@ -13,9 +13,9 @@ import { countObjectKeys } from '@/lib/object';
 import { WebSocketContext } from '@/modules/ws/WebSocketProvider';
 import {
   deleteSpeaker,
-  initSpeakers,
   insertSpeaker,
   leaveSpaceSpeaker,
+  setSpeakers,
 } from '@/states/spaceSpeaker/slice';
 import {
   ClientConsumeResponse,
@@ -30,36 +30,44 @@ import {
 
 const { handlerNamespace } = config;
 
+/**
+ * UseSpaceSpeaker Hook
+ * @param spaceSpeakerId SpaceSpeaker ID
+ * @param speakers Speakers info
+ * @returns List of audio refs
+ */
 export const useSpaceSpeaker = (
   spaceSpeakerId?: number,
   speakers?: SpeakerDetails
 ) => {
+  /// Context setup
   const { socket } = useContext(WebSocketContext);
   const toast = useToast();
   const dispatch = useDispatch();
 
-  /// Custom hooks
+  /// Custom Hooks
   const { audioParams, getLocalUserMedia, localAudioRef } = useLocalAudioRef();
   const { getSpaceRtpCapabilities, rtpCapabilities } =
     useSpaceRtpCapabilities();
   const { device, initDevice } = useDevice();
 
-  /* * Local States * */
-  const [sendTransport, setSendTransport] = useState<Transport | undefined>();
+  /* * Transport States * */
+  const [sendTransport, setSendTransport] = useState<Transport | null>(null);
   const [localProducerId, setLocalProducerId] = useState<string | null>(null);
-  const [recvTransportId, setRecvTransportId] = useState<string | undefined>();
+  const [recentRecvTransportId, setRecentRecvTransportId] = useState<
+    string | null
+  >(null);
   const [recvTransports, setRecvTransports] = useState<RecvTransports>({});
+  const [deleteSpeakerId, setDeleteSpeakerId] = useState<string | null>(null);
 
+  /* * Refs * */
   const peerAudioRefs = useRef<PeerAudioRefs>({});
 
   // On component unmount
   useEffect(() => {
     if (!spaceSpeakerId || !audioParams) return;
     return () => {
-      // Offload socket on unmount
-      socket.off(`${handlerNamespace.spaceSpeaker}:recent-user-join`);
-      socket.off(`${handlerNamespace.spaceSpeaker}:recent-user-leave`);
-
+      // Announce leave notification
       toast({
         title: `Leave SpaceSpeaker`,
         description: `Leaving SpaceSpeaker (ID: ${spaceSpeakerId}) upon closing...`,
@@ -67,14 +75,28 @@ export const useSpaceSpeaker = (
         duration: 3000,
         isClosable: true,
       });
+      // TODO: Send client's socketId & producerId to terminate
+      console.log('Emitting leave signal... ❌');
+      socket.emit(`${handlerNamespace.spaceSpeaker}:leave`, {
+        spaceSpeakerId,
+        producerId: localProducerId,
+        sendTransportId: sendTransport?.id,
+      });
+
       // Leave Space Speaker when unmount component
       dispatch(leaveSpaceSpeaker());
       // Remove client audio when leave
       audioParams.track.stop();
+      // Clear all speakers from space
+      dispatch(setSpeakers({}));
+
+      // Offload socket on unmount
+      socket.off(`${handlerNamespace.spaceSpeaker}:recent-user-join`);
+      socket.off(`${handlerNamespace.spaceSpeaker}:recent-user-leave`);
     };
   }, [socket, audioParams]);
 
-  // Socket setup handlers
+  /// Socket setup handlers
   useEffect(() => {
     if (!spaceSpeakerId || !audioParams) return;
     // Handle recent user join to SpaceSpeaker
@@ -115,29 +137,45 @@ export const useSpaceSpeaker = (
     socket.on(
       `${handlerNamespace.spaceSpeaker}:recent-user-leave`,
       ({ socketId }: RecentUserLeavePayload) => {
-        /**
-         * 1. Get the broadcasted leave speaker detail (socketId, etc.)
-         * 2. Remove speaker by removing the key (by copying state as object and delete that key)
-         * 3. Remember to remove the RecTransport for that leaving speaker as well
-         */
-        // Skip client's own ID
-        if (socketId === socket.id || !speakers) return;
-        console.log(`User (${socketId}) left the space.`);
+        if (socketId === socket.id) return; // Skip client ID
+        console.log(`User (${socketId}) left the space ❌.`);
 
-        // Delete speaker from participant info
-        dispatch(deleteSpeaker(socketId));
-
-        // Delete RecvTransport for deleted speaker
+        // Detach RecvTransport from deleting speaker
+        setDeleteSpeakerId(socketId);
       }
     );
   }, [socket, device, spaceSpeakerId]);
+
+  /**
+   * Detect if we should trigger Deletion for RECV,
+   */
+  useEffect(() => {
+    // Trigger on specified deleting speaker id
+    if (!deleteSpeakerId) return;
+
+    // Remove RECVTransport of leaving user
+    setRecvTransports((prevRecvTransports) => {
+      delete prevRecvTransports[deleteSpeakerId];
+      return {
+        ...prevRecvTransports,
+      };
+    });
+
+    // Delete speaker from list
+    dispatch(deleteSpeaker(deleteSpeakerId));
+
+    // Delete audio ref of leaving speaker
+    delete peerAudioRefs.current[deleteSpeakerId];
+  }, [deleteSpeakerId]);
 
   /*
    * Join a SpaceSpeaker by Id
    * @param spaceSpeakerId ID to join
    * @returns void | Throw error if error raised
    */
-  const joinSpaceSpeaker = async (spaceSpeakerId: number): Promise<void> => {
+  const joinSpaceSpeakerSocket = async (
+    spaceSpeakerId: number
+  ): Promise<void> => {
     return new Promise((resolve) => {
       socket.emit(
         `${handlerNamespace.spaceSpeaker}:join`,
@@ -169,6 +207,7 @@ export const useSpaceSpeaker = (
           if (!res.speakers) return;
 
           // Initialize speaker audio refs
+          // Update speaker count
           Object.keys(res.speakers).forEach((sId) => {
             if (socket.id === sId) return; // Skip client id
             peerAudioRefs.current[sId] = {
@@ -179,7 +218,8 @@ export const useSpaceSpeaker = (
             createRecvTransport(sId).catch(console.error);
           });
 
-          dispatch(initSpeakers(res.speakers));
+          // Set initial speakers
+          dispatch(setSpeakers(res.speakers));
           resolve();
         }
       );
@@ -187,33 +227,44 @@ export const useSpaceSpeaker = (
   };
 
   /**
-   * Connect Recv Transport from peer's Producer
+   * Connect Peer Transport on connection
+   */
+  const connectPeerTransport = async () => {
+    if (
+      !speakers ||
+      !recentRecvTransportId ||
+      countObjectKeys(recvTransports) === 0
+    )
+      return;
+    // Find peer id from given transport
+    const matchRecvTransportId = Object.keys(recvTransports).find((k) => {
+      return recvTransports[k].id === recentRecvTransportId;
+    });
+    if (!matchRecvTransportId) return;
+
+    // Find peer with given recvTransports
+    const { peerSocketId } = recvTransports[matchRecvTransportId];
+    const peerProducerId = speakers[peerSocketId].producerId;
+
+    // Connect Recv Transports
+    await connectRecvTransport(
+      spaceSpeakerId as number,
+      recentRecvTransportId,
+      peerProducerId
+    );
+    // Increase speaker count on successful peer connection
+  };
+
+  /**
+   * Add/Delete Recv Transport from peer's Producer
    */
   useEffect(() => {
-    if (!speakers) return;
-    if (
-      recvTransportId &&
-      countObjectKeys(recvTransports) > 0 &&
-      countObjectKeys(speakers) > 0
-    ) {
-      // Find peer id from given transport
-      const matchKey = Object.keys(recvTransports).find((k) => {
-        return recvTransports[k].id === recvTransportId;
-      });
-      if (!matchKey) return;
-
-      // Find peer with given recvTransports
-      const { peerSocketId } = recvTransports[matchKey];
-      const peerProducerId = speakers[peerSocketId].producerId;
-
-      // Connect Recv Transports
-      connectRecvTransport(
-        spaceSpeakerId as number,
-        recvTransportId,
-        peerProducerId
-      ).catch(console.error);
+    if (deleteSpeakerId) {
+      setDeleteSpeakerId(null);
+    } else {
+      connectPeerTransport().catch(console.error);
     }
-  }, [recvTransportId, recvTransports, speakers]);
+  }, [recvTransports, recentRecvTransportId]);
 
   /**
    * Load a new device for user's (to create transport)
@@ -405,7 +456,7 @@ export const useSpaceSpeaker = (
     if (!spaceSpeakerId) {
       throw new Error('SpaceSpeaker ID is invalid.');
     }
-    joinSpaceSpeaker(spaceSpeakerId)
+    joinSpaceSpeakerSocket(spaceSpeakerId)
       .then(async () => fetchSpeakers(spaceSpeakerId))
       .then(() =>
         // Announce successfully join the SpaceSpeaker from client
@@ -500,7 +551,8 @@ export const useSpaceSpeaker = (
               peerSocketId,
             },
           }));
-          setRecvTransportId(recvTsp.id);
+          // Update recent RecvTransportId
+          setRecentRecvTransportId(recvTsp.id);
           resolve();
         }
       );
@@ -565,10 +617,8 @@ export const useSpaceSpeaker = (
 
           // Destructure track from producer retrieved by consumer
           const { track } = consumer;
-          // TODO: Add Ref to audio followed by peerId
 
           // Assign to remote audio track section
-          // remoteAudioRef.current.srcObject = new MediaStream([track]);
           if (!peerAudioRefs.current[peerSocketId]) {
             return reject(
               new Error(

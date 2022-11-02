@@ -62,7 +62,9 @@ const SpaceModal: React.FC<{
 
   useEffect(() => {
     axios
-      .get(`http://localhost:4000/api/spaces/${spaceId}`)
+      .get(
+        `${process.env.REACT_APP_BACKEND_URL as string}/api/spaces/${spaceId}`
+      )
       .then((res) => setSpaceDetail(res.data))
       .catch(console.log);
   }, []);

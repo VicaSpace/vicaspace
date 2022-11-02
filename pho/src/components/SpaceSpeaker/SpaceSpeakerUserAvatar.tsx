@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import './SpaceSpeakerUserAvatar.css';
 
@@ -9,8 +9,11 @@ interface SpaceSpeakerUserAvatarProps {
 
 const SpaceSpeakerUserAvatar: React.FC<SpaceSpeakerUserAvatarProps> = ({
   imgUrl = 'https://i.imgur.com/wcASKbZ.png',
-  name = 'Astro Doe',
+  name,
 }) => {
+  useEffect(() => {
+    console.log('name of participant:', name);
+  }, [name]);
   return (
     <div className="space-speaker-user-avatar-container">
       <img

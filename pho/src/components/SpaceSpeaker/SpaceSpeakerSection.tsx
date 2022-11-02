@@ -46,7 +46,7 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
         <div className="space-speaker-participant-list">
           {/* Client Avatar */}
           <div>
-            <SpaceSpeakerUserAvatar />
+            <SpaceSpeakerUserAvatar name={socket.id} />
             {/* Local Audio */}
             <audio ref={localAudioRef} autoPlay muted />
           </div>
@@ -55,7 +55,7 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
             Object.values(speakers).map((p) => {
               return p.id !== socket.id ? (
                 <div key={p.id}>
-                  <SpaceSpeakerUserAvatar />
+                  <SpaceSpeakerUserAvatar name={p.id} />
                   {/* Local Audio */}
                   <audio ref={peerAudioRefs.current[p.id].ref} autoPlay />
                 </div>
