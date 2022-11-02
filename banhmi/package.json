@@ -12,7 +12,7 @@
     "migration": "prisma migrate dev",
     "seed": "ts-node prisma/seed.ts",
     "test": "NOLOG=true jest",
-    "test:coverage": "NOLOG=true jest --coverage"
+    "test:coverage": "NOLOG=true jest --coverage --collectCoverageFrom '**/*.ts'"
   },
   "keywords": [
     "server",
@@ -43,6 +43,7 @@
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^3.3.0",
     "@types/express": "^4.17.14",
+    "@types/http-errors": "^2.0.1",
     "@types/jest": "^29.2.0",
     "@types/node": "^18.11.4",
     "@typescript-eslint/eslint-plugin": "^5.39.0",

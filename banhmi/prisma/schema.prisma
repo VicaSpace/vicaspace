@@ -50,6 +50,7 @@ model User {
   authTokenId    Int?            @unique @map("auth_token_id")
   salt           String
   hashedPassword String          @map("hashed_password")
+  socketId       String?         @map("socket_id")
 
   @@map("users")
 }

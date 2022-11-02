@@ -79,7 +79,7 @@ function SignInComponent() {
       localStorage.setItem('refreshToken', refreshToken);
       localStorage.setItem('expiredTime', expiredTime);
 
-      dispatch(signInAction(userId));
+      dispatch(signInAction({ userId, username }));
     } catch (error: any) {
       if (error instanceof AxiosError) {
         setSignInError(error.response?.data.error);

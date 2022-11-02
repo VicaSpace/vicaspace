@@ -22,6 +22,7 @@ function DrawerComponent() {
   const isAuthenticated = useAppSelector(
     (state) => state.authSlice.isAuthenticated
   );
+  const username = useAppSelector((state) => state.authSlice.username);
 
   const { id: spaceId } = useAppSelector(
     (state) => state.spaceDetailSlice.data
@@ -32,8 +33,8 @@ function DrawerComponent() {
     if (!isAuthenticated && accessToken) {
       getUserInfoViaAPI(accessToken)
         .then((response) => {
-          const { id } = response.data;
-          dispatch(signIn(id.toString()));
+          const user = response.data;
+          dispatch(signIn(user));
         })
         .catch((err) => {
           console.log(err);
@@ -52,6 +53,9 @@ function DrawerComponent() {
       return <SpaceSpeakerSection />;
     }
     return !isAuthenticated && <SignInComponent />;
+    // return !isAuthenticated && <SignInComponent />;
+    // if (!isAuthenticated) return <SignInComponent />;
+    // else return <ChatArea username={username} />;
   };
 
   return (
