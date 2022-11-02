@@ -1,21 +1,34 @@
+import {
+  faCompress,
+  faUsers,
+  faVolumeHigh,
+  faVolumeMute,
+} from '@fortawesome/free-solid-svg-icons';
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
 
 import './Toolbar.css';
 
-const Toolbar: React.FC<{}> = () => {
+const Toolbar: React.FC<{
+  numberOfParticipants: number;
+  setIsMuted: Function;
+  isMuted: boolean;
+}> = ({ numberOfParticipants, setIsMuted, isMuted }) => {
   return (
     <div className="toolbar-container">
       <div className="toobar-item">
-        <button>1</button>
+        {numberOfParticipants}
+        <FontAwesomeIcon icon={faUsers} style={{ paddingLeft: '5px' }} />
       </div>
       <div className="toobar-item">
-        <button>1</button>
+        <FontAwesomeIcon
+          icon={isMuted ? faVolumeMute : faVolumeHigh}
+          onClick={() => setIsMuted()}
+        />
       </div>
       <div className="toobar-item">
-        <button>1</button>
-      </div>
-      <div className="toobar-item">
-        <button>1</button>
+        <FontAwesomeIcon icon={faCompress} />
       </div>
     </div>
   );

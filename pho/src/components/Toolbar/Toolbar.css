@@ -2,7 +2,7 @@
     box-sizing: border-box;
 
     position: absolute;
-    width: 242px;
+    width: 200px;
     height: 46px;
     top: 34px;
     right: 62px;
@@ -10,11 +10,39 @@
     background: #D2DAFF;
     border: 2px solid #B1B2FF;
     border-radius: 15px;
+
+    justify-content: center;
+    align-items: center;
+
+    display: flex;
+    flex-direction: row;
+}
+
+@media (max-width: 420px) {
+    .toolbar-container {
+        right: 20px;
+    }
 }
 
 .toobar-item {
-    display: inline-block;
-    width: 25%;
+    display: inline-flex;
     height: 100%;
-    text-align: center;
+
+    justify-content: center;
+    align-items: center;
+    vertical-align: top;
+
+    flex: auto 1 1;
+}
+
+.toolbar-container :first-child {
+    width: 30%
+}
+
+.toolbar-container :nth-child(2) {
+    width: 10%
+}
+
+.toobar-item+.toobar-item {
+    border-left: 1px solid black;
 }
