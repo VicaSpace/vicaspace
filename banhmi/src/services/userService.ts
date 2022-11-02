@@ -1,21 +1,28 @@
+import createHttpError from 'http-errors';
+
 import { prisma } from '@/db';
 import { logger } from '@/utils/logger';
 
-export const getSocketId = async (userId) => {
+export const getUserFromSocketId = async (socketId) => {
+  if (typeof socketId === 'undefined') {
+    createHttpError(400, 'no socket id found');
+  }
   try {
-    const socketId = await prisma.user.findFirstOrThrow({
+    const users = await prisma.user.findMany({
       where: {
-        active: true,
-        id: userId,
+        socketId,
       },
       select: {
+        id: true,
+        username: true,
+        spaceId: true,
         socketId: true,
+        updatedAt: true,
       },
     });
-    return socketId;
+    return users;
   } catch (error) {
-    logger.error(error);
-    throw new Error('error querying user');
+    throw new Error('error querying users');
   }
 };
 

@@ -1,12 +1,13 @@
-import { getSocketId, updateSocketId } from '@/services/userService';
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { getUserFromSocketId, updateSocketId } from '@/services/userService';
 
-export const getSocketIdHandler = async (req, res) => {
-  const socketId = await getSocketId(req.user.id);
-  res.status(200).json(socketId);
+export const getUserFromSocketIdHandler = async (req, res) => {
+  const users = await getUserFromSocketId(req.query.socketId);
+  res.status(200).json(users);
 };
 
 export const updateSocketIdHandler = async (req, res) => {
-  const {socketId}= req.body;
-  updateSocketId(req.user.id, socketId)
-  res.status(204).json()
-}
+  const { socketId } = req.body;
+  updateSocketId(req.user.id, socketId);
+  res.status(204).json();
+};
