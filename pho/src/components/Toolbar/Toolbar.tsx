@@ -1,12 +1,5 @@
-import {
-  faCompress,
-  faUsers,
-  faVolumeHigh,
-  faVolumeMute,
-} from '@fortawesome/free-solid-svg-icons';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
+import { FaCompress, FaUsers, FaVolumeMute, FaVolumeUp } from 'react-icons/fa';
 
 import './Toolbar.css';
 
@@ -24,17 +17,17 @@ const Toolbar: React.FC<{
     >
       <div className="toobar-item">
         {numberOfParticipants}
-        <FontAwesomeIcon icon={faUsers} style={{ paddingLeft: '5px' }} />
+        <FaUsers style={{ paddingLeft: '5px' }} />
       </div>
       <div className="toobar-item">
-        <FontAwesomeIcon
-          icon={isMuted ? faVolumeMute : faVolumeHigh}
-          onClick={() => setIsMuted()}
-        />
+        {isMuted ? (
+          <FaVolumeMute onClick={() => setIsMuted()} />
+        ) : (
+          <FaVolumeUp onClick={() => setIsMuted()} />
+        )}
       </div>
       <div className="toobar-item">
-        <FontAwesomeIcon
-          icon={faCompress}
+        <FaCompress
           onClick={() => {
             if (isFullscreen) {
               document.exitFullscreen().catch(console.log);
