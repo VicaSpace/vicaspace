@@ -9,6 +9,7 @@
   ],
   "rules": {
     "no-console": "warn",
+    "@typescript-eslint/no-dynamic-delete": "off",
     "@typescript-eslint/no-non-null-assertion": "warn"
   }
 }

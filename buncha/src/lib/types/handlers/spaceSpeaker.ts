@@ -3,6 +3,12 @@ export interface JoinPayload {
   producerId: string;
 }
 
+export interface LeavePayload {
+  spaceSpeakerId: number;
+  producerId: string;
+  sendTransportId: string;
+}
+
 // type LeavePayload = JoinPayload;
 
 export interface GetSpeakersPayload {

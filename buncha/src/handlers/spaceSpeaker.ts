@@ -1,13 +1,19 @@
 import config from '@/config';
-import { producerCollection, socketCollection } from '@/data/collections';
+import {
+  consumerCollection,
+  producerCollection,
+  socketCollection,
+  transportCollection,
+} from '@/data/collections';
 import { logger } from '@/lib/logger';
 import {
   GetSpeakersErrorResponse,
   GetSpeakersPayload,
   GetSpeakersResponse,
   JoinPayload,
+  LeavePayload,
   SpeakerDetails,
-} from '@/lib/types/handlers/space';
+} from '@/lib/types/handlers/spaceSpeaker';
 import { IOConnection, SocketConnection } from '@/lib/types/ws';
 
 const { handlerNamespace } = config;
@@ -55,8 +61,11 @@ export const registerSpaceSpeakerHandlers = (
   /**
    * Handles leaving current space
    */
-  const leaveHandler = async () => {
-    const { spaceSpeakerId } = socketCollection[socket.id];
+  const leaveHandler = async (payload: LeavePayload) => {
+    // Parse payload
+    const { producerId, spaceSpeakerId } = payload;
+
+    // Check if SpaceSpeaker ID exists or not
     if (!spaceSpeakerId) {
       logger.warn(
         `User (socketId: ${socket.id}) cannot leave space as 'spaceId' is empty`
@@ -64,22 +73,37 @@ export const registerSpaceSpeakerHandlers = (
       return;
     }
     // Unassign socket from a specific space
-    const curSpaceIdStr = spaceSpeakerId.toString();
-    await socket.leave(curSpaceIdStr);
+    const spaceSpeakerIdStr = spaceSpeakerId.toString();
+    await socket.leave(spaceSpeakerIdStr);
 
-    // Delete spaceId to room
+    // Delete socket's current SpaceSpeaker session
     delete socketCollection[socket.id].spaceSpeakerId;
+
+    // Remove all consumers who has producerId as its ref
+    Object.keys(consumerCollection).forEach((k) => {
+      if (consumerCollection[k].producerId !== producerId) return;
+
+      // Delete the transport along with its consumer association
+      delete transportCollection[consumerCollection[k].transportId];
+      delete consumerCollection[k];
+    });
+    logger.info(`Deleted consumers for leave-user ❌`);
+
+    // Delete left user's producer
+    delete producerCollection[producerId];
+
+    logger.info(`Deleted producer for leave-user ❌`);
+
     // Broadcast recent left user to all sockets in space
-    io.to(curSpaceIdStr).emit(
+    io.to(spaceSpeakerIdStr).emit(
       `${handlerNamespace.spaceSpeaker}:recent-user-leave`,
       {
         socketId: socket.id,
-        msg: `User (socketId: ${socket.id}) has left the space.`,
       }
     );
 
     logger.info(
-      `User (socketId: ${socket.id}) has left a space (spaceId: ${spaceSpeakerId})`
+      `User (sId: ${socket.id}) has left a space (spaceSpeakerId: ${spaceSpeakerId})`
     );
   };
   socket.on(`${handlerNamespace.spaceSpeaker}:leave`, leaveHandler);

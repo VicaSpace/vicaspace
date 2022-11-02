@@ -123,10 +123,13 @@ export const registerRtcHandlers = (
       );
     }
 
-    const transport = transportCollection[transportId].transport;
+    const producerTransport = transportCollection[transportId].transport;
+    if (!producerTransport) {
+      throw new Error('Cannot find any Producer Transport');
+    }
 
     // Call produce based on the params from the client
-    const producer = await transport.produce({
+    const producer = await producerTransport.produce({
       kind,
       rtpParameters,
     });
@@ -136,10 +139,15 @@ export const registerRtcHandlers = (
       producer,
       socketId: socket.id,
       spaceSpeakerId,
+      transportId: producerTransport.id,
     };
+    // Associate Producer to Transport
+    transportCollection[producerTransport.id].producerId = producer.id;
+
     logger.info('Producer created successfully with the following info.');
     logger.info(`Producer ID: ${producer.id} - Kind: ${producer.kind}`);
 
+    /// Hooks for producer
     producer.on('transportclose', () => {
       logger.info('Transport for this producer closed');
       producer?.close();
@@ -168,12 +176,13 @@ export const registerRtcHandlers = (
       throw new Error('Cannot find router for given space.');
     }
 
-    // Retrieve consume transport
+    // Retrieve Consumer Transport
     const { transport: consumerTransport } = transportCollection[transportId];
-    if (!router) {
-      throw new Error('Cannot find consume transport.');
+    if (!consumerTransport) {
+      throw new Error('Cannot find Consumer Transport.');
     }
 
+    // Retrieve producer
     const { producer } = producerCollection[producerId];
     if (!producer) {
       throw new Error('Cannot find the valid producer to consume.');
@@ -222,6 +231,8 @@ export const registerRtcHandlers = (
       consumer,
       socketId: socket.id,
       spaceSpeakerId,
+      producerId,
+      transportId: consumerTransport.id,
     };
 
     // Extract consumer's params & sent back to client

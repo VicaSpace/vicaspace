@@ -22,6 +22,8 @@ export interface TransportCollection {
     transport: WebRtcTransport;
     socketId: string;
     spaceSpeakerId: number;
+    producerId?: string;
+    consumerId?: string;
   };
 }
 
@@ -31,6 +33,7 @@ export interface ProducerCollection {
     producer: Producer;
     socketId: string;
     spaceSpeakerId: number;
+    transportId: string;
   };
 }
 
@@ -40,5 +43,7 @@ export interface ConsumerCollection {
     consumer: Consumer;
     socketId: string;
     spaceSpeakerId: number;
+    producerId: string;
+    transportId: string;
   };
 }
