@@ -76,7 +76,6 @@ export const useSpaceSpeaker = (
         isClosable: true,
       });
       // TODO: Send client's socketId & producerId to terminate
-      console.log('Emitting leave signal... ❌');
       socket.emit(`${handlerNamespace.spaceSpeaker}:leave`, {
         spaceSpeakerId,
         producerId: localProducerId,
@@ -85,8 +84,10 @@ export const useSpaceSpeaker = (
 
       // Leave Space Speaker when unmount component
       dispatch(leaveSpaceSpeaker());
+
       // Remove client audio when leave
       audioParams.track.stop();
+
       // Clear all speakers from space
       dispatch(setSpeakers({}));
 
@@ -259,11 +260,13 @@ export const useSpaceSpeaker = (
    * Add/Delete Recv Transport from peer's Producer
    */
   useEffect(() => {
-    if (deleteSpeakerId) {
-      setDeleteSpeakerId(null);
-    } else {
+    // If RecvTransports has been set without deleteSpeakerId -> Connect
+    if (!deleteSpeakerId) {
       connectPeerTransport().catch(console.error);
+      return;
     }
+    // Reset deleteSpeakerId after setting RecvTransports
+    setDeleteSpeakerId(null);
   }, [recvTransports, recentRecvTransportId]);
 
   /**
@@ -449,44 +452,44 @@ export const useSpaceSpeaker = (
   }, [sendTransport]);
 
   /**
-   * On Send Transport created & connected as producer
+   * Actions performed on SpaceSpeaker joined
    */
-  useEffect(() => {
+  const onSpaceSpeakerJoin = async () => {
     if (!localProducerId) return;
     if (!spaceSpeakerId) {
       throw new Error('SpaceSpeaker ID is invalid.');
     }
-    joinSpaceSpeakerSocket(spaceSpeakerId)
-      .then(async () => fetchSpeakers(spaceSpeakerId))
-      .then(() =>
-        // Announce successfully join the SpaceSpeaker from client
-        toast({
-          title: `Join SpaceSpeaker`,
-          description: `You've joined SpaceSpeaker ${spaceSpeakerId}  successfully.`,
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-        })
-      )
-      .catch(console.error);
+
+    await joinSpaceSpeakerSocket(spaceSpeakerId);
+
+    await fetchSpeakers(spaceSpeakerId);
+
+    // Announce successfully join the SpaceSpeaker from client
+    toast({
+      title: `Join SpaceSpeaker`,
+      description: `You've joined SpaceSpeaker ${spaceSpeakerId}  successfully.`,
+      status: 'success',
+      duration: 5000,
+      isClosable: true,
+    });
+  };
+
+  /**
+   * On Send Transport created & connected as producer
+   */
+  useEffect(() => {
+    onSpaceSpeakerJoin().catch(console.error);
   }, [localProducerId]);
 
   /**
    * Unload Cleanup for SpaceSpeaker
    */
   const unloadCleanup = () => {
-    // TODO: Send client's socketId & producerId to terminate
     socket.emit(`${handlerNamespace.spaceSpeaker}:leave`, {
       spaceSpeakerId,
       producerId: localProducerId,
       sendTransportId: sendTransport?.id,
     });
-    /**
-     * Steps to remove:
-     * 1. retrieve producer collection and remove by localProducerId
-     * 2. retrieve transport collection and remove by transportId
-     * 3. (remove consumer?)
-     */
     console.log('Left SpaceSpeaker.');
   };
 
