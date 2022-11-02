@@ -6,7 +6,7 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import DrawerComponent from '@/components/DrawerComponent';
 import Pomodoro from '@/components/Pomodoro/Pomodoro';
-import Video from '@/components/VideoContainer/Video';
+import VideoContainer from '@/components/VideoContainer/VideoContainer';
 import WebSocketProvider from '@/modules/ws/WebSocketProvider';
 import AboutPage from '@/pages/about';
 import ErrorPage from '@/pages/error';
@@ -30,7 +30,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/video',
-    element: <Video url="https://www.youtube.com/watch?v=cDYzwFEFLvQ" />,
+    element: <VideoContainer />,
   },
 ]);
 

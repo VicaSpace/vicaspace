@@ -14,9 +14,13 @@ const Toolbar: React.FC<{
   numberOfParticipants: number;
   setIsMuted: Function;
   isMuted: boolean;
-}> = ({ numberOfParticipants, setIsMuted, isMuted }) => {
+  visible: boolean;
+}> = ({ numberOfParticipants, setIsMuted, isMuted, visible }) => {
   return (
-    <div className="toolbar-container">
+    <div
+      className="toolbar-container"
+      style={visible ? {} : { display: 'none' }}
+    >
       <div className="toobar-item">
         {numberOfParticipants}
         <FontAwesomeIcon icon={faUsers} style={{ paddingLeft: '5px' }} />
