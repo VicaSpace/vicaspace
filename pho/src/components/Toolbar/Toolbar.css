@@ -1,48 +1,48 @@
 .toolbar-container {
-    box-sizing: border-box;
+  box-sizing: border-box;
 
-    position: absolute;
-    width: 200px;
-    height: 46px;
-    top: 34px;
-    right: 62px;
+  position: absolute;
+  width: 200px;
+  height: 46px;
+  top: 34px;
+  right: 62px;
 
-    background: #D2DAFF;
-    border: 2px solid #B1B2FF;
-    border-radius: 15px;
+  background: #D2DAFF;
+  border: 2px solid #B1B2FF;
+  border-radius: 15px;
 
-    justify-content: center;
-    align-items: center;
+  justify-content: center;
+  align-items: center;
 
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 
 @media (max-width: 420px) {
-    .toolbar-container {
-        right: 20px;
-    }
+  .toolbar-container {
+    right: 20px;
+  }
 }
 
 .toobar-item {
-    display: inline-flex;
-    height: 100%;
+  display: inline-flex;
+  height: 100%;
 
-    justify-content: center;
-    align-items: center;
-    vertical-align: top;
+  justify-content: center;
+  align-items: center;
+  vertical-align: top;
 
-    flex: auto 1 1;
+  flex: auto 1 1;
 }
 
 .toolbar-container :first-child {
-    width: 30%
+  width: 30%
 }
 
 .toolbar-container :nth-child(2) {
-    width: 10%
+  width: 10%
 }
 
 .toobar-item+.toobar-item {
-    border-left: 1px solid black;
+  border-left: 1px solid black;
 }
