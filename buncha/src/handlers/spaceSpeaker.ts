@@ -37,11 +37,12 @@ export const registerSpaceSpeakerHandlers = (
     logger.info(
       `socketId ${socket.id}) has joined a space (spaceId: ${spaceSpeakerId})`
     );
-
     const spaceIdStr = spaceSpeakerId.toString();
+
     // Assign socket to a specific space
     await socket.join(spaceIdStr);
-    // Add spaceId to room
+
+    // Add spaceSpeakerId to user/socket collection
     socketCollection[socket.id].spaceSpeakerId = spaceSpeakerId;
 
     // Broadcast recent joined user to all sockets in space
@@ -54,7 +55,7 @@ export const registerSpaceSpeakerHandlers = (
       }
     );
 
-    callback();
+    callback(); // ACK
   };
   socket.on(`${handlerNamespace.spaceSpeaker}:join`, joinHandler);
 
@@ -91,8 +92,6 @@ export const registerSpaceSpeakerHandlers = (
 
     // Delete left user's producer
     delete producerCollection[producerId];
-
-    logger.info(`Deleted producer for leave-user ❌`);
 
     // Broadcast recent left user to all sockets in space
     io.to(spaceSpeakerIdStr).emit(
