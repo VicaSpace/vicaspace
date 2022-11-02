@@ -4,7 +4,7 @@ import asyncHandler from 'express-async-handler';
 import {
   getAllSpacesInfoHandler,
   getSpaceDetailsHandler,
-} from '@/controllers/spaces';
+} from '@/controllers/space';
 
 const router = Router();
 
