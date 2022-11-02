@@ -46,10 +46,16 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
         <div className="space-speaker-participant-list">
           {/* Client Avatar */}
           <div>
-            <SpaceSpeakerUserAvatar name={socket.id} />
+            {speakers ? (
+              <SpaceSpeakerUserAvatar name={socket.id} />
+            ) : (
+              <div>Join to see others!</div>
+            )}
+
             {/* Local Audio */}
             <audio ref={localAudioRef} autoPlay muted />
           </div>
+
           {/* Participant/Peer Avatar */}
           {speakers &&
             Object.values(speakers).map((p) => {
@@ -75,11 +81,11 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
             >
               JOIN SPACESPEAKER 🗣
             </div>
-          ) : isMuted ? (
+          ) : !isMuted ? (
             <div
               className="space-speaker-action-btn"
               onClick={() => {
-                setIsMuted(!isMuted);
+                setIsMuted(true);
               }}
             >
               MUTE 🔇
@@ -88,7 +94,7 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
             <div
               className="space-speaker-action-btn"
               onClick={() => {
-                setIsMuted(!isMuted);
+                setIsMuted(false);
               }}
             >
               UNMUTE 🔊

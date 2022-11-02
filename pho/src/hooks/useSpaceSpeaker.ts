@@ -16,6 +16,7 @@ import {
   insertSpeaker,
   leaveSpaceSpeaker,
   setSpeakers,
+  unsetSpeakers,
 } from '@/states/spaceSpeaker/slice';
 import {
   ClientConsumeResponse,
@@ -89,7 +90,7 @@ export const useSpaceSpeaker = (
       audioParams.track.stop();
 
       // Clear all speakers from space
-      dispatch(setSpeakers({}));
+      dispatch(unsetSpeakers());
 
       // Offload socket on unmount
       socket.off(`${handlerNamespace.spaceSpeaker}:recent-user-join`);
@@ -139,10 +140,9 @@ export const useSpaceSpeaker = (
       `${handlerNamespace.spaceSpeaker}:recent-user-leave`,
       ({ socketId }: RecentUserLeavePayload) => {
         if (socketId === socket.id) return; // Skip client ID
-        console.log(`User (${socketId}) left the space ❌.`);
-
         // Detach RecvTransport from deleting speaker
         setDeleteSpeakerId(socketId);
+        console.log(`User (${socketId}) left the space ❌.`);
       }
     );
   }, [socket, device, spaceSpeakerId]);
@@ -432,7 +432,6 @@ export const useSpaceSpeaker = (
     onJoinSpaceSpeaker().catch(console.error);
   }, [spaceSpeakerId]);
 
-  /* * * Device lifecycle for Send Transport * * */
   /**
    * On device loaded
    */
@@ -554,8 +553,10 @@ export const useSpaceSpeaker = (
               peerSocketId,
             },
           }));
+
           // Update recent RecvTransportId
           setRecentRecvTransportId(recvTsp.id);
+
           resolve();
         }
       );

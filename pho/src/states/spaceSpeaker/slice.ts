@@ -59,6 +59,14 @@ const spaceSpeakerSlice = createSlice({
     },
 
     /**
+     * Unset list of speakers
+     * @param state State
+     */
+    unsetSpeakers(state) {
+      delete state.data.speakers;
+    },
+
+    /**
      * Insert a new Speaker to the current SpaceSpeaker section
      * @param state State
      * @param action Action
@@ -94,6 +102,7 @@ const spaceSpeakerSlice = createSlice({
 export const {
   joinSpaceSpeaker,
   setSpeakers,
+  unsetSpeakers,
   insertSpeaker,
   deleteSpeaker,
   leaveSpaceSpeaker,
