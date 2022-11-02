@@ -73,8 +73,10 @@ export const registerSpaceSpeakerHandlers = (
       );
       return;
     }
-    // Unassign socket from a specific space
+
     const spaceSpeakerIdStr = spaceSpeakerId.toString();
+
+    // Unassign socket from a specific space
     await socket.leave(spaceSpeakerIdStr);
 
     // Delete socket's current SpaceSpeaker session
@@ -84,14 +86,15 @@ export const registerSpaceSpeakerHandlers = (
     Object.keys(consumerCollection).forEach((k) => {
       if (consumerCollection[k].producerId !== producerId) return;
 
-      // Delete the transport along with its consumer association
+      // Delete the transport along with its consumer's association
       delete transportCollection[consumerCollection[k].transportId];
       delete consumerCollection[k];
     });
-    logger.info(`Deleted consumers for leave-user ❌`);
+    logger.info(`Deleted consumers and their transports for leaving user ❌`);
 
     // Delete left user's producer
     delete producerCollection[producerId];
+    logger.info(`Deleted producer for leaving user ❌`);
 
     // Broadcast recent left user to all sockets in space
     io.to(spaceSpeakerIdStr).emit(
