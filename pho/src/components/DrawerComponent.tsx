@@ -9,7 +9,10 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useEffect } from 'react';
+import { matchPath, useLocation } from 'react-router-dom';
 
+import ChatContainer from '@/components/ChatArea/ChatContainer/ChatContainer';
+import PopularSpace from '@/components/PopularSpace/PopularSpace';
 import SignInComponent from '@/components/SignInContainer/SignInComponent';
 import SpaceSpeakerSection from '@/components/SpaceSpeaker/SpaceSpeakerSection';
 import { getUserInfoViaAPI } from '@/lib/apis/auth';
@@ -17,15 +20,24 @@ import { signIn, signOut } from '@/states/auth/slice';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
 
 function DrawerComponent() {
+  const { pathname } = useLocation();
+  const isAllSpacesURL = matchPath(
+    {
+      path: '/',
+    },
+    pathname
+  );
+  const isSpecificSpaceURL = matchPath(
+    {
+      path: '/spaces/:id',
+    },
+    pathname
+  );
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(
     (state) => state.authSlice.isAuthenticated
-  );
-  const username = useAppSelector((state) => state.authSlice.username);
-
-  const { id: spaceId } = useAppSelector(
-    (state) => state.spaceDetailSlice.data
   );
 
   useEffect(() => {
@@ -45,17 +57,15 @@ function DrawerComponent() {
 
   const renderContent = () => {
     // Protected route
-    if (!isAuthenticated) {
-      return <SignInComponent />;
-    }
-    // Space ID is allocated or not
-    if (spaceId) {
-      return <SpaceSpeakerSection />;
-    }
-    return !isAuthenticated && <SignInComponent />;
-    // return !isAuthenticated && <SignInComponent />;
-    // if (!isAuthenticated) return <SignInComponent />;
-    // else return <ChatArea username={username} />;
+    if (!isAuthenticated) return <SignInComponent />;
+    if (isAllSpacesURL) return <PopularSpace />;
+    else if (isSpecificSpaceURL)
+      return (
+        <>
+          <SpaceSpeakerSection />
+          <ChatContainer />
+        </>
+      );
   };
 
   return (

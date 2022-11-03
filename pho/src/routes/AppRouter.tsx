@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
+import DrawerComponent from '@/components/DrawerComponent';
 import Pomodoro from '@/components/Pomodoro/Pomodoro';
 import Video from '@/components/VideoContainer/Video';
 import NotFound404 from '@/pages/NotFound404';
@@ -15,6 +16,7 @@ const AppRouter: React.FC = () => {
   return (
     <>
       <Router>
+        <DrawerComponent />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />

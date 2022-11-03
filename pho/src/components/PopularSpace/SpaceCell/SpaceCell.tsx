@@ -1,15 +1,23 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
-import { HStack, Heading, Image, Text, VStack } from '@chakra-ui/react';
+import {
+  HStack,
+  Heading,
+  Image,
+  Text,
+  VStack,
+  useDisclosure,
+} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import LinesEllipsis from 'react-lines-ellipsis';
 
 import noOnlUsersIcon from '@/asset/noOnlUsersIcon.png';
+import SpaceModal from '@/components/WorldMap/SpaceModal';
 
 const SpaceCell: React.FC<{ space: any }> = ({ space }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const URL = process.env.REACT_APP_BACKEND_URL ?? '';
-
   const [spaceInfo, setSpaceInfo] = useState<any>(null);
 
   useEffect(() => {
@@ -35,6 +43,7 @@ const SpaceCell: React.FC<{ space: any }> = ({ space }) => {
       _hover={{
         border: '1px solid black',
       }}
+      onClick={onOpen}
     >
       <HStack w="100%" h="50%">
         <Heading w="70%" size="md" fontFamily="Inconsolata" float="left">
@@ -55,6 +64,7 @@ const SpaceCell: React.FC<{ space: any }> = ({ space }) => {
           basedOn="letters"
         />
       </Text>
+      <SpaceModal isOpen={isOpen} onClose={onClose} spaceId={space.id} />
     </VStack>
   );
 };

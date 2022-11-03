@@ -19,7 +19,7 @@ const ChatBubble: React.FC<{
           maxW="350px"
           my="1"
           p="3"
-          mt="2"
+          mt="5"
           borderRadius="10px"
         >
           <Text fontSize="13">{message}</Text>
@@ -42,7 +42,7 @@ const ChatBubble: React.FC<{
           my="1"
           p="3"
           ml="2"
-          mt="2"
+          mt="5"
           fontSize="13"
           borderRadius="10px"
         >
