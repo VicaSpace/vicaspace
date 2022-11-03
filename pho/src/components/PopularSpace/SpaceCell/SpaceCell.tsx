@@ -1,0 +1,66 @@
+import axios from 'axios';
+import PropTypes from 'prop-types';
+
+import { HStack, Heading, Image, Text, VStack } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import LinesEllipsis from 'react-lines-ellipsis';
+
+import noOnlUsersIcon from '@/asset/noOnlUsersIcon.png';
+
+const SpaceCell: React.FC<{ space: any }> = ({ space }) => {
+  const URL = process.env.REACT_APP_BACKEND_URL ?? '';
+
+  const [spaceInfo, setSpaceInfo] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchSpaceInfo = async () => {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      const spaceInfo = (await axios.get(`${URL}/api/spaces/${space.id}`)).data;
+      setSpaceInfo(spaceInfo);
+    };
+
+    fetchSpaceInfo().catch((e) => {
+      console.log(e);
+    });
+  }, []);
+
+  return (
+    <VStack
+      w="100%"
+      h="80px"
+      backgroundColor="#FFFFFF"
+      borderRadius="10px"
+      p="10px 20px"
+      cursor="pointer"
+      _hover={{
+        border: '1px solid black',
+      }}
+    >
+      <HStack w="100%" h="50%">
+        <Heading w="70%" size="md" fontFamily="Inconsolata" float="left">
+          {spaceInfo !== null ? spaceInfo.name : ''}
+        </Heading>
+        <HStack w="30%" justify="right">
+          <Image src={noOnlUsersIcon} />
+          <Text>{spaceInfo !== null ? spaceInfo.members.length : 0}</Text>
+        </HStack>
+      </HStack>
+      <Text w="100%" h="50%" fontFamily="Inconsolata" fontSize="16px">
+        <LinesEllipsis
+          text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit,
+          quibusdam!"
+          maxLine="1"
+          ellipsis="..."
+          trimRight
+          basedOn="letters"
+        />
+      </Text>
+    </VStack>
+  );
+};
+
+SpaceCell.propTypes = {
+  space: PropTypes.any.isRequired,
+};
+
+export default SpaceCell;
