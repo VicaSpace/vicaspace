@@ -3,7 +3,11 @@ import ReactPlayer from 'react-player';
 
 import './Video.css';
 
-const Video: React.FC<{ url: string }> = ({ url }) => {
+const Video: React.FC<{
+  url: string;
+  isMuted: boolean;
+  enableToolbar: Function;
+}> = ({ url, isMuted, enableToolbar }) => {
   const [loadScreenClass, setLoadScreenClass] = useState('loading-screen');
 
   return (
@@ -13,7 +17,7 @@ const Video: React.FC<{ url: string }> = ({ url }) => {
         id="video"
         url={url}
         playing={true}
-        muted={true}
+        muted={isMuted}
         config={{
           youtube: {
             playerVars: {
@@ -28,6 +32,7 @@ const Video: React.FC<{ url: string }> = ({ url }) => {
         onPlay={() => {
           setTimeout(() => {
             setLoadScreenClass((prev) => prev + ' hide'); // hide loading screen
+            enableToolbar();
           }, 3000);
         }}
       />
