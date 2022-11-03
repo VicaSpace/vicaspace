@@ -28,3 +28,8 @@ export const getUserInfoViaAPI = async (accessToken: string) => {
   const res = await axios.get(`${URL}/api/auth/info`, config);
   return res;
 };
+
+export const getRegisterSaltViaAPI = async () => {
+  const res = await axios.get(`${URL}/api/auth/salt`);
+  return res.data.salt;
+};

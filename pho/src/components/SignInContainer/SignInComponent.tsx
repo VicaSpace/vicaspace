@@ -18,7 +18,11 @@ import { useAppDispatch } from '@/states/hooks';
 
 import './SignInComponent.css';
 
-function SignInComponent() {
+interface SignInComponentProps {
+  onOpenRegister: () => void;
+}
+
+function SignInComponent({ onOpenRegister }: SignInComponentProps) {
   const [signInError, setSignInError] = useState('');
   const dispatch = useAppDispatch();
 
@@ -133,7 +137,9 @@ function SignInComponent() {
         )}
       </Formik>
       <Center>
-        <Text className="register-text">Register</Text>
+        <Text className="register-text" onClick={onOpenRegister}>
+          Register
+        </Text>
       </Center>
     </div>
   );

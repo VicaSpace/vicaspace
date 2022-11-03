@@ -8,9 +8,10 @@ import {
   IconButton,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import ChatArea from '@/components/ChatArea/ChatArea';
+import Register from '@/components/RegisterContainer/Register';
 import SignInComponent from '@/components/SignInContainer/SignInComponent';
 import { getUserInfoViaAPI } from '@/lib/apis/auth';
 import { signIn, signOut } from '@/states/auth/slice';
@@ -39,10 +40,29 @@ function DrawerComponent() {
     }
   }, []);
 
+  const [isRegistering, setIsRegistering] = useState(true);
+
   const renderContent = () => {
     // return !isAuthenticated && <SignInComponent />;
-    if (!isAuthenticated) return <SignInComponent />;
-    else return <ChatArea username={username} />;
+    if (!isAuthenticated) {
+      if (isRegistering) {
+        return (
+          <Register
+            onOpenLogin={() => {
+              setIsRegistering(false);
+            }}
+          />
+        );
+      } else {
+        return (
+          <SignInComponent
+            onOpenRegister={() => {
+              setIsRegistering(true);
+            }}
+          />
+        );
+      }
+    } else return <ChatArea username={username} />;
   };
 
   return (
