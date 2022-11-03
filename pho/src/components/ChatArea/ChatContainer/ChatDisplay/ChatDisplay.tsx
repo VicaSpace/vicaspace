@@ -1,13 +1,20 @@
 import { collection, onSnapshot } from 'firebase/firestore';
 
-import React, { useEffect, useState } from 'react';
+import { Flex } from '@chakra-ui/react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import ChatBubble from '@/components/ChatContainer/ChatDisplay/ChatBubble/ChatBubble';
+import ChatBubble from '@/components/ChatArea/ChatContainer/ChatDisplay/ChatBubble/ChatBubble';
 import db from '@/lib/init-firebase';
 
 import './ChatDisplay.css';
 
 const ChatDisplay: React.FC<{ username: string }> = ({ username }) => {
+  const AlwaysScrollToBottom = () => {
+    const elementRef = useRef<null | HTMLDivElement>(null);
+    useEffect(() => elementRef.current?.scrollIntoView());
+    return <div ref={elementRef} />;
+  };
+
   const [chatList, setChatList] = useState<
     Array<{
       id: string;
@@ -45,20 +52,27 @@ const ChatDisplay: React.FC<{ username: string }> = ({ username }) => {
   }, []);
 
   return (
-    <div className="content__body">
-      <div className="chat__items">
-        {chatList.map((item) => {
-          return (
-            <ChatBubble
-              key={item.id}
-              username={item.username === username ? 'me' : item.username}
-              message={item.message}
-            />
-          );
-        })}
-        <div />
-      </div>
-    </div>
+    <Flex
+      w="100%"
+      h="85%"
+      overflowY="scroll"
+      flexDirection="column"
+      p="3"
+      className="chat-display"
+    >
+      {chatList.map((item) => {
+        return (
+          <ChatBubble
+            key={item.id}
+            sender={item.username === username ? 'me' : item.username}
+            // username={item.username === username ? 'me' : item.username}
+            username={item.username}
+            message={item.message}
+          />
+        );
+      })}
+      <AlwaysScrollToBottom />
+    </Flex>
   );
 };
 

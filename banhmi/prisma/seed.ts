@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import 'dotenv/config';
 import { sha256 } from 'js-sha256';
 
 const characters =
@@ -23,6 +24,7 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
   salt = getRandomString(50);
@@ -34,6 +36,115 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
+    },
+  });
+  salt = getRandomString(50);
+  await prisma.user.upsert({
+    where: { username: 'chau' },
+    update: {},
+    create: {
+      username: 'chau',
+      spaceId: 1,
+      salt: salt,
+      hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
+    },
+  });
+  salt = getRandomString(50);
+  await prisma.user.upsert({
+    where: { username: 'trungngo' },
+    update: {},
+    create: {
+      username: 'trungngo',
+      spaceId: 1,
+      salt: salt,
+      hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
+    },
+  });
+  salt = getRandomString(50);
+  await prisma.user.upsert({
+    where: { username: 'long' },
+    update: {},
+    create: {
+      username: 'long',
+      spaceId: 1,
+      salt: salt,
+      hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
+    },
+  });
+  salt = getRandomString(50);
+  await prisma.user.upsert({
+    where: { username: 'tan' },
+    update: {},
+    create: {
+      username: 'tan',
+      spaceId: 1,
+      salt: salt,
+      hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
+    },
+  });
+  salt = getRandomString(50);
+  await prisma.user.upsert({
+    where: { username: 'kien' },
+    update: {},
+    create: {
+      username: 'kien',
+      spaceId: 1,
+      salt: salt,
+      hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
+    },
+  });
+  salt = getRandomString(50);
+  await prisma.user.upsert({
+    where: { username: 'toan' },
+    update: {},
+    create: {
+      username: 'toan',
+      spaceId: 1,
+      salt: salt,
+      hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
+    },
+  });
+  salt = getRandomString(50);
+  await prisma.user.upsert({
+    where: { username: 'hai' },
+    update: {},
+    create: {
+      username: 'hai',
+      spaceId: 1,
+      salt: salt,
+      hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
+    },
+  });
+  salt = getRandomString(50);
+  await prisma.user.upsert({
+    where: { username: 'hung' },
+    update: {},
+    create: {
+      username: 'hung',
+      spaceId: 1,
+      salt: salt,
+      hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
+    },
+  });
+  salt = getRandomString(50);
+  await prisma.user.upsert({
+    where: { username: 'binh' },
+    update: {},
+    create: {
+      username: 'binh',
+      spaceId: 1,
+      salt: salt,
+      hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
 }

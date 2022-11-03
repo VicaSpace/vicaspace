@@ -20,7 +20,9 @@ const initialState: SpaceState = {
 
 export const fetchAllSpaces = createAsyncThunk('spaces/fetchAll', async (_) => {
   try {
-    const response = await axios.get('http://localhost:4000/api/spaces');
+    const response = await axios.get(
+      `${process.env.REACT_APP_BACKEND_URL ?? ''}/api/spaces`
+    );
     return response.data;
   } catch (err) {
     console.log(err);

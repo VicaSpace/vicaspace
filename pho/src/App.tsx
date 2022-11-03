@@ -2,37 +2,12 @@ import { ChakraProvider } from '@chakra-ui/react';
 import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider } from 'react-redux';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import DrawerComponent from '@/components/DrawerComponent';
-import Pomodoro from '@/components/Pomodoro/Pomodoro';
-import VideoContainer from '@/components/VideoContainer/VideoContainer';
 import WebSocketProvider from '@/modules/ws/WebSocketProvider';
-import AboutPage from '@/pages/about';
-import ErrorPage from '@/pages/error';
-import HomePage from '@/pages/home';
+import AppRouter from '@/routes/AppRouter';
 import { store } from '@/states/store';
-
-/// Routes config
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <HomePage />,
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: '/about',
-    element: <AboutPage />,
-  },
-  {
-    path: '/pomo',
-    element: <Pomodoro timestamp={1666794382000} serverTime={Date.now()} />,
-  },
-  {
-    path: '/video',
-    element: <VideoContainer />,
-  },
-]);
+import { theme } from '@/theme';
 
 const App: React.FC<{}> = () => {
   return (
@@ -40,8 +15,8 @@ const App: React.FC<{}> = () => {
       <HelmetProvider>
         <Provider store={store}>
           <WebSocketProvider>
-            <ChakraProvider>
-              <RouterProvider router={router} />
+            <ChakraProvider theme={theme}>
+              <AppRouter />
               <DrawerComponent />
             </ChakraProvider>
           </WebSocketProvider>
