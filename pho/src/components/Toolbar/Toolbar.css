@@ -24,7 +24,7 @@
   }
 }
 
-.toobar-item {
+.toolbar-item {
   display: inline-flex;
   height: 100%;
 
@@ -39,10 +39,6 @@
   width: 30%
 }
 
-.toolbar-container :nth-child(2) {
-  width: 10%
-}
-
-.toobar-item+.toobar-item {
+.toolbar-item+.toolbar-item {
   border-left: 1px solid black;
 }
