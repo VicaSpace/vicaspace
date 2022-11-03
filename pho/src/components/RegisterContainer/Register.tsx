@@ -1,4 +1,4 @@
-import { Field, Formik, FormikProps } from 'formik';
+import { Field, Form, Formik, FormikProps } from 'formik';
 import { sha256 } from 'js-sha256';
 
 import {
@@ -10,7 +10,6 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import { Form } from 'react-router-dom';
 
 import { getRegisterSaltViaAPI, registerViaAPI } from '@/lib/apis/auth';
 
