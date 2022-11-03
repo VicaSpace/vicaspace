@@ -34,7 +34,6 @@ export const getSpaceDetails = async (spaceId) => {
         latitude: true,
         longitude: true,
         startTime: true,
-        serverTime: true,
         members: {
           select: {
             id: true,
@@ -49,7 +48,10 @@ export const getSpaceDetails = async (spaceId) => {
         longBreakDuration: true,
       },
     });
-    return spaceDetails;
+    return {
+      ...spaceDetails,
+      serverTime: new Date(),
+    };
   } catch (error) {
     logger.error(error);
     throw new Error('error querying the space');

@@ -4,6 +4,15 @@ import { prisma } from '@/db';
 import { getAllSpacesInfo, getSpaceDetails } from '@/services/spaceService';
 
 describe('test space service', () => {
+  beforeAll(() => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date(2020, 3, 1));
+  });
+
+  afterAll(() => {
+    jest.useRealTimers();
+  });
+
   it('should return a list of space info', async () => {
     const expected = [
       {
@@ -36,7 +45,7 @@ describe('test space service', () => {
       latitude: 21.033333,
       longitude: 105.849998,
       startTime: '2022-10-10T23:50:21.817Z',
-      serverTime: '2020-10-10T23:50:21.817Z',
+      serverTime: new Date(2020, 3, 1),
       members: [
         {
           id: 1,
@@ -54,7 +63,7 @@ describe('test space service', () => {
       .spyOn(prisma.space, 'findFirstOrThrow')
       .mockResolvedValue(expected as any);
     const value = await getSpaceDetails(2);
-    expect(value).toBe(expected);
+    expect(value).toStrictEqual(expected);
   });
 
   it('should throw error on getting a space detail', () => {
