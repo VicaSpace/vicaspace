@@ -45,7 +45,7 @@ function DrawerComponent() {
     }
   }, []);
 
-  const [isRegistering, setIsRegistering] = useState(true);
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const renderContent = () => {
     // Protected route
