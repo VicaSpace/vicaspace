@@ -5,6 +5,7 @@ import {
   socketCollection,
   transportCollection,
 } from '@/data/collections';
+import { getUserBySocketId } from '@/lib/apis/user';
 import { logger } from '@/lib/logger';
 import {
   GetSpeakersErrorResponse,
@@ -32,11 +33,24 @@ export const registerSpaceSpeakerHandlers = (
    * @param payload Payload
    * @param callback Callback
    */
-  const joinHandler = async (payload: JoinPayload, callback: () => void) => {
+  const joinHandler = async (
+    payload: JoinPayload,
+    callback: (payload?: any) => void
+  ) => {
     const { spaceSpeakerId, producerId } = payload;
+    // Query user info from socketId
+    const user = await getUserBySocketId(socket.id);
+    if (!user) {
+      return callback({
+        status: 'NOK',
+        error: 'Cannot retrieve user from socketID',
+      });
+    }
+
     logger.info(
-      `socketId ${socket.id}) has joined a space (spaceId: ${spaceSpeakerId})`
+      `User (${user.username} w/ sId: ${socket.id}) has joined a space (spaceId: ${spaceSpeakerId})`
     );
+
     const spaceIdStr = spaceSpeakerId.toString();
 
     // Assign socket to a specific space
@@ -50,12 +64,16 @@ export const registerSpaceSpeakerHandlers = (
       `${handlerNamespace.spaceSpeaker}:recent-user-join`,
       {
         socketId: socket.id,
+        userId: user.id,
+        username: user.username,
         producerId,
         msg: `User (socketId: ${socket.id}) has joined the SpaceSpeaker.`,
       }
     );
 
-    callback(); // ACK
+    callback({
+      status: 'OK',
+    });
   };
   socket.on(`${handlerNamespace.spaceSpeaker}:join`, joinHandler);
 
@@ -133,16 +151,23 @@ export const registerSpaceSpeakerHandlers = (
 
     // Get speakers along with their current producerId
     const response: SpeakerDetails = {};
-    // Associate speaker id with producer.
-    Object.keys(producerCollection).forEach((producerId) => {
-      const { socketId } = producerCollection[producerId];
-      if (speakerSocketIds?.has(socketId)) {
-        response[socketId] = {
-          id: socketId,
-          producerId,
-        };
-      }
-    });
+    // Associate speaker id with producer, user's info.
+    await Promise.all(
+      Object.keys(producerCollection).map(async (producerId) => {
+        const { socketId } = producerCollection[producerId];
+        if (speakerSocketIds?.has(socketId)) {
+          const user = await getUserBySocketId(socketId);
+          if (user) {
+            response[socketId] = {
+              id: socketId,
+              userId: user.id,
+              username: user.username,
+              producerId,
+            };
+          }
+        }
+      })
+    );
     return callback({
       speakers: response,
     });

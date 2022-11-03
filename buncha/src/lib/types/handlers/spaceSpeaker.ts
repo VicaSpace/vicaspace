@@ -18,6 +18,8 @@ export interface GetSpeakersPayload {
 export interface SpeakerDetails {
   [id: string]: {
     id: string;
+    userId: number;
+    username: string;
     producerId: string;
   };
 }

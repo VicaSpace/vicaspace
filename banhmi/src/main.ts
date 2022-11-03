@@ -1,18 +1,17 @@
 import cors from 'cors';
 import 'dotenv/config';
-import express, { NextFunction, Request, Response } from 'express';
+import express, {NextFunction, Request, Response} from 'express';
 import http from 'http';
 import pinoHttp from 'pino-http';
 
 import router from '@/routes';
-import { logger } from '@/utils/logger';
+import {logger} from '@/utils/logger';
 
 const pinoHttpMiddleware = pinoHttp();
 
 const main = async () => {
   /* Express App setup */
   const app = express();
-  // TODO: Create HTTPS server instead of HTTP
   app.use(cors());
   app.set('trust proxy', 1);
   app.use(pinoHttpMiddleware);

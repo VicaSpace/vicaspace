@@ -76,7 +76,7 @@ export const useSpaceSpeaker = (
         duration: 3000,
         isClosable: true,
       });
-      // TODO: Send client's socketId & producerId to terminate
+
       socket.emit(`${handlerNamespace.spaceSpeaker}:leave`, {
         spaceSpeakerId,
         producerId: localProducerId,
@@ -104,7 +104,7 @@ export const useSpaceSpeaker = (
     // Handle recent user join to SpaceSpeaker
     socket.on(
       `${handlerNamespace.spaceSpeaker}:recent-user-join`,
-      ({ socketId, producerId }: RecentUserJoinPayload) => {
+      ({ socketId, userId, username, producerId }: RecentUserJoinPayload) => {
         // Skip client's own ID
         if (socket.id === socketId) return;
 
@@ -129,6 +129,8 @@ export const useSpaceSpeaker = (
         dispatch(
           insertSpeaker({
             id: socketId,
+            userId,
+            username,
             producerId,
           })
         );
@@ -493,7 +495,6 @@ export const useSpaceSpeaker = (
   };
 
   useEffect(() => {
-    // TODO: Add a leave mechanism for moving between 2 tabs
     // Add tab unload listener
     window.addEventListener('beforeunload', unloadCleanup);
     return () => {

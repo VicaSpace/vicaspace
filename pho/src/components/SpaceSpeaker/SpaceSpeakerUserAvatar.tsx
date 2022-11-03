@@ -8,7 +8,6 @@ interface SpaceSpeakerUserAvatarProps {
 }
 
 const SpaceSpeakerUserAvatar: React.FC<SpaceSpeakerUserAvatarProps> = ({
-  imgUrl = 'https://i.imgur.com/wcASKbZ.png',
   name,
 }) => {
   useEffect(() => {
@@ -19,7 +18,7 @@ const SpaceSpeakerUserAvatar: React.FC<SpaceSpeakerUserAvatarProps> = ({
       <img
         // Dummy key
         className="space-speaker-participant-img"
-        src={imgUrl}
+        src={`https://ui-avatars.com/api/?name=${name ?? 'VicaSpace'}`}
         alt="participant"
       />
       <div>{name}</div>

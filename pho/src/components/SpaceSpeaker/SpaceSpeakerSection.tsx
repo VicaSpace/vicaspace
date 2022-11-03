@@ -18,10 +18,13 @@ interface SpaceSpeakerSectionProps {}
 const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
   const { socket } = useContext(WebSocketContext);
   const dispatch = useAppDispatch();
+
   // SpaceDetail Slice
   const { id: spaceId } = useAppSelector(
     (state) => state.spaceDetailSlice.data
   );
+  // Auth Slice
+  const { username } = useAppSelector((state) => state.authSlice);
 
   // SpaceSpeaker Slice
   const { data: spaceSpeakerData } = useAppSelector(
@@ -44,10 +47,10 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
         {/* Participants list */}
         {/* Blur participation List before joining! */}
         <div className="space-speaker-participant-list">
-          {/* Client Avatar */}
+          {/* Client Audio */}
           <div>
             {speakers ? (
-              <SpaceSpeakerUserAvatar name={socket.id} />
+              <SpaceSpeakerUserAvatar name={username} />
             ) : (
               <div>Join to see others!</div>
             )}
@@ -56,7 +59,7 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
             <audio ref={localAudioRef} autoPlay muted />
           </div>
 
-          {/* Participant/Peer Avatar */}
+          {/* Peer Audios */}
           {speakers &&
             Object.values(speakers).map((p) => {
               return p.id !== socket.id ? (

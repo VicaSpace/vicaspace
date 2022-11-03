@@ -1,22 +1,22 @@
 import 'dotenv/config';
-import express, { NextFunction, Request, Response } from 'express';
-import { readFileSync } from 'fs';
+import express, {NextFunction, Request, Response} from 'express';
+import {readFileSync} from 'fs';
 import https from 'httpolyglot';
-import { ServerOptions } from 'https';
-import { createWorker } from 'mediasoup';
-import { Router } from 'mediasoup/node/lib/Router';
-import { RtpCodecCapability } from 'mediasoup/node/lib/RtpParameters';
+import {ServerOptions} from 'https';
+import {createWorker} from 'mediasoup';
+import {Router} from 'mediasoup/node/lib/Router';
+import {RtpCodecCapability} from 'mediasoup/node/lib/RtpParameters';
 import path from 'path';
 import pinoHttp from 'pino-http';
-import { Server } from 'socket.io';
+import {Server} from 'socket.io';
 
 import config from '@/config';
-import { socketCollection, spaceSpeakerCollection } from '@/data/collections';
-import { registerConnHandlers } from '@/handlers/conn';
-import { registerRtcHandlers } from '@/handlers/rtc';
-import { registerSpaceSpeakerHandlers } from '@/handlers/spaceSpeaker';
-import { getAllSpaces } from '@/lib/apis/space';
-import { logger } from '@/lib/logger';
+import {socketCollection, spaceSpeakerCollection} from '@/data/collections';
+import {registerConnHandlers} from '@/handlers/conn';
+import {registerRtcHandlers} from '@/handlers/rtc';
+import {registerSpaceSpeakerHandlers} from '@/handlers/spaceSpeaker';
+import {getAllSpaces} from '@/lib/apis/space';
+import {logger} from '@/lib/logger';
 
 const pinoHttpMiddleware = pinoHttp({
   ...(process.env.NODE_ENV !== 'production' && {
@@ -64,7 +64,6 @@ const main = async () => {
     },
   });
 
-  // TODO: Add some middleware for socket authentication
   const worker = await createWorker();
   const mediaCodecs: RtpCodecCapability[] = [
     {
