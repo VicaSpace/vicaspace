@@ -78,7 +78,7 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
             <div
               className="space-speaker-action-btn"
               onClick={() => {
-                // NOTE: Join with same spaceId
+                // NOTE: Join with the same spaceId
                 dispatch(joinSpaceSpeaker(spaceId as number));
               }}
             >
