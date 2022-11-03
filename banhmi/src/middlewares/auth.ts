@@ -1,9 +1,15 @@
 import { Request } from 'express';
+import createHttpError from 'http-errors';
 
 import { prisma } from '@/db';
 
 const authenticate = async function (req: Request, res, next) {
   const accessToken = req.headers.authorization?.split(' ')[1];
+
+  if (typeof accessToken === 'undefined') {
+    return next(createHttpError(401, 'Unauthorized'));
+  }
+
   const token = await prisma.authToken.findFirst({
     where: {
       accessToken: accessToken,
@@ -11,17 +17,14 @@ const authenticate = async function (req: Request, res, next) {
   });
 
   // check if token is not null
-  if (token === null)
-    return res.status(403).json({
-      error: 'Unauthorized',
-    });
+  if (token === null) {
+    return next(createHttpError(401, 'Unauthorized'));
+  }
 
   // check if accessToken expired
-  if (token.expiredTime < new Date())
-    return res.status(403).json({
-      error: 'Unauthorized',
-    });
-
+  if (token.expiredTime < new Date()) {
+    return next(createHttpError(401, 'Unauthorized'));
+  }
   // get user profile
   const user = await prisma.user.findFirst({
     where: {
