@@ -15,9 +15,7 @@ const SpacePage: React.FC<{}> = () => {
   const { socket } = useContext(WebSocketContext);
 
   // Space Slice
-  const { data, error, status } = useAppSelector(
-    (state) => state.spaceDetailSlice
-  );
+  const { data } = useAppSelector((state) => state.spaceDetailSlice);
   const { name } = data;
 
   // SpaceSpeaker Slice
