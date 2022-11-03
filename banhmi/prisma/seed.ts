@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import 'dotenv/config';
 import { sha256 } from 'js-sha256';
 
 const characters =

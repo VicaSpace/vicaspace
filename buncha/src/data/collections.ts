@@ -2,13 +2,13 @@ import {
   ConsumerCollection,
   ProducerCollection,
   SocketCollection,
-  SpaceCollection,
+  SpaceSpeakerCollection,
   TransportCollection,
 } from '@/lib/types/collection';
 
 export const socketCollection: SocketCollection = {};
 
-export const spaceCollection: SpaceCollection = {};
+export const spaceSpeakerCollection: SpaceSpeakerCollection = {};
 
 export const transportCollection: TransportCollection = {};
 
