@@ -3,6 +3,7 @@ import { Transport } from 'mediasoup-client/lib/Transport';
 
 import { useToast } from '@chakra-ui/react';
 import { createRef, useContext, useEffect, useRef, useState } from 'react';
+import { useBeforeunload } from 'react-beforeunload';
 import { useDispatch } from 'react-redux';
 
 import config from '@/config';
@@ -179,10 +180,14 @@ export const useSpaceSpeaker = (
   const joinSpaceSpeakerSocket = async (
     spaceSpeakerId: number
   ): Promise<void> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        return reject(new Error('Unauthorized called to WebSocket.'));
+      }
       socket.emit(
         `${handlerNamespace.spaceSpeaker}:join`,
-        { spaceSpeakerId, producerId: localProducerId },
+        { spaceSpeakerId, producerId: localProducerId, accessToken },
         () => {
           console.log(
             `Join SpaceSpeaker (id: ${spaceSpeakerId}) successfully.`
@@ -200,9 +205,13 @@ export const useSpaceSpeaker = (
    */
   const fetchSpeakers = async (spaceSpeakerId: number): Promise<void> => {
     return new Promise((resolve, reject) => {
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        return reject(new Error('Unauthorized called to WebSocket.'));
+      }
       socket.emit(
         `${handlerNamespace.spaceSpeaker}:get-speakers`,
-        { spaceSpeakerId },
+        { spaceSpeakerId, accessToken },
         async (res: GetSpeakersResponse) => {
           if (res.error) {
             return reject(res.error);
@@ -482,26 +491,6 @@ export const useSpaceSpeaker = (
     onSpaceSpeakerJoin().catch(console.error);
   }, [localProducerId]);
 
-  /**
-   * Unload Cleanup for SpaceSpeaker
-   */
-  const unloadCleanup = () => {
-    socket.emit(`${handlerNamespace.spaceSpeaker}:leave`, {
-      spaceSpeakerId,
-      producerId: localProducerId,
-      sendTransportId: sendTransport?.id,
-    });
-    console.log('Left SpaceSpeaker.');
-  };
-
-  useEffect(() => {
-    // Add tab unload listener
-    window.addEventListener('beforeunload', unloadCleanup);
-    return () => {
-      window.removeEventListener('beforeunload', unloadCleanup);
-    };
-  }, [unloadCleanup]);
-
   /* * * RECV Section * * */
 
   /**
@@ -648,6 +637,17 @@ export const useSpaceSpeaker = (
       );
     });
   };
+
+  /* * On Unload event * */
+  useBeforeunload(() => {
+    socket.emit(`${handlerNamespace.spaceSpeaker}:leave`, {
+      spaceSpeakerId,
+      producerId: localProducerId,
+      sendTransportId: sendTransport?.id,
+    });
+    console.log('Left SpaceSpeaker.');
+  });
+
   return { localAudioRef, peerAudioRefs };
 };
 

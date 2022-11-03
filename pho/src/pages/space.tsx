@@ -18,8 +18,6 @@ const SpacePage: React.FC<{}> = () => {
   const { data } = useAppSelector((state) => state.spaceDetailSlice);
   const { name } = data;
 
-  // SpaceSpeaker Slice
-
   /**
    * Assume that you'll be assigned the pageId when u first access
    * the parameterized route of space

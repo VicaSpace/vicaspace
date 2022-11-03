@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import config from '@/config';
 import { updateUserSocketId } from '@/lib/apis/user';
+import { useAppSelector } from '@/states/hooks';
 
 // Initialize connection to WebSocket
 const socket = io(config.endpoint.bunchaWs, {
@@ -38,6 +39,11 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [socketId, setSocketId] = useState<string | null>(null);
 
+  // Auth Slice
+  const { username, isAuthenticated } = useAppSelector(
+    (state) => state.authSlice
+  );
+
   /// Handle connection of Socket
   useEffect(() => {
     socket.on('connect', () => {
@@ -55,12 +61,16 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
     };
   }, [socket]);
 
-  /// Update user socket ID on connection
+  /// Update user socket ID on connection for authorized user
   useEffect(() => {
-    if (!socketId) return;
+    if (!socketId || !isAuthenticated) return;
     updateUserSocketId(socketId).catch(console.error);
-    console.log(`Update user socket id (${socketId}) on connection.`);
-  }, [socketId]);
+    console.log(
+      `Update user '${
+        username ?? 'unknown'
+      }' socket id (${socketId}) on connection.`
+    );
+  }, [socketId, isAuthenticated]);
 
   return (
     <WebSocketContext.Provider

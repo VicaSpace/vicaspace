@@ -7,8 +7,13 @@ import config from '@/config';
  * @returns
  */
 export const updateUserSocketId = async (socketId: string) => {
-  const accessToken = localStorage.getItem('accessToken') ?? '';
-  // TODO: Remember to pass Header in!
+  const accessToken = localStorage.getItem('accessToken');
+  if (!accessToken) {
+    throw new Error(
+      'Unauthorized called to update accessToken, please login first!'
+    );
+  }
+
   await axios.patch(
     `${config.endpoint.banhmi}/api/users/socketId`,
     {
