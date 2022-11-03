@@ -1,9 +1,10 @@
 import { Consumer } from 'mediasoup/node/lib/Consumer';
 
+import config from '@/config';
 import {
   consumerCollection,
   producerCollection,
-  spaceCollection,
+  spaceSpeakerCollection,
   transportCollection,
 } from '@/data/collections';
 import { logger } from '@/lib/logger';
@@ -20,6 +21,8 @@ import {
   GetRtpCapabilitiesResponse,
 } from '@/lib/types/handlers/rtc';
 import { IOConnection, SocketConnection } from '@/lib/types/ws';
+
+const { handlerNamespace } = config;
 
 /**
  * Register RTC Handlers for Space communication
@@ -39,13 +42,16 @@ export const registerRtcHandlers = (
     payload: GetRtpCapabilitiesPayload,
     callback: (payload: GetRtpCapabilitiesResponse) => void
   ) => {
-    const { spaceId } = payload;
+    const { spaceSpeakerId } = payload;
     logger.info(`User (socketId: ${socket.id}) retrieved RTP Capabilities`);
-    const { router } = spaceCollection[spaceId];
+    const { router } = spaceSpeakerCollection[spaceSpeakerId];
     const { rtpCapabilities } = router;
     callback({ rtpCapabilities });
   };
-  socket.on('rtc:get-rtpCapabilities', getRtpCapabilitiesHandler);
+  socket.on(
+    `${handlerNamespace.rtc}:get-rtpCapabilities`,
+    getRtpCapabilitiesHandler
+  );
 
   /**
    * Create WebRTC Transport for space
@@ -56,9 +62,9 @@ export const registerRtcHandlers = (
     payload: CreateWebRtcTransportPayload,
     callback: (payload: CreateWebRtcTransportResponse) => void
   ) => {
-    const { spaceId } = payload;
+    const { spaceSpeakerId } = payload;
     logger.info(`User (socketId: ${socket.id}) retrieved RTP Capabilities`);
-    const { router } = spaceCollection[spaceId];
+    const { router } = spaceSpeakerCollection[spaceSpeakerId];
     const transport = await createWebRtcTransport(router, callback);
     if (!transport) throw new Error('WebRTC Transport cannot be created');
     // Add transports association to peer & room
@@ -66,22 +72,25 @@ export const registerRtcHandlers = (
       id: transport.id,
       transport,
       socketId: socket.id,
-      spaceId,
+      spaceSpeakerId,
     };
   };
-  socket.on('rtc:create-webrtcTransport', createWebRtcTransportHandler);
+  socket.on(
+    `${handlerNamespace.rtc}:create-webrtcTransport`,
+    createWebRtcTransportHandler
+  );
 
   /**
    * Connect the Transport from the client with the server's one
-   * @param payload Connect Payload (spaceId, transportId, dtlsParameters)
+   * @param payload Connect Payload (spaceSpeakerId, transportId, dtlsParameters)
    */
   const connectWebRtcTransportHandler = async (
     payload: ConnectWebRtcTransportPayload
   ) => {
-    const { spaceId, transportId, dtlsParameters } = payload;
+    const { spaceSpeakerId, transportId, dtlsParameters } = payload;
     if (
       !transportCollection[transportId] &&
-      transportCollection[transportId].spaceId !== spaceId
+      transportCollection[transportId].spaceSpeakerId !== spaceSpeakerId
     ) {
       throw new Error(
         'Cannot find the given transport to connect in the specified space. '
@@ -90,7 +99,10 @@ export const registerRtcHandlers = (
     const transport = transportCollection[transportId].transport;
     await transport.connect({ dtlsParameters });
   };
-  socket.on('rtc:connect-transport', connectWebRtcTransportHandler);
+  socket.on(
+    `${handlerNamespace.rtc}:connect-transport`,
+    connectWebRtcTransportHandler
+  );
 
   /**
    * Create a Producer from transport handler
@@ -101,20 +113,23 @@ export const registerRtcHandlers = (
     payload: CreateProducerPayload,
     callback: (res: CreateProducerResponse) => void
   ) => {
-    const { spaceId, transportId, kind, rtpParameters } = payload;
+    const { spaceSpeakerId, transportId, kind, rtpParameters } = payload;
     if (
       !transportCollection[transportId] &&
-      transportCollection[transportId].spaceId !== spaceId
+      transportCollection[transportId].spaceSpeakerId !== spaceSpeakerId
     ) {
       throw new Error(
         'Cannot find the given transport to connect in the specified space. '
       );
     }
 
-    const transport = transportCollection[transportId].transport;
+    const producerTransport = transportCollection[transportId].transport;
+    if (!producerTransport) {
+      throw new Error('Cannot find any Producer Transport');
+    }
 
     // Call produce based on the params from the client
-    const producer = await transport.produce({
+    const producer = await producerTransport.produce({
       kind,
       rtpParameters,
     });
@@ -123,11 +138,16 @@ export const registerRtcHandlers = (
       id: producer.id,
       producer,
       socketId: socket.id,
-      spaceId,
+      spaceSpeakerId,
+      transportId: producerTransport.id,
     };
+    // Associate Producer to Transport
+    transportCollection[producerTransport.id].producerId = producer.id;
+
     logger.info('Producer created successfully with the following info.');
     logger.info(`Producer ID: ${producer.id} - Kind: ${producer.kind}`);
 
+    /// Hooks for producer
     producer.on('transportclose', () => {
       logger.info('Transport for this producer closed');
       producer?.close();
@@ -137,7 +157,7 @@ export const registerRtcHandlers = (
       id: producer.id,
     });
   };
-  socket.on('rtc:create-producer', createProducerHandler);
+  socket.on(`${handlerNamespace.rtc}:create-producer`, createProducerHandler);
 
   /**
    * Handler for creating consumer on specified producer
@@ -148,19 +168,21 @@ export const registerRtcHandlers = (
     payload: CreateConsumerPayload,
     callback: (res: CreateConsumerResponse) => void
   ) => {
-    const { spaceId, transportId, producerId, rtpCapabilities } = payload;
+    const { spaceSpeakerId, transportId, producerId, rtpCapabilities } =
+      payload;
     // Retrieve space's router
-    const { router } = spaceCollection[spaceId];
+    const { router } = spaceSpeakerCollection[spaceSpeakerId];
     if (!router) {
       throw new Error('Cannot find router for given space.');
     }
 
-    // Retrieve consume transport
+    // Retrieve Consumer Transport
     const { transport: consumerTransport } = transportCollection[transportId];
-    if (!router) {
-      throw new Error('Cannot find consume transport.');
+    if (!consumerTransport) {
+      throw new Error('Cannot find Consumer Transport.');
     }
 
+    // Retrieve producer
     const { producer } = producerCollection[producerId];
     if (!producer) {
       throw new Error('Cannot find the valid producer to consume.');
@@ -208,7 +230,9 @@ export const registerRtcHandlers = (
       id: consumer.id,
       consumer,
       socketId: socket.id,
-      spaceId,
+      spaceSpeakerId,
+      producerId,
+      transportId: consumerTransport.id,
     };
 
     // Extract consumer's params & sent back to client
@@ -219,9 +243,11 @@ export const registerRtcHandlers = (
       rtpParameters: consumer?.rtpParameters,
     };
 
+    logger.info(`Consumer (id: ${consumer.id}) created ✅`);
+
     callback({
       params,
     });
   };
-  socket.on('rtc:create-consumer', createConsumerHandler);
+  socket.on(`${handlerNamespace.rtc}:create-consumer`, createConsumerHandler);
 };

@@ -10,7 +10,7 @@ import {
 } from 'mediasoup/node/lib/WebRtcTransport';
 
 export interface GetRtpCapabilitiesPayload {
-  spaceId: number;
+  spaceSpeakerId: number;
 }
 
 export interface GetRtpCapabilitiesResponse {
@@ -18,7 +18,7 @@ export interface GetRtpCapabilitiesResponse {
 }
 
 export interface CreateWebRtcTransportPayload {
-  spaceId: number;
+  spaceSpeakerId: number;
 }
 
 export interface CreateWebRtcTransportResponse {
@@ -32,13 +32,13 @@ export interface CreateWebRtcTransportResponse {
 }
 
 export interface ConnectWebRtcTransportPayload {
-  spaceId: number;
+  spaceSpeakerId: number;
   transportId: string;
   dtlsParameters: DtlsParameters;
 }
 
 export interface CreateProducerPayload {
-  spaceId: number;
+  spaceSpeakerId: number;
   transportId: string;
   kind: MediaKind;
   rtpParameters: RtpParameters;
@@ -49,7 +49,7 @@ export interface CreateProducerResponse {
 }
 
 export interface CreateConsumerPayload {
-  spaceId: number;
+  spaceSpeakerId: number;
   transportId: string;
   producerId: string;
   rtpCapabilities: RtpCapabilities;

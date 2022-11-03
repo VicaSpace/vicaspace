@@ -11,10 +11,10 @@ import pinoHttp from 'pino-http';
 import { Server } from 'socket.io';
 
 import config from '@/config';
-import { socketCollection, spaceCollection } from '@/data/collections';
+import { socketCollection, spaceSpeakerCollection } from '@/data/collections';
 import { registerConnHandlers } from '@/handlers/conn';
 import { registerRtcHandlers } from '@/handlers/rtc';
-import { registerSpaceHandlers } from '@/handlers/space';
+import { registerSpaceSpeakerHandlers } from '@/handlers/spaceSpeaker';
 import { getAllSpaces } from '@/lib/apis/space';
 import { logger } from '@/lib/logger';
 
@@ -93,11 +93,13 @@ const main = async () => {
   );
   // Associate routers to space collection
   routers.forEach((router, i) => {
-    spaceCollection[spaceIds[i]] = {
+    spaceSpeakerCollection[spaceIds[i]] = {
       router,
     };
   });
-  logger.info(`Initialized routers for ${spaceIds.length} spaces ✅`);
+  logger.info(
+    `Initialized routers for ${spaceIds.length} SpaceSpeaker sessions in all available spaces ✅`
+  );
 
   /* Socket setup */
   io.on('connection', async (socket) => {
@@ -110,7 +112,7 @@ const main = async () => {
 
     /* Register handlers */
     registerConnHandlers(io, socket);
-    registerSpaceHandlers(io, socket);
+    registerSpaceSpeakerHandlers(io, socket);
     registerRtcHandlers(io, socket);
   });
 
