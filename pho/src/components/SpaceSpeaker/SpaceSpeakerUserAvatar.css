@@ -1,0 +1,11 @@
+.space-speaker-participant-img {
+  width: 91px;
+  height: 91px;
+  border-radius: 48px;
+}
+
+.space-speaker-user-avatar-container {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+}

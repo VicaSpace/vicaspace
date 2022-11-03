@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import ChatArea from '@/components/ChatArea/ChatArea';
 import Register from '@/components/RegisterContainer/Register';
 import SignInComponent from '@/components/SignInContainer/SignInComponent';
+import SpaceSpeakerSection from '@/components/SpaceSpeaker/SpaceSpeakerSection';
 import { getUserInfoViaAPI } from '@/lib/apis/auth';
 import { signIn, signOut } from '@/states/auth/slice';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
@@ -25,9 +26,13 @@ function DrawerComponent() {
   );
   const username = useAppSelector((state) => state.authSlice.username);
 
+  const { id: spaceId } = useAppSelector(
+    (state) => state.spaceDetailSlice.data
+  );
+
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
-    if (!isAuthenticated && accessToken != null) {
+    if (!isAuthenticated && accessToken) {
       getUserInfoViaAPI(accessToken)
         .then((response) => {
           const user = response.data;
@@ -43,7 +48,11 @@ function DrawerComponent() {
   const [isRegistering, setIsRegistering] = useState(true);
 
   const renderContent = () => {
-    // return !isAuthenticated && <SignInComponent />;
+    // Protected route
+    // Space ID is allocated or not
+    if (spaceId) {
+      return <SpaceSpeakerSection />;
+    }
     if (!isAuthenticated) {
       if (isRegistering) {
         return (
@@ -76,9 +85,11 @@ function DrawerComponent() {
           onClick={onOpen}
         />
       </Center>
+      {/* Drawer Container */}
       <Drawer
         id="drawer-container"
         isOpen={isOpen}
+        closeOnOverlayClick={false}
         placement="left"
         onClose={onClose}
         size="md"
@@ -92,6 +103,7 @@ function DrawerComponent() {
               onClick={onClose}
             />
           </Box>
+          {/* Drawer's Content */}
           {renderContent()}
         </DrawerContent>
       </Drawer>

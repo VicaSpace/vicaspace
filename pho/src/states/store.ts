@@ -4,6 +4,8 @@ import logger from 'redux-logger';
 import authSlice from '@/states/auth/slice';
 import counterSlice from '@/states/counter/slice';
 import pomodoroSlice from '@/states/pomodoro/slice';
+import spaceDetailSlice from '@/states/spaceDetail/slice';
+import spaceSpeakerSlice from '@/states/spaceSpeaker/slice';
 import spacesSlice from '@/states/spaces/slice';
 
 /* Main Redux Global Store configurations */
@@ -12,9 +14,11 @@ export const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production',
   reducer: {
     counterSlice,
+    spaceSpeakerSlice,
     pomodoroSlice,
     authSlice,
     spacesSlice,
+    spaceDetailSlice,
   },
 });
 
@@ -30,10 +34,12 @@ export type AppThunk<ReturnType = void> = ThunkAction<
 
 export enum ThunkFetchState {
   Idle = 'idle',
-  Loading = 'loading',
+  Pending = 'pending',
   Fulfilled = 'fulfilled',
   Rejected = 'rejected',
 }
+
+export type ThunkStatus = 'idle' | 'pending' | 'fulfilled' | 'rejected';
 
 /* Error message type */
 export interface KnownThunkError {

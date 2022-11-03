@@ -30,6 +30,7 @@ const WorldMapTile: React.FC<{}> = () => {
         style={{ height: '100vh' }}
         mapStyle="mapbox://styles/mapbox/navigation-day-v1"
         mapboxAccessToken={process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}
+        renderWorldCopies={false}
       >
         {spaceState.data?.map((space: SpaceLocation) => (
           <CustomMarker key={space.id} space={space} />

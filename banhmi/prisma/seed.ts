@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import 'dotenv/config';
 import { sha256 } from 'js-sha256';
 
 const characters =
@@ -23,6 +24,7 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
   salt = getRandomString(50);
@@ -34,6 +36,7 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
   salt = getRandomString(50);
@@ -45,6 +48,7 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
   salt = getRandomString(50);
@@ -56,6 +60,7 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
   salt = getRandomString(50);
@@ -67,6 +72,7 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
   salt = getRandomString(50);
@@ -78,6 +84,7 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
   salt = getRandomString(50);
@@ -89,6 +96,7 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
   salt = getRandomString(50);
@@ -100,6 +108,7 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
   salt = getRandomString(50);
@@ -111,6 +120,7 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
   salt = getRandomString(50);
@@ -122,6 +132,7 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
   salt = getRandomString(50);
@@ -133,6 +144,7 @@ async function createUsers() {
       spaceId: 1,
       salt: salt,
       hashedPassword: sha256(sha256('password' + salt) + process.env.PEPPER),
+      socketId: 'fL5-V5o_a7PK4ajJAAAd',
     },
   });
 }
