@@ -4,6 +4,13 @@ import { prisma } from '@/db';
 
 const authenticate = async function (req: Request, res, next) {
   const accessToken = req.headers.authorization?.split(' ')[1];
+
+  if (typeof accessToken === 'undefined') {
+    return res.status(403).json({
+      error: 'Unauthorized',
+    });
+  }
+
   const token = await prisma.authToken.findFirst({
     where: {
       accessToken: accessToken,
