@@ -1,7 +1,7 @@
 import React from 'react';
 import { useRouteError } from 'react-router-dom';
 
-import './notfound404.css';
+import './NotFound404.css';
 
 const NotFound404: React.FC<{}> = () => {
   const error = useRouteError();
