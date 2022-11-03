@@ -16,10 +16,16 @@ export interface GetUserBySocketIdResponse {
  * @returns User
  */
 export const getUserBySocketId = async (
-  socketId: string
+  socketId: string,
+  accessToken: string
 ): Promise<GetUserBySocketIdResponse | null> => {
   const res = await axios.get(
-    `${config.endpoint.banhmiApi}/users?socketId=${socketId}`
+    `${config.endpoint.banhmiApi}/users?socketId=${socketId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
   );
   const data: GetUserBySocketIdResponse[] = res.data;
   if (data.length === 0) return null;

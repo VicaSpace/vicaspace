@@ -1,6 +1,7 @@
 export interface JoinPayload {
   spaceSpeakerId: number;
   producerId: string;
+  accessToken?: string;
 }
 
 export interface LeavePayload {
@@ -12,6 +13,7 @@ export interface LeavePayload {
 // type LeavePayload = JoinPayload;
 
 export interface GetSpeakersPayload {
+  accessToken?: string;
   spaceSpeakerId: number;
 }
 

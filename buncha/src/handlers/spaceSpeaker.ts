@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import config from '@/config';
 import {
   consumerCollection,
@@ -37,9 +39,15 @@ export const registerSpaceSpeakerHandlers = (
     payload: JoinPayload,
     callback: (payload?: any) => void
   ) => {
-    const { spaceSpeakerId, producerId } = payload;
+    const { spaceSpeakerId, producerId, accessToken } = payload;
+    if (!accessToken) {
+      return callback({
+        error: 'Unauthorized called to WebSocket',
+      });
+    }
+
     // Query user info from socketId
-    const user = await getUserBySocketId(socket.id);
+    const user = await getUserBySocketId(socket.id, accessToken);
     if (!user) {
       return callback({
         status: 'NOK',
@@ -138,11 +146,19 @@ export const registerSpaceSpeakerHandlers = (
     payload: GetSpeakersPayload,
     callback: (res: GetSpeakersResponse | GetSpeakersErrorResponse) => void
   ) => {
-    const { spaceSpeakerId } = payload;
+    const { spaceSpeakerId, accessToken } = payload;
+
+    if (!accessToken) {
+      return callback({
+        error: 'Access Token must be provided!',
+      });
+    }
+
+    // Extract socket room's IDs
     const speakerSocketIds = io.sockets.adapter.rooms.get(
       spaceSpeakerId.toString()
     );
-
+    // Check if room ID is available
     if (!speakerSocketIds) {
       return callback({
         error: 'SpaceSpeaker ID is not valid. Cannot get speakers',
@@ -156,14 +172,22 @@ export const registerSpaceSpeakerHandlers = (
       Object.keys(producerCollection).map(async (producerId) => {
         const { socketId } = producerCollection[producerId];
         if (speakerSocketIds?.has(socketId)) {
-          const user = await getUserBySocketId(socketId);
-          if (user) {
-            response[socketId] = {
-              id: socketId,
-              userId: user.id,
-              username: user.username,
-              producerId,
-            };
+          try {
+            const user = await getUserBySocketId(socketId, accessToken);
+            if (user) {
+              response[socketId] = {
+                id: socketId,
+                userId: user.id,
+                username: user.username,
+                producerId,
+              };
+            }
+          } catch (err) {
+            if (axios.isAxiosError(err)) {
+              if (err.response?.status !== 401) {
+                logger.error(err.message);
+              }
+            }
           }
         }
       })
