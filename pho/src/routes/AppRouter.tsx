@@ -5,8 +5,8 @@ import Pomodoro from '@/components/Pomodoro/Pomodoro';
 import Video from '@/components/VideoContainer/Video';
 import AboutPage from '@/pages/about';
 import HomePage from '@/pages/home';
-import NotFound404 from '@/pages/notfound404';
-import SpacePage from '@/pages/space';
+import NotFound404 from '@/pages/TempNotFound404';
+import SpacePage from '@/pages/TempSpace';
 
 /**
  * Handles the routing of SPA
