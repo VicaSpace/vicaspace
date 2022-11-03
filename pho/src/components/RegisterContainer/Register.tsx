@@ -1,4 +1,5 @@
 import { Field, Formik, FormikProps } from 'formik';
+import { sha256 } from 'js-sha256';
 
 import {
   Button,
@@ -8,7 +9,10 @@ import {
   Input,
   Text,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import { Form } from 'react-router-dom';
+
+import { getRegisterSaltViaAPI, registerViaAPI } from '@/lib/apis/auth';
 
 import './Register.css';
 
@@ -17,6 +21,8 @@ interface RegisterProps {
 }
 
 export default function Register({ onOpenLogin }: RegisterProps) {
+  const [registerError, setRegisterError] = useState('');
+
   const extractFormData = (name: string) => {
     switch (name) {
       case 'username':
@@ -53,8 +59,16 @@ export default function Register({ onOpenLogin }: RegisterProps) {
   };
 
   const postRegister = async (username: string, password: string) => {
-    console.log(username, password);
-    // dispatch(signIn({username, pass}))
+    try {
+      const salt: string = await getRegisterSaltViaAPI();
+      const hashedPassword = sha256(password + salt);
+
+      await registerViaAPI(username, salt, hashedPassword);
+      onOpenLogin();
+    } catch (error: any) {
+      console.log(error.response);
+      setRegisterError(error.response.data.error);
+    }
   };
 
   return (
@@ -63,17 +77,31 @@ export default function Register({ onOpenLogin }: RegisterProps) {
       <Formik
         initialValues={{ username: '', password: '', confirmPassword: '' }}
         onSubmit={async (values: any, actions: any) => {
-          console.log('hello');
-
-          await postRegister(values.username, values.password);
+          await postRegister(values.username, values.password).catch(
+            console.error
+          );
           actions.setSubmitting(false);
         }}
+        validate={(formValues) => {
+          setRegisterError('');
+          const password = formValues.password;
+          const confirmPassword = formValues.confirmPassword;
+          const errors: any = {};
+          if (password !== confirmPassword) {
+            errors.password = 'Password and Confirm Password must be the same';
+          }
+          return errors;
+        }}
+        validateOnChange={false}
+        validateOnBlur={false}
       >
         {(props: FormikProps<any>) => (
           <Form>
             <Field name="username" as={renderPlaceHolder} />
             <Field name="password" as={renderPlaceHolder} />
             <Field name="confirmPassword" as={renderPlaceHolder} />
+            <div>{props.errors.password as any as string}</div>
+            <div>{registerError}</div>
             <div></div>
             <Center>
               <Button
@@ -84,6 +112,8 @@ export default function Register({ onOpenLogin }: RegisterProps) {
                 height="55px"
                 type="submit"
                 isLoading={props.isSubmitting}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={async () => props.submitForm()}
               >
                 <Text className="login-text" fontSize="30px">
                   Signup

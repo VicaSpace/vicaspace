@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { ErrorMessage, Field, Form, Formik, FormikProps } from 'formik';
+import { Field, Form, Formik, FormikProps } from 'formik';
 import { sha256 } from 'js-sha256';
 
 import {
@@ -26,49 +26,37 @@ function SignInComponent({ onOpenRegister }: SignInComponentProps) {
   const [signInError, setSignInError] = useState('');
   const dispatch = useAppDispatch();
 
-  const renderUsernamePlaceholder = (props: FormikProps<any>) => (
-    <FormControl>
-      <FormLabel fontWeight="400" fontSize="24px" className="form-label">
-        Username
-      </FormLabel>
-      <Center>
-        <Input
-          {...props}
-          background="#FFFFFF"
-          borderRadius="5px"
-          width="370px"
-          height="40px"
-          className="form-input"
-          type="text"
-        />
-      </Center>
-    </FormControl>
-  );
-
-  const renderPasswordPlaceholder = (props: FormikProps<any>) => (
-    <FormControl>
-      <FormLabel fontWeight="400" fontSize="24px" className="form-label">
-        Password
-      </FormLabel>
-      <Center>
-        <Input
-          {...props}
-          background="#FFFFFF"
-          borderRadius="5px"
-          width="370px"
-          height="40px"
-          className="form-input"
-          type="password"
-        />
-      </Center>
-    </FormControl>
-  );
-
-  const validatePlaceholder = (field: string) => (input: string) => {
-    if (input.trim().length === 0) {
-      const error = `${field} is required`;
-      return error;
+  const extractFormData = (name: string) => {
+    switch (name) {
+      case 'username':
+        return { label: 'Username', type: 'text' };
+      case 'password':
+        return { label: 'Password', type: 'password' };
+      default:
+        return { label: 'Input', type: 'text' };
     }
+  };
+
+  const renderPlaceHolder = (props: FormikProps<any>) => {
+    const { type, label } = extractFormData((props as any).name);
+    return (
+      <FormControl isRequired>
+        <FormLabel fontWeight="400" fontSize="24px" className="form-label">
+          {label}
+        </FormLabel>
+        <Center>
+          <Input
+            {...props}
+            background="#FFFFFF"
+            borderRadius="5px"
+            width="370px"
+            height="40px"
+            className="form-input"
+            type={type}
+          />
+        </Center>
+      </FormControl>
+    );
   };
 
   const signIn = async (username: string, password: string) => {
@@ -105,18 +93,8 @@ function SignInComponent({ onOpenRegister }: SignInComponentProps) {
       >
         {(props: FormikProps<any>) => (
           <Form>
-            <Field
-              name="username"
-              as={renderUsernamePlaceholder}
-              validate={validatePlaceholder('username')}
-            />
-            <ErrorMessage name="username" />
-            <Field
-              name="password"
-              as={renderPasswordPlaceholder}
-              validate={validatePlaceholder('password')}
-            />
-            <ErrorMessage name="password" />
+            <Field name="username" as={renderPlaceHolder} />
+            <Field name="password" as={renderPlaceHolder} />
             <div>{signInError}</div>
             <Center>
               <Button
