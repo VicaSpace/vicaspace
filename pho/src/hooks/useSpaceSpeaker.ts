@@ -8,9 +8,10 @@ import { useDispatch } from 'react-redux';
 
 import config from '@/config';
 import { useDevice } from '@/hooks/useDevice';
-import { useLocalAudioRef } from '@/hooks/useLocalAudioRef';
+import { useLocalAudio } from '@/hooks/useLocalAudio';
 import { useSpaceRtpCapabilities } from '@/hooks/useSpaceRtpCapabilities';
 import { countObjectKeys } from '@/lib/object';
+import { sendSpeechEvent } from '@/lib/ws/speech';
 import { WebSocketContext } from '@/modules/ws/WebSocketProvider';
 import {
   deleteSpeaker,
@@ -48,7 +49,12 @@ export const useSpaceSpeaker = (
   const dispatch = useDispatch();
 
   /// Custom Hooks
-  const { audioParams, getLocalUserMedia, localAudioRef } = useLocalAudioRef();
+  const {
+    audioParams,
+    getLocalUserMedia,
+    localAudioRef,
+    isSpeaking: isLocalSpeaking,
+  } = useLocalAudio();
   const { getSpaceRtpCapabilities, rtpCapabilities } =
     useSpaceRtpCapabilities();
   const { device, initDevice } = useDevice();
@@ -78,6 +84,7 @@ export const useSpaceSpeaker = (
         isClosable: true,
       });
 
+      // Leave emit
       socket.emit(`${handlerNamespace.spaceSpeaker}:leave`, {
         spaceSpeakerId,
         producerId: localProducerId,
@@ -417,11 +424,19 @@ export const useSpaceSpeaker = (
    * On Join SpaceSpeaker Setup action
    */
   const onJoinSpaceSpeaker = async () => {
+    if (!spaceSpeakerId) return;
     // Get user's mic ref
-    await getLocalUserMedia();
+    await getLocalUserMedia(
+      () => {
+        sendSpeechEvent(socket, { event: 'speaking', spaceSpeakerId });
+      },
+      () => {
+        sendSpeechEvent(socket, { event: 'stopped_speaking', spaceSpeakerId });
+      }
+    );
 
     // Get RTP Capabilities of spaceSpeakerId after joining
-    await getSpaceRtpCapabilities(spaceSpeakerId as number);
+    await getSpaceRtpCapabilities(spaceSpeakerId);
 
     // Set/Initialize device
     initDevice();
@@ -431,7 +446,6 @@ export const useSpaceSpeaker = (
    * On joining SpaceSpeaker
    */
   useEffect(() => {
-    if (!spaceSpeakerId) return;
     onJoinSpaceSpeaker().catch(console.error);
   }, [spaceSpeakerId]);
 
@@ -638,7 +652,11 @@ export const useSpaceSpeaker = (
     });
   });
 
-  return { localAudioRef, peerAudioRefs };
+  useEffect(() => {
+    console.log('isLocalSpeaking:', isLocalSpeaking);
+  }, [isLocalSpeaking]);
+
+  return { localAudioRef, peerAudioRefs, isLocalSpeaking };
 };
 
 export default useSpaceSpeaker;

@@ -8,6 +8,7 @@ import './SpaceSpeakerUserAvatar.css';
 
 interface SpaceSpeakerUserAvatarProps {
   name?: string;
+  isSpeaking: boolean;
 }
 
 /**
@@ -15,6 +16,7 @@ interface SpaceSpeakerUserAvatarProps {
  */
 const SpaceSpeakerUserAvatar: React.FC<SpaceSpeakerUserAvatarProps> = ({
   name,
+  isSpeaking,
 }) => {
   return (
     <div className="space-speaker-user-avatar-container">
@@ -22,7 +24,7 @@ const SpaceSpeakerUserAvatar: React.FC<SpaceSpeakerUserAvatarProps> = ({
         // Dummy key
         className={clsx({
           'space-speaker-participant-img': true,
-          active: true,
+          'audio-active': isSpeaking,
         })}
         src={buildUserAvatarURL(name)}
         alt="speaker-avatar"

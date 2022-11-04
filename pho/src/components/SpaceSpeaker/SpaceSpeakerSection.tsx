@@ -33,7 +33,7 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
   const { spaceSpeakerId, speakers } = spaceSpeakerData;
 
   // Use hook for setup SpaceSpeaker
-  const { localAudioRef, peerAudioRefs } = useSpaceSpeaker(
+  const { localAudioRef, peerAudioRefs, isLocalSpeaking } = useSpaceSpeaker(
     spaceSpeakerId,
     speakers
   );
@@ -49,7 +49,10 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
           {/* Client Audio */}
           <div>
             {speakers ? (
-              <SpaceSpeakerUserAvatar name={username} />
+              <SpaceSpeakerUserAvatar
+                name={username}
+                isSpeaking={isLocalSpeaking}
+              />
             ) : (
               <div>Join to see others!</div>
             )}
@@ -62,7 +65,10 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
             Object.values(speakers).map((spk) => {
               return spk.id !== socket.id ? (
                 <div key={spk.id}>
-                  <SpaceSpeakerUserAvatar name={spk.username} />
+                  <SpaceSpeakerUserAvatar
+                    name={spk.username}
+                    isSpeaking={isLocalSpeaking}
+                  />
                   {/* Local Audio */}
                   <audio ref={peerAudioRefs.current[spk.id].ref} autoPlay />
                 </div>

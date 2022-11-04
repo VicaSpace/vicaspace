@@ -1,18 +1,39 @@
 import hark from 'hark';
 
-import { useRef, useState } from 'react';
+import { MutableRefObject, useRef, useState } from 'react';
 
 import { AudioParams } from '@/types/spaceSpeaker';
 
-export const useLocalAudioRef = () => {
+export interface UseLocalAudio {
+  getLocalUserMedia: (
+    onSpeaking?: () => void,
+    onStoppedSpeaking?: () => void
+  ) => Promise<void>;
+  localAudioRef: MutableRefObject<HTMLAudioElement | null>;
+  audioParams: AudioParams | null;
+  isSpeaking: boolean;
+}
+
+/**
+ * useLocalAudio handles audio stream & ref for HTML audio element
+ * @returns Local Audio states & refs
+ */
+export const useLocalAudio = (): UseLocalAudio => {
+  // Refs
   const localAudioRef = useRef<HTMLAudioElement | null>(null);
 
+  // States
   const [audioParams, setAudioParams] = useState<AudioParams | null>(null);
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
 
   /**
    * Get Local User Audio stream
    */
-  const getLocalUserMedia = async () => {
+  const getLocalUserMedia = async (
+    onSpeaking?: () => void,
+    onStoppedSpeaking?: () => void
+  ) => {
+    console.log('did it callhere?');
     const constraints: MediaStreamConstraints | undefined = {
       audio: true,
     };
@@ -24,18 +45,24 @@ export const useLocalAudioRef = () => {
         const speechEvents = hark(stream, opts);
 
         // Speaking Events //
+        console.log('register on speaking...');
         /**
          * On speaking
          */
         speechEvents.on('speaking', () => {
-          console.log('Speaking.');
+          if (onSpeaking) onSpeaking();
+          console.log('speaking...');
+          setIsSpeaking(true);
         });
 
+        console.log('register on stopped speaking...');
         /**
          * On stop speaking
          */
         speechEvents.on('stopped_speaking', () => {
-          console.log('Stopped Speaking.');
+          if (onStoppedSpeaking) onStoppedSpeaking();
+          console.log('stopped speaking...');
+          setIsSpeaking(false);
         });
 
         // Assign audio stream to view
@@ -68,5 +95,10 @@ export const useLocalAudioRef = () => {
       );
     }
   };
-  return { getLocalUserMedia, localAudioRef, audioParams };
+  return {
+    getLocalUserMedia,
+    localAudioRef,
+    audioParams,
+    isSpeaking,
+  };
 };

@@ -1,12 +1,14 @@
 .space-speaker-participant-img {
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box; /* Firefox, other Gecko */
+  box-sizing: border-box; /* Opera/IE 8+ */
   width: 91px;
   height: 91px;
   border-radius: 48px;
-  border: 5px solid #b1b2ff;
 }
 
-.space-speaker-participant-img .active {
-  border: 5px solid #b1b2ff;
+.audio-active {
+  outline: 5px solid #b1b2ff;
 }
 
 .space-speaker-user-avatar-container {
