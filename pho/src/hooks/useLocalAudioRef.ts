@@ -1,3 +1,5 @@
+import hark from 'hark';
+
 import { useRef, useState } from 'react';
 
 import { AudioParams } from '@/types/spaceSpeaker';
@@ -17,6 +19,25 @@ export const useLocalAudioRef = () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       if (localAudioRef.current) {
+        // Setup Hark
+        const opts = {};
+        const speechEvents = hark(stream, opts);
+
+        // Speaking Events //
+        /**
+         * On speaking
+         */
+        speechEvents.on('speaking', () => {
+          console.log('Speaking.');
+        });
+
+        /**
+         * On stop speaking
+         */
+        speechEvents.on('stopped_speaking', () => {
+          console.log('Stopped Speaking.');
+        });
+
         // Assign audio stream to view
         localAudioRef.current.srcObject = stream;
         localAudioRef.current.volume = 0;
