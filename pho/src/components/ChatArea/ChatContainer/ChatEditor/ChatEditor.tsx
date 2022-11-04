@@ -12,11 +12,16 @@ import './ChatEditor.css';
 const ChatEditor: React.FC<{}> = () => {
   // Space Slice
   const { username } = useAppSelector((state) => state.authSlice);
+
+  const spaceId = useAppSelector((state) =>
+    state.spaceDetailSlice.data.id?.toString()
+  );
+
   const [message, setMessage] = useState('');
 
   const handleSendMessage = async () => {
-    if (message.trim().length === 0) return;
-    await addDoc(collection(db, '1'), {
+    if (message.trim().length === 0 || !spaceId) return;
+    await addDoc(collection(db, spaceId), {
       date: Timestamp.fromDate(new Date()),
       message,
       username,

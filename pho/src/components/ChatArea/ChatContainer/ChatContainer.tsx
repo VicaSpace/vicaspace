@@ -8,7 +8,13 @@ import './ChatContainer.css';
 
 const ChatContainer: React.FC<{}> = () => {
   return (
-    <Flex w="100%" h="54%" mt="40px" p="20px" justify="center" align="center">
+    <Flex
+      w="100%"
+      h="50%"
+      p="0px 20px 20px 20px"
+      justify="center"
+      align="center"
+    >
       <Flex
         w="100%"
         h="100%"

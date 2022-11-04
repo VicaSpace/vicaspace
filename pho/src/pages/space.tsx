@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import DrawerComponent from '@/components/DrawerComponent';
 import Pomodoro from '@/components/Pomodoro/Pomodoro';
 import Toolbar from '@/components/Toolbar/Toolbar';
 import Video from '@/components/VideoContainer/Video';
@@ -38,6 +39,7 @@ const SpacePage: React.FC<{}> = () => {
 
   return (
     <div>
+      <DrawerComponent />
       {isVideoVisible && (
         <>
           <div className="location-name-box">
