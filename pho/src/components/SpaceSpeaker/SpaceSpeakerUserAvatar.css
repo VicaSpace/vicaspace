@@ -2,6 +2,11 @@
   width: 91px;
   height: 91px;
   border-radius: 48px;
+  border: 5px solid #b1b2ff;
+}
+
+.space-speaker-participant-img .active {
+  border: 5px solid #b1b2ff;
 }
 
 .space-speaker-user-avatar-container {
