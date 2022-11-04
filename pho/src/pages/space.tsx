@@ -9,7 +9,7 @@ import { WebSocketContext } from '@/modules/ws/WebSocketProvider';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
 import { fetchSpaceDetail } from '@/states/spaceDetail/slice';
 
-import './Space.css';
+import './space.css';
 
 const SpacePage: React.FC<{}> = () => {
   const { id } = useParams();
@@ -46,21 +46,19 @@ const SpacePage: React.FC<{}> = () => {
 
   return (
     <div>
-      <div
-        className="location-name-box"
-        style={isVideoVisible ? {} : { display: 'none' }}
-      >
-        <div className="location-text">{name}</div>
-      </div>
-
-      <div
-        style={isVideoVisible ? { position: 'absolute' } : { display: 'none' }}
-      >
-        <Pomodoro
-          timestamp={new Date(startTime ?? '').getTime()}
-          serverTime={Date.now()} // TODO: get server time from API
-        />
-      </div>
+      {isVideoVisible && (
+        <>
+          <div className="location-name-box">
+            <div className="location-text">{name}</div>
+          </div>
+          <div style={{ position: 'absolute' }}>
+            <Pomodoro
+              timestamp={new Date(startTime ?? '').getTime()}
+              serverTime={Date.now()} // TODO: get server time from API
+            />
+          </div>
+        </>
+      )}
 
       <Toolbar
         numberOfParticipants={(members ?? []).length}
