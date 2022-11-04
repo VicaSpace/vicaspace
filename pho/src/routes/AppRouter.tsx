@@ -3,11 +3,11 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import DrawerComponent from '@/components/DrawerComponent';
 import Pomodoro from '@/components/Pomodoro/Pomodoro';
-import Video from '@/components/VideoContainer/Video';
-import NotFound404 from '@/pages/NotFound404';
-import SpacePage from '@/pages/Space';
+import VideoContainer from '@/components/VideoContainer/VideoContainer';
 import AboutPage from '@/pages/about';
 import HomePage from '@/pages/home';
+import NotFound404 from '@/pages/notfound404';
+import SpacePage from '@/pages/space';
 
 /**
  * Handles the routing of SPA
@@ -27,12 +27,7 @@ const AppRouter: React.FC = () => {
               <Pomodoro timestamp={1666794382000} serverTime={Date.now()} />
             }
           />
-          <Route
-            path="/video"
-            element={
-              <Video url="https://www.youtube.com/watch?v=cDYzwFEFLvQ" />
-            }
-          />
+          <Route path="/video" element={<VideoContainer />} />
           <Route path="*" element={<NotFound404 />} />
         </Routes>
       </Router>
