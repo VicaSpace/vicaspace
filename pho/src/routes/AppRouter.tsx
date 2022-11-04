@@ -22,7 +22,13 @@ const AppRouter: React.FC = () => {
           <Route
             path="/pomo"
             element={
-              <Pomodoro timestamp={1666794382000} serverTime={Date.now()} />
+              <Pomodoro
+                timestamp={1666794382000}
+                serverTime={Date.now()}
+                pomodoroDuration={5}
+                shortBreakDuration={2}
+                longBreakDuration={10}
+              />
             }
           />
           <Route path="/video" element={<VideoContainer />} />

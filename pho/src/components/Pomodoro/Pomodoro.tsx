@@ -10,13 +10,22 @@ import './Pomodoro.css';
 const Pomodoro: React.FC<{
   timestamp: number;
   serverTime: number;
-}> = ({ timestamp, serverTime }) => {
+  pomodoroDuration: number;
+  shortBreakDuration: number;
+  longBreakDuration: number;
+}> = ({
+  timestamp,
+  serverTime,
+  pomodoroDuration,
+  shortBreakDuration,
+  longBreakDuration,
+}) => {
   const { sessionId, minutes, seconds, isBreak, isLongBreak } = usePomodoro({
     startTime: timestamp,
     serverTime,
-    shortBreakDuration: 2,
-    pomodoroDuration: 5,
-    longBreakDuration: 10,
+    shortBreakDuration,
+    pomodoroDuration,
+    longBreakDuration,
   });
 
   return (
@@ -32,7 +41,13 @@ const Pomodoro: React.FC<{
         borderRadius="lg"
         overflow="hidden"
         className="handle"
-        style={{ background: 'red' }}
+        style={{
+          background: isLongBreak
+            ? 'rgb(250, 247, 210)'
+            : isBreak
+            ? 'rgb(181, 245, 225)'
+            : 'rgb(210, 218, 255)',
+        }}
       >
         <Box display="flex" alignItems="baseline">
           <div className="sessionTitle">Timer</div>
