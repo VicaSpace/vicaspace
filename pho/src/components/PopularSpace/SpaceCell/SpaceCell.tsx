@@ -16,14 +16,13 @@ import noOnlUsersIcon from '@/asset/noOnlUsersIcon.png';
 import SpaceModal from '@/components/WorldMap/SpaceModal';
 import { GetSpaceDetailResponse } from '@/lib/apis/space';
 
-const SpaceCell: React.FC<{ space: any }> = ({ space }) => {
+const SpaceCell: React.FC<{ space: GetSpaceDetailResponse }> = ({ space }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const URL = process.env.REACT_APP_BACKEND_URL ?? '';
   const [spaceInfo, setSpaceInfo] = useState<GetSpaceDetailResponse>();
 
   useEffect(() => {
     const fetchSpaceInfo = async () => {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       const spaceInfo = (await axios.get(`${URL}/api/spaces/${space.id}`)).data;
       setSpaceInfo(spaceInfo);
     };

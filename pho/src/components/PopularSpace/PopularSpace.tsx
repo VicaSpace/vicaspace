@@ -106,8 +106,4 @@ const PopularSpace: React.FC<{}> = () => {
   );
 };
 
-PopularSpace.propTypes = {
-  username: PropTypes.string.isRequired,
-};
-
 export default PopularSpace;
