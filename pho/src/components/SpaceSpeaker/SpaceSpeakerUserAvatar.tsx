@@ -5,7 +5,6 @@ import { buildUserAvatarURL } from '@/lib/ui-avatars';
 import './SpaceSpeakerUserAvatar.css';
 
 interface SpaceSpeakerUserAvatarProps {
-  imgUrl?: string;
   name?: string;
 }
 

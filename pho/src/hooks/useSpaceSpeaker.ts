@@ -115,6 +115,7 @@ export const useSpaceSpeaker = (
           ref: createRef<HTMLAudioElement>(),
         };
 
+        // Create Recv Transport for newcomer
         createRecvTransport(socketId).catch(console.error);
 
         // Add newcomer to the speaker state
@@ -470,7 +471,7 @@ export const useSpaceSpeaker = (
       title: `Join SpaceSpeaker`,
       description: `You've joined SpaceSpeaker ${spaceSpeakerId}  successfully.`,
       status: 'success',
-      duration: 5000,
+      duration: 4000,
       isClosable: true,
     });
   };
