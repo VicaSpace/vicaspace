@@ -40,9 +40,7 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
   const [socketId, setSocketId] = useState<string | null>(null);
 
   // Auth Slice
-  const { username, isAuthenticated } = useAppSelector(
-    (state) => state.authSlice
-  );
+  const { isAuthenticated } = useAppSelector((state) => state.authSlice);
 
   /// Handle connection of Socket
   useEffect(() => {
