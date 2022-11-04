@@ -68,8 +68,4 @@ const ChatEditor: React.FC<{}> = () => {
   );
 };
 
-ChatEditor.propTypes = {
-  username: PropTypes.string.isRequired,
-};
-
 export default ChatEditor;
