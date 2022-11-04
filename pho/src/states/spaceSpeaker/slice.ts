@@ -73,15 +73,21 @@ const spaceSpeakerSlice = createSlice({
      */
     insertSpeaker(
       state,
-      action: PayloadAction<{ id: string; producerId: string }>
+      action: PayloadAction<{
+        id: string;
+        producerId: string;
+        userId: number;
+        username: string;
+      }>
     ) {
-      console.log('Adding a new participant... ⏰');
-      const { id, producerId } = action.payload;
+      const { id, producerId, userId, username } = action.payload;
       state.data.speakers = {
         ...state.data.speakers,
         [id]: {
           id,
           producerId,
+          userId,
+          username,
         },
       };
     },

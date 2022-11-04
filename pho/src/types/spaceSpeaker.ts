@@ -37,6 +37,8 @@ export interface ClientConsumeResponse {
 }
 
 export interface RecentUserJoinPayload {
+  userId: number;
+  username: string;
   socketId: string;
   producerId: string;
   msg: string;
@@ -54,6 +56,8 @@ export interface ParticipantInfo {
 export interface SpeakerDetails {
   [id: string]: {
     id: string;
+    userId: number;
+    username: string;
     producerId: string;
   };
 }

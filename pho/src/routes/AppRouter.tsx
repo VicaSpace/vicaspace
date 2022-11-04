@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
+import DrawerComponent from '@/components/DrawerComponent';
 import Pomodoro from '@/components/Pomodoro/Pomodoro';
 import VideoContainer from '@/components/VideoContainer/VideoContainer';
 import AboutPage from '@/pages/about';
@@ -15,17 +16,11 @@ const AppRouter: React.FC = () => {
   return (
     <>
       <Router>
+        <DrawerComponent />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/spaces/:id" element={<SpacePage />} />
-          <Route
-            path="/pomo"
-            element={
-              <Pomodoro timestamp={1666794382000} serverTime={Date.now()} />
-            }
-          />
-          <Route path="/video" element={<VideoContainer />} />
           <Route path="*" element={<NotFound404 />} />
         </Routes>
       </Router>

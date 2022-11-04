@@ -9,8 +9,11 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
+import { matchPath, useLocation } from 'react-router-dom';
 
 import ChatArea from '@/components/ChatArea/ChatArea';
+import ChatContainer from '@/components/ChatArea/ChatContainer/ChatContainer';
+import PopularSpace from '@/components/PopularSpace/PopularSpace';
 import Register from '@/components/RegisterContainer/Register';
 import SignInComponent from '@/components/SignInContainer/SignInComponent';
 import SpaceSpeakerSection from '@/components/SpaceSpeaker/SpaceSpeakerSection';
@@ -19,12 +22,25 @@ import { signIn, signOut } from '@/states/auth/slice';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
 
 function DrawerComponent() {
+  const { pathname } = useLocation();
+  const isAllSpacesURL = matchPath(
+    {
+      path: '/',
+    },
+    pathname
+  );
+  const isSpecificSpaceURL = matchPath(
+    {
+      path: '/spaces/:id',
+    },
+    pathname
+  );
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(
     (state) => state.authSlice.isAuthenticated
   );
-  const username = useAppSelector((state) => state.authSlice.username);
 
   const { id: spaceId } = useAppSelector(
     (state) => state.spaceDetailSlice.data
@@ -49,10 +65,6 @@ function DrawerComponent() {
 
   const renderContent = () => {
     // Protected route
-    // Space ID is allocated or not
-    if (spaceId) {
-      return <SpaceSpeakerSection />;
-    }
     if (!isAuthenticated) {
       if (isRegistering) {
         return (
@@ -71,7 +83,15 @@ function DrawerComponent() {
           />
         );
       }
-    } else return <ChatArea username={username} />;
+    }
+    if (isAllSpacesURL) return <PopularSpace />;
+    else if (isSpecificSpaceURL)
+      return (
+        <>
+          <SpaceSpeakerSection />
+          <ChatContainer />
+        </>
+      );
   };
 
   return (
