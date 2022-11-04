@@ -26,14 +26,36 @@ export const getUserFromSocketId = async (socketId) => {
   }
 };
 
-export const updateSocketId = async (userId, socketId) => {
+export const updateSocketId = async (userId: number, socketId: string) => {
+  if (typeof socketId === 'undefined') {
+    throw createHttpError(400, 'no socket id found');
+  }
   try {
     await prisma.user.update({
       where: {
         id: userId,
       },
       data: {
-        socketId: socketId,
+        socketId,
+      },
+    });
+  } catch (error) {
+    logger.error(error);
+    throw new Error('error updating socket id');
+  }
+};
+
+export const updateSpaceId = async (userId: number, spaceId: number) => {
+  if (typeof spaceId === 'undefined') {
+    throw createHttpError(400, 'no space id found');
+  }
+  try {
+    await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        spaceId,
       },
     });
   } catch (error) {
