@@ -9,6 +9,10 @@ import { GetRTPCapabilitiesData } from '@/types/spaceSpeaker';
 // Parse config
 const { handlerNamespace } = config;
 
+/**
+ * Get Space's router RTP Capabilities
+ * @returns Space's RTP Capabilities
+ */
 export const useSpaceRtpCapabilities = () => {
   const { socket } = useContext(WebSocketContext);
 

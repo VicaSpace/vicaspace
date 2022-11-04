@@ -1,11 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import Pomodoro from '@/components/Pomodoro/Pomodoro';
 import Toolbar from '@/components/Toolbar/Toolbar';
 import Video from '@/components/VideoContainer/Video';
 import { isNumeric } from '@/lib/number';
-import { WebSocketContext } from '@/modules/ws/WebSocketProvider';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
 import { fetchSpaceDetail } from '@/states/spaceDetail/slice';
 
@@ -15,17 +14,10 @@ const SpacePage: React.FC<{}> = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
-  // WebSocket
-  const { socket } = useContext(WebSocketContext);
-
   // Space Slice
-  const { data, error, status } = useAppSelector(
-    (state) => state.spaceDetailSlice
-  );
+  const { data } = useAppSelector((state) => state.spaceDetailSlice);
 
   const { name, members, urlVideo, startTime } = data;
-
-  // SpaceSpeaker Slice
 
   /**
    * Assume that you'll be assigned the pageId when u first access

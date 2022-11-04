@@ -40,6 +40,10 @@ function DrawerComponent() {
     (state) => state.authSlice.isAuthenticated
   );
 
+  const { id: spaceId } = useAppSelector(
+    (state) => state.spaceDetailSlice.data
+  );
+
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
     if (!isAuthenticated && accessToken) {
