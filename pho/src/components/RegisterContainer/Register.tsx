@@ -1,4 +1,3 @@
-import { AxiosError } from 'axios';
 import { Field, Form, Formik, FormikProps } from 'formik';
 import { sha256 } from 'js-sha256';
 
@@ -12,19 +11,16 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
-import { getSaltViaAPI, signInViaAPI } from '@/lib/apis/auth';
-import { signIn as signInAction } from '@/states/auth/slice';
-import { useAppDispatch } from '@/states/hooks';
+import { getRegisterSaltViaAPI, registerViaAPI } from '@/lib/apis/auth';
 
-import './SignInComponent.css';
+import './Register.css';
 
-interface SignInComponentProps {
-  onOpenRegister: () => void;
+interface RegisterProps {
+  onOpenLogin: () => void;
 }
 
-function SignInComponent({ onOpenRegister }: SignInComponentProps) {
-  const [signInError, setSignInError] = useState('');
-  const dispatch = useAppDispatch();
+export default function Register({ onOpenLogin }: RegisterProps) {
+  const [registerError, setRegisterError] = useState('');
 
   const extractFormData = (name: string) => {
     switch (name) {
@@ -32,6 +28,8 @@ function SignInComponent({ onOpenRegister }: SignInComponentProps) {
         return { label: 'Username', type: 'text' };
       case 'password':
         return { label: 'Password', type: 'password' };
+      case 'confirmPassword':
+        return { label: 'Confirm Password', type: 'password' };
       default:
         return { label: 'Input', type: 'text' };
     }
@@ -59,43 +57,51 @@ function SignInComponent({ onOpenRegister }: SignInComponentProps) {
     );
   };
 
-  const signIn = async (username: string, password: string) => {
+  const postRegister = async (username: string, password: string) => {
     try {
-      const salt: string = await getSaltViaAPI(username);
+      const salt: string = await getRegisterSaltViaAPI();
       const hashedPassword = sha256(password + salt);
 
-      const { accessToken, refreshToken, userId, expiredTime } =
-        await signInViaAPI(username, hashedPassword);
-
-      localStorage.setItem('accessToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-      localStorage.setItem('expiredTime', expiredTime);
-
-      dispatch(signInAction({ userId, username }));
+      await registerViaAPI(username, salt, hashedPassword);
+      onOpenLogin();
     } catch (error: any) {
-      if (error instanceof AxiosError) {
-        setSignInError(error.response?.data.error);
-      } else {
-        setSignInError(error.message);
-      }
+      console.log(error.response);
+      setRegisterError(error.response.data.error);
     }
   };
 
   return (
-    <div className="sign-in-component">
-      <h1 className="sign-in-title">Sign in</h1>
+    <div className="register-container">
+      <h1 className="register-title">Sign up</h1>
       <Formik
-        initialValues={{ username: '', password: '' }}
+        initialValues={{ username: '', password: '', confirmPassword: '' }}
         onSubmit={async (values: any, actions: any) => {
-          await signIn(values.username, values.password);
+          await postRegister(values.username, values.password).catch(
+            console.error
+          );
           actions.setSubmitting(false);
         }}
+        validate={(formValues) => {
+          setRegisterError('');
+          const password = formValues.password;
+          const confirmPassword = formValues.confirmPassword;
+          const errors: any = {};
+          if (password !== confirmPassword) {
+            errors.password = 'Password and Confirm Password must be the same';
+          }
+          return errors;
+        }}
+        validateOnChange={false}
+        validateOnBlur={false}
       >
         {(props: FormikProps<any>) => (
           <Form>
             <Field name="username" as={renderPlaceHolder} />
             <Field name="password" as={renderPlaceHolder} />
-            <div>{signInError}</div>
+            <Field name="confirmPassword" as={renderPlaceHolder} />
+            <div>{props.errors.password as any as string}</div>
+            <div>{registerError}</div>
+            <div></div>
             <Center>
               <Button
                 className="login-button"
@@ -105,9 +111,11 @@ function SignInComponent({ onOpenRegister }: SignInComponentProps) {
                 height="55px"
                 type="submit"
                 isLoading={props.isSubmitting}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={async () => props.submitForm()}
               >
                 <Text className="login-text" fontSize="30px">
-                  Login
+                  Signup
                 </Text>
               </Button>
             </Center>
@@ -115,12 +123,10 @@ function SignInComponent({ onOpenRegister }: SignInComponentProps) {
         )}
       </Formik>
       <Center>
-        <Text className="register-text" onClick={onOpenRegister}>
-          Register
+        <Text className="sign-in-text" onClick={onOpenLogin}>
+          Login
         </Text>
       </Center>
     </div>
   );
 }
-
-export default SignInComponent;

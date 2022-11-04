@@ -8,11 +8,13 @@ import {
   IconButton,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
 
+import ChatArea from '@/components/ChatArea/ChatArea';
 import ChatContainer from '@/components/ChatArea/ChatContainer/ChatContainer';
 import PopularSpace from '@/components/PopularSpace/PopularSpace';
+import Register from '@/components/RegisterContainer/Register';
 import SignInComponent from '@/components/SignInContainer/SignInComponent';
 import SpaceSpeakerSection from '@/components/SpaceSpeaker/SpaceSpeakerSection';
 import { getUserInfoViaAPI } from '@/lib/apis/auth';
@@ -40,10 +42,6 @@ function DrawerComponent() {
     (state) => state.authSlice.isAuthenticated
   );
 
-  const { id: spaceId } = useAppSelector(
-    (state) => state.spaceDetailSlice.data
-  );
-
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
     if (!isAuthenticated && accessToken) {
@@ -59,9 +57,29 @@ function DrawerComponent() {
     }
   }, []);
 
+  const [isRegistering, setIsRegistering] = useState(false);
+
   const renderContent = () => {
     // Protected route
-    if (!isAuthenticated) return <SignInComponent />;
+    if (!isAuthenticated) {
+      if (isRegistering) {
+        return (
+          <Register
+            onOpenLogin={() => {
+              setIsRegistering(false);
+            }}
+          />
+        );
+      } else {
+        return (
+          <SignInComponent
+            onOpenRegister={() => {
+              setIsRegistering(true);
+            }}
+          />
+        );
+      }
+    }
     if (isAllSpacesURL) return <PopularSpace />;
     else if (isSpecificSpaceURL)
       return (
