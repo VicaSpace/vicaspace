@@ -37,6 +37,13 @@ const SpacePage: React.FC<{}> = () => {
    */
 
   useEffect(() => {
+    // fetch Space every 5 seconds
+    setInterval(() => {
+      void dispatch(fetchSpaceDetail(Number(id)));
+    }, 5000);
+  }, []);
+
+  useEffect(() => {
     if (!id || !isNumeric(id)) {
       console.error('Space ID is not a valid.');
       return;
