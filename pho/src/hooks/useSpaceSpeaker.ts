@@ -3,6 +3,7 @@ import { Transport } from 'mediasoup-client/lib/Transport';
 
 import { useToast } from '@chakra-ui/react';
 import { createRef, useContext, useEffect, useRef, useState } from 'react';
+import { useBeforeunload } from 'react-beforeunload';
 import { useDispatch } from 'react-redux';
 
 import config from '@/config';
@@ -76,7 +77,7 @@ export const useSpaceSpeaker = (
         duration: 3000,
         isClosable: true,
       });
-      // TODO: Send client's socketId & producerId to terminate
+
       socket.emit(`${handlerNamespace.spaceSpeaker}:leave`, {
         spaceSpeakerId,
         producerId: localProducerId,
@@ -104,13 +105,9 @@ export const useSpaceSpeaker = (
     // Handle recent user join to SpaceSpeaker
     socket.on(
       `${handlerNamespace.spaceSpeaker}:recent-user-join`,
-      ({ socketId, producerId }: RecentUserJoinPayload) => {
+      ({ socketId, userId, username, producerId }: RecentUserJoinPayload) => {
         // Skip client's own ID
         if (socket.id === socketId) return;
-
-        console.log(
-          `A recent user (sid: ${socketId}) (with pId: ${producerId}) has joined.`
-        );
 
         // Add new audio ref for incoming speakers
         peerAudioRefs.current[socketId] = {
@@ -118,17 +115,15 @@ export const useSpaceSpeaker = (
           ref: createRef<HTMLAudioElement>(),
         };
 
-        // // Create Receiver Transports upon new comer
-        console.log(
-          'Add a receiver on new join in this room with spaceSpeakerId:',
-          spaceSpeakerId
-        );
+        // Create Recv Transport for newcomer
         createRecvTransport(socketId).catch(console.error);
 
         // Add newcomer to the speaker state
         dispatch(
           insertSpeaker({
             id: socketId,
+            userId,
+            username,
             producerId,
           })
         );
@@ -177,10 +172,14 @@ export const useSpaceSpeaker = (
   const joinSpaceSpeakerSocket = async (
     spaceSpeakerId: number
   ): Promise<void> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        return reject(new Error('Unauthorized called to WebSocket.'));
+      }
       socket.emit(
         `${handlerNamespace.spaceSpeaker}:join`,
-        { spaceSpeakerId, producerId: localProducerId },
+        { spaceSpeakerId, producerId: localProducerId, accessToken },
         () => {
           console.log(
             `Join SpaceSpeaker (id: ${spaceSpeakerId}) successfully.`
@@ -198,9 +197,13 @@ export const useSpaceSpeaker = (
    */
   const fetchSpeakers = async (spaceSpeakerId: number): Promise<void> => {
     return new Promise((resolve, reject) => {
+      const accessToken = localStorage.getItem('accessToken');
+      if (!accessToken) {
+        return reject(new Error('Unauthorized called to WebSocket.'));
+      }
       socket.emit(
         `${handlerNamespace.spaceSpeaker}:get-speakers`,
-        { spaceSpeakerId },
+        { spaceSpeakerId, accessToken },
         async (res: GetSpeakersResponse) => {
           if (res.error) {
             return reject(res.error);
@@ -468,7 +471,7 @@ export const useSpaceSpeaker = (
       title: `Join SpaceSpeaker`,
       description: `You've joined SpaceSpeaker ${spaceSpeakerId}  successfully.`,
       status: 'success',
-      duration: 5000,
+      duration: 4000,
       isClosable: true,
     });
   };
@@ -479,27 +482,6 @@ export const useSpaceSpeaker = (
   useEffect(() => {
     onSpaceSpeakerJoin().catch(console.error);
   }, [localProducerId]);
-
-  /**
-   * Unload Cleanup for SpaceSpeaker
-   */
-  const unloadCleanup = () => {
-    socket.emit(`${handlerNamespace.spaceSpeaker}:leave`, {
-      spaceSpeakerId,
-      producerId: localProducerId,
-      sendTransportId: sendTransport?.id,
-    });
-    console.log('Left SpaceSpeaker.');
-  };
-
-  useEffect(() => {
-    // TODO: Add a leave mechanism for moving between 2 tabs
-    // Add tab unload listener
-    window.addEventListener('beforeunload', unloadCleanup);
-    return () => {
-      window.removeEventListener('beforeunload', unloadCleanup);
-    };
-  }, [unloadCleanup]);
 
   /* * * RECV Section * * */
 
@@ -599,7 +581,6 @@ export const useSpaceSpeaker = (
           if (params.error) {
             return reject(new Error(params.error as string));
           }
-          console.log('Consume Params:', params);
 
           // Consume with local media transport -> Init a consumer
           let consumer: Consumer | undefined;
@@ -647,6 +628,16 @@ export const useSpaceSpeaker = (
       );
     });
   };
+
+  /* * On Unload event * */
+  useBeforeunload(() => {
+    socket.emit(`${handlerNamespace.spaceSpeaker}:leave`, {
+      spaceSpeakerId,
+      producerId: localProducerId,
+      sendTransportId: sendTransport?.id,
+    });
+  });
+
   return { localAudioRef, peerAudioRefs };
 };
 

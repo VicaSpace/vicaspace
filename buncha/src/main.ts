@@ -64,7 +64,6 @@ const main = async () => {
     },
   });
 
-  // TODO: Add some middleware for socket authentication
   const worker = await createWorker();
   const mediaCodecs: RtpCodecCapability[] = [
     {

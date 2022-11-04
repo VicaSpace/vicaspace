@@ -22,7 +22,6 @@ function DrawerComponent() {
   const isAuthenticated = useAppSelector(
     (state) => state.authSlice.isAuthenticated
   );
-  const username = useAppSelector((state) => state.authSlice.username);
 
   const { id: spaceId } = useAppSelector(
     (state) => state.spaceDetailSlice.data
