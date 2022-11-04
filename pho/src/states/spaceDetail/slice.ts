@@ -11,6 +11,11 @@ export interface SpaceDetail {
   longitude: number;
   startTime: string;
   serverTime: string;
+  members: Array<{
+    id: number;
+    username: string;
+  }>;
+  urlVideo: string;
 }
 
 export interface SpaceDetailState {
