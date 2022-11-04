@@ -1,6 +1,5 @@
-import axios from 'axios';
-
 import config from '@/config';
+import { createAxiosAuth } from '@/lib/axios-auth';
 
 export interface GetUserBySocketIdResponse {
   id: number;
@@ -19,7 +18,8 @@ export const getUserBySocketId = async (
   socketId: string,
   accessToken: string
 ): Promise<GetUserBySocketIdResponse | null> => {
-  const res = await axios.get(
+  const axiosAuth = createAxiosAuth(accessToken);
+  const res = await axiosAuth.get(
     `${config.endpoint.banhmiApi}/users?socketId=${socketId}`,
     {
       headers: {
