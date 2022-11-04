@@ -16,7 +16,6 @@ const App: React.FC<{}> = () => {
           <WebSocketProvider>
             <ChakraProvider theme={theme}>
               <AppRouter />
-              {/* <DrawerComponent /> */}
             </ChakraProvider>
           </WebSocketProvider>
         </Provider>
