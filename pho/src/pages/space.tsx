@@ -16,8 +16,9 @@ const SpacePage: React.FC<{}> = () => {
   const dispatch = useAppDispatch();
 
   // Space Slice
-  const { data } = useAppSelector((state) => state.spaceDetailSlice);
-
+  const { data, error, status } = useAppSelector(
+    (state) => state.spaceDetailSlice
+  );
   const { name, members, urlVideo, startTime } = data;
 
   /**

@@ -1,0 +1,44 @@
+.register-container {
+    padding: 100px;
+}
+
+.register-title {
+    padding-bottom: 50px;
+    text-align: center;
+
+    font-family: 'Inconsolata';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 48px;
+    line-height: 50px;
+
+    color: #333333;
+}
+
+.sign-in-text {
+    width: 96px;
+    height: 25px;
+
+    font-family: 'Inconsolata';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 24px;
+    line-height: 25px;
+    text-decoration-line: underline;
+
+    padding-top: 40px;
+
+    color: #333333;
+}
+
+.sign-in-text:hover {
+    cursor: pointer;
+}
+
+.form-label {
+    font-family: 'Inconsolata';
+    font-style: normal;
+    padding-top: 10px;
+
+    color: #333333;
+}
