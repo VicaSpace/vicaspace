@@ -7,7 +7,7 @@ import { updateUserSocketId } from '@/lib/apis/user';
 import { useAppSelector } from '@/states/hooks';
 
 // Initialize connection to WebSocket
-const socket = io(config.endpoint.bunchaWs, {
+const socket = io(config.endpoint.buncha, {
   closeOnBeforeunload: false,
 });
 
@@ -47,7 +47,7 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
   /// Handle connection of Socket
   useEffect(() => {
     socket.on('connect', () => {
-      console.log('Socket connected!');
+      console.log('WebSocket connected!');
       setIsConnected(true);
     });
 
@@ -65,11 +65,6 @@ const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
   useEffect(() => {
     if (!socketId || !isAuthenticated) return;
     updateUserSocketId(socketId).catch(console.error);
-    console.log(
-      `Update user '${
-        username ?? 'unknown'
-      }' socket id (${socketId}) on connection.`
-    );
   }, [socketId, isAuthenticated]);
 
   return (

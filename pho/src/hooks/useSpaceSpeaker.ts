@@ -109,21 +109,12 @@ export const useSpaceSpeaker = (
         // Skip client's own ID
         if (socket.id === socketId) return;
 
-        console.log(
-          `A recent user (sid: ${socketId}) (with pId: ${producerId}) has joined.`
-        );
-
         // Add new audio ref for incoming speakers
         peerAudioRefs.current[socketId] = {
           id: socketId,
           ref: createRef<HTMLAudioElement>(),
         };
 
-        // // Create Receiver Transports upon new comer
-        console.log(
-          'Add a receiver on new join in this room with spaceSpeakerId:',
-          spaceSpeakerId
-        );
         createRecvTransport(socketId).catch(console.error);
 
         // Add newcomer to the speaker state
@@ -589,7 +580,6 @@ export const useSpaceSpeaker = (
           if (params.error) {
             return reject(new Error(params.error as string));
           }
-          console.log('Consume Params:', params);
 
           // Consume with local media transport -> Init a consumer
           let consumer: Consumer | undefined;
@@ -645,7 +635,6 @@ export const useSpaceSpeaker = (
       producerId: localProducerId,
       sendTransportId: sendTransport?.id,
     });
-    console.log('Left SpaceSpeaker.');
   });
 
   return { localAudioRef, peerAudioRefs };

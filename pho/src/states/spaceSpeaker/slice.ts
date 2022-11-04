@@ -80,7 +80,6 @@ const spaceSpeakerSlice = createSlice({
         username: string;
       }>
     ) {
-      console.log('Adding a new participant... ⏰');
       const { id, producerId, userId, username } = action.payload;
       state.data.speakers = {
         ...state.data.speakers,

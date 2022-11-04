@@ -14,7 +14,6 @@ export const useDevice = () => {
    */
   const initDevice = () => {
     const createdDevice = new mediasoupClient.Device();
-    console.log('createdDevice:', createdDevice);
     setDevice(createdDevice);
   };
 
