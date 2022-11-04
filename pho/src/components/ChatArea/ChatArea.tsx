@@ -7,7 +7,7 @@ const ChatArea: React.FC<{ username?: string }> = ({ username = '' }) => {
   return (
     <>
       <ChatUserList username={username} />
-      <ChatContainer username={username} />
+      <ChatContainer />
     </>
   );
 };
