@@ -1,16 +1,4 @@
-export interface PomodoroSessionInfo {
-  sessionId: number;
-  minutes: number;
-  seconds: number;
-  isBreak: boolean;
-  isLongBreak: boolean;
-}
-
-export interface PomodoroSessionConfig {
-  sessionInterval: number;
-  breakInterval: number;
-  sessionName: string;
-}
+import { PomodoroSessionInfo } from '@/types/pomodoro';
 
 export const calculatePomodoroSession = (
   startTime: number,

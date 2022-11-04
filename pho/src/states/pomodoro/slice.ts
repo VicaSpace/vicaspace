@@ -1,7 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import pomodoroConfig from '@/config/pomodoro.json';
-
 interface PomodoroState {
   sessionId: number;
   startTime: number;
