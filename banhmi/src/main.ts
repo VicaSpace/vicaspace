@@ -12,7 +12,6 @@ const pinoHttpMiddleware = pinoHttp();
 const main = async () => {
   /* Express App setup */
   const app = express();
-  // TODO: Create HTTPS server instead of HTTP
   app.use(cors());
   app.set('trust proxy', 1);
   app.use(pinoHttpMiddleware);

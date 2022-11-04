@@ -4,6 +4,7 @@ import { AudioParams } from '@/types/spaceSpeaker';
 
 export const useLocalAudioRef = () => {
   const localAudioRef = useRef<HTMLAudioElement | null>(null);
+
   const [audioParams, setAudioParams] = useState<AudioParams | null>(null);
 
   /**

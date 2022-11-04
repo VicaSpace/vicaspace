@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 import config from '@/config';
 import {
   consumerCollection,
@@ -5,6 +7,7 @@ import {
   socketCollection,
   transportCollection,
 } from '@/data/collections';
+import { getUserBySocketId } from '@/lib/apis/user';
 import { logger } from '@/lib/logger';
 import {
   GetSpeakersErrorResponse,
@@ -32,11 +35,30 @@ export const registerSpaceSpeakerHandlers = (
    * @param payload Payload
    * @param callback Callback
    */
-  const joinHandler = async (payload: JoinPayload, callback: () => void) => {
-    const { spaceSpeakerId, producerId } = payload;
+  const joinHandler = async (
+    payload: JoinPayload,
+    callback: (payload?: any) => void
+  ) => {
+    const { spaceSpeakerId, producerId, accessToken } = payload;
+    if (!accessToken) {
+      return callback({
+        error: 'Unauthorized called to WebSocket',
+      });
+    }
+
+    // Query user info from socketId
+    const user = await getUserBySocketId(socket.id, accessToken);
+    if (!user) {
+      return callback({
+        status: 'NOK',
+        error: 'Cannot retrieve user from socketID',
+      });
+    }
+
     logger.info(
-      `socketId ${socket.id}) has joined a space (spaceId: ${spaceSpeakerId})`
+      `User (${user.username} w/ sId: ${socket.id}) has joined a space (spaceId: ${spaceSpeakerId})`
     );
+
     const spaceIdStr = spaceSpeakerId.toString();
 
     // Assign socket to a specific space
@@ -50,12 +72,16 @@ export const registerSpaceSpeakerHandlers = (
       `${handlerNamespace.spaceSpeaker}:recent-user-join`,
       {
         socketId: socket.id,
+        userId: user.id,
+        username: user.username,
         producerId,
         msg: `User (socketId: ${socket.id}) has joined the SpaceSpeaker.`,
       }
     );
 
-    callback(); // ACK
+    callback({
+      status: 'OK',
+    });
   };
   socket.on(`${handlerNamespace.spaceSpeaker}:join`, joinHandler);
 
@@ -120,11 +146,19 @@ export const registerSpaceSpeakerHandlers = (
     payload: GetSpeakersPayload,
     callback: (res: GetSpeakersResponse | GetSpeakersErrorResponse) => void
   ) => {
-    const { spaceSpeakerId } = payload;
+    const { spaceSpeakerId, accessToken } = payload;
+
+    if (!accessToken) {
+      return callback({
+        error: 'Access Token must be provided!',
+      });
+    }
+
+    // Extract socket room's IDs
     const speakerSocketIds = io.sockets.adapter.rooms.get(
       spaceSpeakerId.toString()
     );
-
+    // Check if room ID is available
     if (!speakerSocketIds) {
       return callback({
         error: 'SpaceSpeaker ID is not valid. Cannot get speakers',
@@ -133,16 +167,31 @@ export const registerSpaceSpeakerHandlers = (
 
     // Get speakers along with their current producerId
     const response: SpeakerDetails = {};
-    // Associate speaker id with producer.
-    Object.keys(producerCollection).forEach((producerId) => {
-      const { socketId } = producerCollection[producerId];
-      if (speakerSocketIds?.has(socketId)) {
-        response[socketId] = {
-          id: socketId,
-          producerId,
-        };
-      }
-    });
+    // Associate speaker id with producer, user's info.
+    await Promise.all(
+      Object.keys(producerCollection).map(async (producerId) => {
+        const { socketId } = producerCollection[producerId];
+        if (speakerSocketIds?.has(socketId)) {
+          try {
+            const user = await getUserBySocketId(socketId, accessToken);
+            if (user) {
+              response[socketId] = {
+                id: socketId,
+                userId: user.id,
+                username: user.username,
+                producerId,
+              };
+            }
+          } catch (err) {
+            if (axios.isAxiosError(err)) {
+              if (err.response?.status !== 401) {
+                logger.error(err.message);
+              }
+            }
+          }
+        }
+      })
+    );
     return callback({
       speakers: response,
     });

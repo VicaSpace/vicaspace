@@ -12,6 +12,9 @@ const initialState: AuthState = {
   username: undefined,
 };
 
+/**
+ * Authenticate Slice
+ */
 const authSlice = createSlice({
   name: 'auth',
   initialState,

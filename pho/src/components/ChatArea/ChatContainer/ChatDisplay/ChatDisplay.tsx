@@ -5,10 +5,14 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import ChatBubble from '@/components/ChatArea/ChatContainer/ChatDisplay/ChatBubble/ChatBubble';
 import db from '@/lib/init-firebase';
+import { useAppSelector } from '@/states/hooks';
 
 import './ChatDisplay.css';
 
-const ChatDisplay: React.FC<{ username: string }> = ({ username }) => {
+const ChatDisplay: React.FC<{}> = () => {
+  // Space Slice
+  const { username } = useAppSelector((state) => state.authSlice);
+
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef<null | HTMLDivElement>(null);
     useEffect(() => elementRef.current?.scrollIntoView());
