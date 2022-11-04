@@ -3,7 +3,6 @@ import React from 'react';
 import { HelmetProvider } from 'react-helmet-async';
 import { Provider } from 'react-redux';
 
-import DrawerComponent from '@/components/DrawerComponent';
 import WebSocketProvider from '@/modules/ws/WebSocketProvider';
 import AppRouter from '@/routes/AppRouter';
 import { store } from '@/states/store';

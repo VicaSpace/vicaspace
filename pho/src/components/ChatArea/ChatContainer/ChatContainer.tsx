@@ -3,7 +3,6 @@ import React from 'react';
 
 import ChatDisplay from '@/components/ChatArea/ChatContainer/ChatDisplay/ChatDisplay';
 import ChatEditor from '@/components/ChatArea/ChatContainer/ChatEditor/ChatEditor';
-import { useAppSelector } from '@/states/hooks';
 
 import './ChatContainer.css';
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
@@ -15,8 +16,11 @@ import { useEffect, useState } from 'react';
 
 import logo from '@/asset/vicaspace-logo.png';
 import SpaceCell from '@/components/PopularSpace/SpaceCell/SpaceCell';
+import { useAppSelector } from '@/states/hooks';
 
-const PopularSpace: React.FC<{ username?: string }> = ({ username = '' }) => {
+const PopularSpace: React.FC<{}> = () => {
+  const username = useAppSelector((state) => state.authSlice.username);
+
   const URL = process.env.REACT_APP_BACKEND_URL ?? '';
 
   const [spaces, setSpaces] = useState<any[]>([]);
@@ -84,8 +88,6 @@ const PopularSpace: React.FC<{ username?: string }> = ({ username = '' }) => {
       >
         <VStack w="100%" h="90%" spacing="8">
           {spaces.map((space) => {
-            console.log('clmm: ', space);
-
             return <SpaceCell key={space.id} space={space} />;
           })}
         </VStack>
