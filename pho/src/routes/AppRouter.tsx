@@ -16,7 +16,7 @@ const AppRouter: React.FC = () => {
   return (
     <>
       <Router>
-        <DrawerComponent />
+        {/* <DrawerComponent /> */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
