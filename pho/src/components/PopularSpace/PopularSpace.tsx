@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 
 import logo from '@/asset/vicaspace-logo.png';
 import SpaceCell from '@/components/PopularSpace/SpaceCell/SpaceCell';
+import { GetSpaceDetailResponse } from '@/lib/apis/space';
 import { useAppSelector } from '@/states/hooks';
 
 const PopularSpace: React.FC<{}> = () => {
@@ -23,7 +24,7 @@ const PopularSpace: React.FC<{}> = () => {
 
   const URL = process.env.REACT_APP_BACKEND_URL ?? '';
 
-  const [spaces, setSpaces] = useState<any[]>([]);
+  const [spaces, setSpaces] = useState<GetSpaceDetailResponse[]>([]);
 
   useEffect(() => {
     const fetchSpaces = async () => {

@@ -14,11 +14,12 @@ import LinesEllipsis from 'react-lines-ellipsis';
 
 import noOnlUsersIcon from '@/asset/noOnlUsersIcon.png';
 import SpaceModal from '@/components/WorldMap/SpaceModal';
+import { GetSpaceDetailResponse } from '@/lib/apis/space';
 
 const SpaceCell: React.FC<{ space: any }> = ({ space }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const URL = process.env.REACT_APP_BACKEND_URL ?? '';
-  const [spaceInfo, setSpaceInfo] = useState<any>(null);
+  const [spaceInfo, setSpaceInfo] = useState<GetSpaceDetailResponse>();
 
   useEffect(() => {
     const fetchSpaceInfo = async () => {
@@ -47,11 +48,11 @@ const SpaceCell: React.FC<{ space: any }> = ({ space }) => {
     >
       <HStack w="100%" h="50%">
         <Heading w="70%" size="md" fontFamily="Inconsolata" float="left">
-          {spaceInfo !== null ? spaceInfo.name : ''}
+          {spaceInfo ? spaceInfo.name : ''}
         </Heading>
         <HStack w="30%" justify="right">
           <Image src={noOnlUsersIcon} />
-          <Text>{spaceInfo !== null ? spaceInfo.members.length : 0}</Text>
+          <Text>{spaceInfo ? spaceInfo.members.length : 0}</Text>
         </HStack>
       </HStack>
       <Text w="100%" h="50%" fontFamily="Inconsolata" fontSize="16px">
