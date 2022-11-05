@@ -11,7 +11,6 @@ import {
 import { useEffect, useState } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
 
-import ChatArea from '@/components/ChatArea/ChatArea';
 import ChatContainer from '@/components/ChatArea/ChatContainer/ChatContainer';
 import PopularSpace from '@/components/PopularSpace/PopularSpace';
 import Register from '@/components/RegisterContainer/Register';
@@ -109,6 +108,7 @@ function DrawerComponent() {
         placement="left"
         onClose={onClose}
         size="md"
+        variant="interactOutside"
       >
         <DrawerContent backgroundColor="#EEF1FF">
           <Box position="absolute" top="50vh" left="520px">
