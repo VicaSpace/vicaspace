@@ -25,7 +25,6 @@ export const sendSpeechEvent = (
       socketId: socket.id,
     },
     (res: any) => {
-      console.log('did it callhere?');
       if (res.status === 'NOK') {
         console.error(res.error);
       }

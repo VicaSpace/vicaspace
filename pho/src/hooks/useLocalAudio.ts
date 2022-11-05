@@ -33,7 +33,6 @@ export const useLocalAudio = (): UseLocalAudio => {
     onSpeaking?: () => void,
     onStoppedSpeaking?: () => void
   ) => {
-    console.log('did it callhere?');
     const constraints: MediaStreamConstraints | undefined = {
       audio: true,
     };
@@ -44,24 +43,19 @@ export const useLocalAudio = (): UseLocalAudio => {
         const opts = {};
         const speechEvents = hark(stream, opts);
 
-        // Speaking Events //
-        console.log('register on speaking...');
         /**
          * On speaking
          */
         speechEvents.on('speaking', () => {
           if (onSpeaking) onSpeaking();
-          console.log('speaking...');
           setIsSpeaking(true);
         });
 
-        console.log('register on stopped speaking...');
         /**
          * On stop speaking
          */
         speechEvents.on('stopped_speaking', () => {
           if (onStoppedSpeaking) onStoppedSpeaking();
-          console.log('stopped speaking...');
           setIsSpeaking(false);
         });
 

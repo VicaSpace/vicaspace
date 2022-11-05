@@ -80,15 +80,14 @@ const spaceSpeakerSlice = createSlice({
         username: string;
       }>
     ) {
+      if (!state.data.speakers) return;
       const { id, producerId, userId, username } = action.payload;
-      state.data.speakers = {
-        ...state.data.speakers,
-        [id]: {
-          id,
-          producerId,
-          userId,
-          username,
-        },
+      state.data.speakers[id] = {
+        id,
+        producerId,
+        userId,
+        username,
+        isSpeaking: false,
       };
     },
 
@@ -98,9 +97,8 @@ const spaceSpeakerSlice = createSlice({
      * @param action Action (with payload)
      */
     deleteSpeaker(state, action: PayloadAction<string>) {
-      const filteredSpeakers = { ...state.data.speakers };
-      delete filteredSpeakers[action.payload];
-      state.data.speakers = filteredSpeakers;
+      if (!state.data.speakers) return;
+      delete state.data.speakers[action.payload];
     },
   },
 });
