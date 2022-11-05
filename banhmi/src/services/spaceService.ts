@@ -12,9 +12,27 @@ export const getAllSpacesInfo = async () => {
         name: true,
         latitude: true,
         longitude: true,
+        startTime: true,
+        members: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        urlVideo: true,
+        urlSpotify: true,
+        timezone: true,
+        pomodoroDuration: true,
+        shortBreakDuration: true,
+        longBreakDuration: true,
       },
     });
-    return spacesInfo;
+    return spacesInfo.map((info) => {
+      return {
+        ...info,
+        serverTime: new Date(),
+      };
+    });
   } catch (error) {
     logger.error(error);
     throw new Error('error querying spaces');

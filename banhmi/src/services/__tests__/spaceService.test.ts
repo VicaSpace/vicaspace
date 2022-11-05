@@ -14,23 +14,57 @@ describe('test space service', () => {
   });
 
   it('should return a list of space info', async () => {
-    const expected = [
+    const mockResponse = [
       {
         id: 1,
         name: 'Ho Chi Minh',
         latitude: 10.762622,
         longitude: 106.660172,
+        startTime: new Date(2022, 11, 5),
+        members: [
+          {
+            id: 1,
+            username: 'richard',
+          },
+          {
+            id: 2,
+            username: 'john',
+          },
+        ],
+        urlVideo: 'https://www.youtube.com/',
+        urlSpotify: 'https://www.spotify.com/',
+        timezone: 'Asia/HCM',
+        pomodoroDuration: 1500,
+        shortBreakDuration: 300,
+        longBreakDuration: 1800,
       },
       {
         id: 2,
         name: 'Ha Noi',
         latitude: 21.033333,
         longtitude: 105.849998,
+        startTime: new Date(2022, 11, 5),
+        members: [],
+        urlVideo: 'https://www.youtube.com/',
+        urlSpotify: 'https://www.spotify.com/',
+        timezone: 'Asia/HCM',
+        pomodoroDuration: 1500,
+        shortBreakDuration: 300,
+        longBreakDuration: 1800,
       },
     ];
-    jest.spyOn(prisma.space, 'findMany').mockResolvedValue(expected as Space[]);
+    jest
+      .spyOn(prisma.space, 'findMany')
+      .mockResolvedValue(mockResponse as unknown as Space[]);
     const value = await getAllSpacesInfo();
-    expect(value).toBe(expected);
+    expect(value).toStrictEqual(
+      mockResponse.map((item) => {
+        return {
+          ...item,
+          serverTime: new Date(2020, 3, 1),
+        };
+      })
+    );
   });
 
   it('should throw error on getting all spaces info', () => {
@@ -39,13 +73,12 @@ describe('test space service', () => {
   });
 
   it('should return the detail of a space', async () => {
-    const expected = {
+    const mockResponse = {
       id: 2,
       name: 'Ha Noi',
       latitude: 21.033333,
       longitude: 105.849998,
       startTime: '2022-10-10T23:50:21.817Z',
-      serverTime: new Date(2020, 3, 1),
       members: [
         {
           id: 1,
@@ -57,13 +90,20 @@ describe('test space service', () => {
         },
       ],
       urlVideo: 'https://www.youtube.com/',
-      urlSpotify: 'https://www.spotify.com',
+      urlSpotify: 'https://www.spotify.com/',
+      timezone: 'Asia/HCM',
+      pomodoroDuration: 1500,
+      shortBreakDuration: 300,
+      longBreakDuration: 1800,
     };
     jest
       .spyOn(prisma.space, 'findFirstOrThrow')
-      .mockResolvedValue(expected as any);
+      .mockResolvedValue(mockResponse as unknown as Space);
     const value = await getSpaceDetails(2);
-    expect(value).toStrictEqual(expected);
+    expect(value).toStrictEqual({
+      ...mockResponse,
+      serverTime: new Date(2020, 3, 1),
+    });
   });
 
   it('should throw error on getting a space detail', () => {
