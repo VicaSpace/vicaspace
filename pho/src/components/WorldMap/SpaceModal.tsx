@@ -175,18 +175,15 @@ const SpaceModal: React.FC<{
           setSeconds(seconds - 1);
         }, 1000);
       }
-      console.log('set interval');
     } else {
       if (pomodoroInterval) {
         clearInterval(pomodoroInterval);
-        console.log('clear interval');
       }
     }
 
     return () => {
       if (pomodoroInterval) {
         clearInterval(pomodoroInterval);
-        console.log('clear interval');
       }
     };
   }, [minutes, seconds, isOpen]);
