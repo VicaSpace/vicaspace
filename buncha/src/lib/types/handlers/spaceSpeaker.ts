@@ -33,3 +33,9 @@ export interface GetSpeakersResponse {
 export interface GetSpeakersErrorResponse {
   error: string;
 }
+
+export interface SpeechEventPayload {
+  spaceSpeakerId: string;
+  socketId: string;
+  event: 'speaking' | 'stopped_speaking';
+}
