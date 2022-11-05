@@ -48,6 +48,9 @@ const SpacePage: React.FC<{}> = () => {
           </div>
           <div style={{ position: 'absolute' }}>
             <Pomodoro
+              shortBreakDuration={2}
+              pomodoroDuration={5}
+              longBreakDuration={10}
               timestamp={new Date(startTime ?? '').getTime()}
               serverTime={Date.now()} // TODO: get server time from API
             />
