@@ -239,11 +239,10 @@ const SpaceModal: React.FC<{
               ) : (
                 <>
                   {spaceDetail.members.slice(0, 4).map((member: Member) => {
-                    const imgSrc = `https://ui-avatars.com/api/?background=random&name=${member.username}`;
                     return (
                       <Image
                         key={member.id}
-                        src={imgSrc}
+                        src={buildUserAvatarURL(member.username)}
                         borderRadius="100"
                         mr="5"
                       />
