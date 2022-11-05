@@ -191,7 +191,19 @@ const SpaceModal: React.FC<{
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent pb="5" pt="5" textAlign="center" fontFamily="Inconsolata">
+      <ModalContent
+        pb="5"
+        pt="5"
+        textAlign="center"
+        fontFamily="Inconsolata"
+        style={{
+          background: isLongBreak
+            ? 'rgb(250, 247, 210)'
+            : isBreak
+            ? 'rgb(181, 245, 225)'
+            : 'rgb(210, 218, 255)',
+        }}
+      >
         {typeof spaceDetail === 'undefined' ? (
           <>Error</>
         ) : (
