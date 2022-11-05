@@ -15,7 +15,7 @@ const getWindowDimensions = () => {
   };
 };
 
-const pomodoroWidthPixels = 200;
+const pomodoroWidthPixels = 250;
 const toolbarRightPosition = 62;
 
 const Pomodoro: React.FC<{
