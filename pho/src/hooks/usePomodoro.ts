@@ -20,22 +20,36 @@ export const usePomodoro = (
     (state) => state.pomodoroSlice
   );
   const dispatch = useAppDispatch();
+  const [sessionInfo, setSessionInfo] = useState<PomodoroSessionInfo | null>(
+    null
+  );
 
   useEffect(() => {
     dispatch(setStartTime(pomodoroConfig.startTime));
-    const sessionInfo = calculatePomodoroSession(
-      startTime,
-      pomodoroConfig.serverTime,
-      pomodoroConfig.pomodoroDuration,
-      pomodoroConfig.shortBreakDuration,
-      pomodoroConfig.longBreakDuration
+  }, []);
+
+  useEffect(() => {
+    setSessionInfo(
+      calculatePomodoroSession(
+        startTime,
+        pomodoroConfig.serverTime,
+        pomodoroConfig.pomodoroDuration,
+        pomodoroConfig.shortBreakDuration,
+        pomodoroConfig.longBreakDuration
+      )
     );
+  }, [startTime]);
+
+  useEffect(() => {
+    if (!sessionInfo) {
+      return;
+    }
     dispatch(setLongBreak(sessionInfo.isLongBreak));
     dispatch(setBreak(sessionInfo.isBreak));
     dispatch(setSessionId(sessionInfo.sessionId));
     setMinutes(sessionInfo.minutes);
     setSeconds(sessionInfo.seconds);
-  }, []);
+  }, [sessionInfo]);
 
   const onSessionEnded = () => {
     let interval = 0;
@@ -72,26 +86,27 @@ export const usePomodoro = (
   };
 
   useEffect(() => {
-    const pomodorpInterval = setInterval(() => {
-      if (seconds === 0) {
-        if (minutes === 0) {
-          clearInterval(pomodorpInterval);
+    let pomodoroInterval: NodeJS.Timer;
+    if (seconds === 0) {
+      if (minutes === 0) {
+        pomodoroInterval = setInterval(() => {
           onSessionEnded();
-          return;
-        } else {
+        }, 1000);
+      } else {
+        pomodoroInterval = setInterval(() => {
           setMinutes(minutes - 1);
           setSeconds(59);
-          return;
-        }
+        }, 1000);
       }
-      if (seconds > 0) {
+    } else {
+      pomodoroInterval = setInterval(() => {
         setSeconds(seconds - 1);
-      }
-    }, 1000);
+      }, 1000);
+    }
     return () => {
-      clearInterval(pomodorpInterval);
+      clearInterval(pomodoroInterval);
     };
-  });
+  }, [minutes, seconds]);
 
   return {
     sessionId,

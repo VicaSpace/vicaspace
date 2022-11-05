@@ -17,7 +17,6 @@ model Space {
   latitude           Float
   longitude          Float
   startTime          DateTime        @map("start_time")
-  serverTime         DateTime        @map("server_time")
   pomodoroDuration   Int             @map("pomodoro_duration")
   shortBreakDuration Int             @map("short_break_duration")
   longBreakDuration  Int             @map("long_break_duration")

@@ -14,7 +14,6 @@ async function getSpaceTime(spaceId: number) {
         latitude: true,
         longitude: true,
         startTime: true,
-        serverTime: true,
         members: {
           select: {
             id: true,
@@ -23,6 +22,9 @@ async function getSpaceTime(spaceId: number) {
         },
         urlVideo: true,
         urlSpotify: true,
+        pomodoroDuration: true,
+        shortBreakDuration: true,
+        longBreakDuration: true,
       },
     });
     return spaceDetails;
