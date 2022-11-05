@@ -12,6 +12,11 @@ interface SpaceSpeakerState {
   error: null | string;
 }
 
+interface SetSpeakerSpeechStatusPayload {
+  id: string;
+  active: boolean;
+}
+
 const initialState: SpaceSpeakerState = {
   data: {},
   error: null,
@@ -100,6 +105,21 @@ const spaceSpeakerSlice = createSlice({
       if (!state.data.speakers) return;
       delete state.data.speakers[action.payload];
     },
+
+    /**
+     * Set Speaker's speech status
+     * @param state State
+     * @param action Action Payload
+     * @returns
+     */
+    setSpeakerSpeechStatus(
+      state,
+      action: PayloadAction<SetSpeakerSpeechStatusPayload>
+    ) {
+      if (!state.data.speakers) return;
+      const { active, id } = action.payload;
+      state.data.speakers[id].isSpeaking = active;
+    },
   },
 });
 
@@ -110,6 +130,7 @@ export const {
   insertSpeaker,
   deleteSpeaker,
   leaveSpaceSpeaker,
+  setSpeakerSpeechStatus,
 } = spaceSpeakerSlice.actions;
 
 export default spaceSpeakerSlice.reducer;

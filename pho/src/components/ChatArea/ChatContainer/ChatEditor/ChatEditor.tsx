@@ -1,5 +1,4 @@
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
-import PropTypes from 'prop-types';
 
 import { Button, Flex, Input } from '@chakra-ui/react';
 import { useState } from 'react';
@@ -66,10 +65,6 @@ const ChatEditor: React.FC<{}> = () => {
       </Button>
     </Flex>
   );
-};
-
-ChatEditor.propTypes = {
-  username: PropTypes.string.isRequired,
 };
 
 export default ChatEditor;

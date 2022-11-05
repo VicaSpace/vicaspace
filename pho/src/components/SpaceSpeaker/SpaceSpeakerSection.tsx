@@ -67,7 +67,7 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
                 <div key={spk.id}>
                   <SpaceSpeakerUserAvatar
                     name={spk.username}
-                    isSpeaking={isLocalSpeaking}
+                    isSpeaking={spk.isSpeaking}
                   />
                   {/* Local Audio */}
                   <audio ref={peerAudioRefs.current[spk.id].ref} autoPlay />

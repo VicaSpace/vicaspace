@@ -17,6 +17,7 @@ import {
   deleteSpeaker,
   insertSpeaker,
   leaveSpaceSpeaker,
+  setSpeakerSpeechStatus,
   setSpeakers,
   unsetSpeakers,
 } from '@/states/spaceSpeaker/slice';
@@ -68,6 +69,9 @@ export const useSpaceSpeaker = (
   >(null);
   const [recvTransports, setRecvTransports] = useState<RecvTransports>({});
   const [delSpeakerId, setDelSpeakerId] = useState<string | null>(null);
+  const [recentSpeechSpeakerId, setRecentSpeechSpeakerId] = useState<
+    string | null
+  >(null);
 
   /* * Refs * */
   const peerAudioRefs = useRef<PeerAudioRefs>({});
@@ -156,12 +160,23 @@ export const useSpaceSpeaker = (
       `${handlerNamespace.spaceSpeaker}:recent-user-speech`,
       ({ socketId, event }: RecentUserSpeechPayload) => {
         if (socketId === socket.id) return; // Skip client ID
-        // TODO: Set peer's speak isSpeaking boolean
         switch (event) {
           case 'speaking': {
+            dispatch(
+              setSpeakerSpeechStatus({
+                active: true,
+                id: socketId,
+              })
+            );
             break;
           }
           case 'stopped_speaking': {
+            dispatch(
+              setSpeakerSpeechStatus({
+                active: false,
+                id: socketId,
+              })
+            );
             break;
           }
           default:
