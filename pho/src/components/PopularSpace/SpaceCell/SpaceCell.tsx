@@ -57,8 +57,7 @@ const SpaceCell: React.FC<{ space: GetSpaceDetailResponse }> = ({ space }) => {
       </HStack>
       <Box w="100%" h="50%" fontFamily="Inconsolata" fontSize="16px">
         <LinesEllipsis
-          text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit,
-          quibusdam!"
+          text="No description yet!"
           maxLine="1"
           ellipsis="..."
           trimRight

@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { calculatePomodoroSession } from '@/lib/pomodoro';
+import { buildUserAvatarURL } from '@/lib/ui-avatars';
 
 interface Member {
   id: number;
@@ -226,11 +227,10 @@ const SpaceModal: React.FC<{
             >
               {spaceDetail.members.length < 5 ? (
                 spaceDetail.members.map((member: Member) => {
-                  const imgSrc = `https://ui-avatars.com/api/?background=random&name=${member.username}`;
                   return (
                     <Image
                       key={member.id}
-                      src={imgSrc}
+                      src={buildUserAvatarURL(member.username)}
                       borderRadius="100"
                       mr="5"
                     />
