@@ -2,6 +2,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 
 import {
+  Box,
   HStack,
   Heading,
   Image,
@@ -54,7 +55,7 @@ const SpaceCell: React.FC<{ space: GetSpaceDetailResponse }> = ({ space }) => {
           <Text>{spaceInfo ? spaceInfo.members.length : 0}</Text>
         </HStack>
       </HStack>
-      <Text w="100%" h="50%" fontFamily="Inconsolata" fontSize="16px">
+      <Box w="100%" h="50%" fontFamily="Inconsolata" fontSize="16px">
         <LinesEllipsis
           text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Suscipit,
           quibusdam!"
@@ -63,7 +64,7 @@ const SpaceCell: React.FC<{ space: GetSpaceDetailResponse }> = ({ space }) => {
           trimRight
           basedOn="letters"
         />
-      </Text>
+      </Box>
       <SpaceModal isOpen={isOpen} onClose={onClose} spaceId={space.id} />
     </VStack>
   );

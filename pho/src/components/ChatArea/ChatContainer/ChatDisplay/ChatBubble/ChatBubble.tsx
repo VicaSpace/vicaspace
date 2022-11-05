@@ -48,10 +48,8 @@ const ChatBubble: React.FC<{
           fontSize="13"
           borderRadius="10px"
         >
-          <Text>
-            <Text fontWeight="bold">{username}:</Text>
-            {message}
-          </Text>
+          <Text fontWeight="bold">{username}:</Text>
+          {message}
         </Flex>
       </Flex>
     );

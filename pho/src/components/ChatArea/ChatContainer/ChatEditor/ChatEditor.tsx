@@ -1,5 +1,4 @@
 import { Timestamp, addDoc, collection } from 'firebase/firestore';
-import PropTypes from 'prop-types';
 
 import { Button, Flex, Input } from '@chakra-ui/react';
 import { useState } from 'react';

@@ -69,17 +69,18 @@ const ChatDisplay: React.FC<{}> = () => {
       p="3"
       className="chat-display"
     >
-      {chatList.map((item) => {
-        return (
-          <ChatBubble
-            key={item.id}
-            sender={item.username === username ? 'me' : item.username}
-            // username={item.username === username ? 'me' : item.username}
-            username={item.username}
-            message={item.message}
-          />
-        );
-      })}
+      {username &&
+        chatList.map((item) => {
+          return (
+            <ChatBubble
+              key={item.id}
+              sender={item.username === username ? 'me' : item.username}
+              // username={item.username === username ? 'me' : item.username}
+              username={item.username}
+              message={item.message}
+            />
+          );
+        })}
       <AlwaysScrollToBottom />
     </Flex>
   );

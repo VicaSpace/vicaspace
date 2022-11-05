@@ -1,3 +1,5 @@
+import clsx from 'clsx';
+
 import React from 'react';
 
 import { buildUserAvatarURL } from '@/lib/ui-avatars';
@@ -6,6 +8,7 @@ import './SpaceSpeakerUserAvatar.css';
 
 interface SpaceSpeakerUserAvatarProps {
   name?: string;
+  isSpeaking: boolean;
 }
 
 /**
@@ -13,14 +16,18 @@ interface SpaceSpeakerUserAvatarProps {
  */
 const SpaceSpeakerUserAvatar: React.FC<SpaceSpeakerUserAvatarProps> = ({
   name,
+  isSpeaking,
 }) => {
   return (
     <div className="space-speaker-user-avatar-container">
       <img
         // Dummy key
-        className="space-speaker-participant-img"
+        className={clsx({
+          'space-speaker-participant-img': true,
+          'audio-active': isSpeaking,
+        })}
         src={buildUserAvatarURL(name)}
-        alt="participant"
+        alt="speaker-avatar"
       />
       <div>{name}</div>
     </div>

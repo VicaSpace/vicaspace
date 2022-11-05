@@ -12,6 +12,11 @@ interface SpaceSpeakerState {
   error: null | string;
 }
 
+interface SetSpeakerSpeechStatusPayload {
+  id: string;
+  active: boolean;
+}
+
 const initialState: SpaceSpeakerState = {
   data: {},
   error: null,
@@ -80,15 +85,14 @@ const spaceSpeakerSlice = createSlice({
         username: string;
       }>
     ) {
+      if (!state.data.speakers) return;
       const { id, producerId, userId, username } = action.payload;
-      state.data.speakers = {
-        ...state.data.speakers,
-        [id]: {
-          id,
-          producerId,
-          userId,
-          username,
-        },
+      state.data.speakers[id] = {
+        id,
+        producerId,
+        userId,
+        username,
+        isSpeaking: false,
       };
     },
 
@@ -98,9 +102,23 @@ const spaceSpeakerSlice = createSlice({
      * @param action Action (with payload)
      */
     deleteSpeaker(state, action: PayloadAction<string>) {
-      const filteredSpeakers = { ...state.data.speakers };
-      delete filteredSpeakers[action.payload];
-      state.data.speakers = filteredSpeakers;
+      if (!state.data.speakers) return;
+      delete state.data.speakers[action.payload];
+    },
+
+    /**
+     * Set Speaker's speech status
+     * @param state State
+     * @param action Action Payload
+     * @returns
+     */
+    setSpeakerSpeechStatus(
+      state,
+      action: PayloadAction<SetSpeakerSpeechStatusPayload>
+    ) {
+      if (!state.data.speakers) return;
+      const { active, id } = action.payload;
+      state.data.speakers[id].isSpeaking = active;
     },
   },
 });
@@ -112,6 +130,7 @@ export const {
   insertSpeaker,
   deleteSpeaker,
   leaveSpaceSpeaker,
+  setSpeakerSpeechStatus,
 } = spaceSpeakerSlice.actions;
 
 export default spaceSpeakerSlice.reducer;
