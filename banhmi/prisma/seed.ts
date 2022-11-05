@@ -184,6 +184,54 @@ async function createSpaces() {
       timezone: 'Asia/Bangkok',
     },
   });
+  await prisma.space.upsert({
+    where: { id: 3 },
+    update: {},
+    create: {
+      name: 'Bengaluru',
+      latitude: 12.971599,
+      longitude: 77.594566,
+      startTime: new Date('2022-10-10T23:50:21.817Z'),
+      pomodoroDuration: 1500,
+      shortBreakDuration: 300,
+      longBreakDuration: 1800,
+      urlVideo: 'https://www.youtube.com/watch?v=cR7OV00wDGk',
+      urlSpotify: '',
+      timezone: 'Asia/Kolkata',
+    },
+  });
+  await prisma.space.upsert({
+    where: { id: 4 },
+    update: {},
+    create: {
+      name: 'New Delhi',
+      latitude: 28.644800,
+      longitude: 77.216721,
+      startTime: new Date('2022-10-10T23:50:21.817Z'),
+      pomodoroDuration: 1500,
+      shortBreakDuration: 300,
+      longBreakDuration: 1800,
+      urlVideo: 'https://www.youtube.com/watch?v=XVvYXBTSuaA',
+      urlSpotify: '',
+      timezone: 'Asia/Kolkata',
+    },
+  });
+  await prisma.space.upsert({
+    where: { id: 5 },
+    update: {},
+    create: {
+      name: 'Mumbai',
+      latitude: 19.228825,
+      longitude: 72.854118,
+      startTime: new Date('2022-10-10T23:50:21.817Z'),
+      pomodoroDuration: 1500,
+      shortBreakDuration: 300,
+      longBreakDuration: 1800,
+      urlVideo: 'https://www.youtube.com/watch?v=FQINAGuleoU',
+      urlSpotify: '',
+      timezone: 'Asia/Kolkata',
+    },
+  });
 }
 
 async function main() {
