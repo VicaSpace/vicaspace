@@ -1,25 +1,25 @@
-import React, { useEffect } from 'react';
+import React from 'react';
+
+import { buildUserAvatarURL } from '@/lib/ui-avatars';
 
 import './SpaceSpeakerUserAvatar.css';
 
 interface SpaceSpeakerUserAvatarProps {
-  imgUrl?: string;
   name?: string;
 }
 
+/**
+ * Component for User Avatar in SpaceSpeaker
+ */
 const SpaceSpeakerUserAvatar: React.FC<SpaceSpeakerUserAvatarProps> = ({
-  imgUrl = 'https://i.imgur.com/wcASKbZ.png',
   name,
 }) => {
-  useEffect(() => {
-    console.log('name of participant:', name);
-  }, [name]);
   return (
     <div className="space-speaker-user-avatar-container">
       <img
         // Dummy key
         className="space-speaker-participant-img"
-        src={imgUrl}
+        src={buildUserAvatarURL(name)}
         alt="participant"
       />
       <div>{name}</div>

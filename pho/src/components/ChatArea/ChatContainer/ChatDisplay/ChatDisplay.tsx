@@ -2,13 +2,22 @@ import { collection, onSnapshot } from 'firebase/firestore';
 
 import { Flex } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import ChatBubble from '@/components/ChatArea/ChatContainer/ChatDisplay/ChatBubble/ChatBubble';
 import db from '@/lib/init-firebase';
+import { useAppSelector } from '@/states/hooks';
 
 import './ChatDisplay.css';
 
-const ChatDisplay: React.FC<{ username: string }> = ({ username }) => {
+const ChatDisplay: React.FC<{}> = () => {
+  // Space Slice
+  const { username } = useAppSelector((state) => state.authSlice);
+
+  const { id } = useParams();
+  const spaceId = id?.toString();
+  if (!spaceId) return null;
+
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef<null | HTMLDivElement>(null);
     useEffect(() => elementRef.current?.scrollIntoView());
@@ -33,7 +42,7 @@ const ChatDisplay: React.FC<{ username: string }> = ({ username }) => {
 
   // Listen to real-time update
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, '1'), (snapshot) => {
+    const unsubscribe = onSnapshot(collection(db, spaceId), (snapshot) => {
       const chatListSnapshot: any[] = snapshot.docs.map((doc) => {
         return {
           id: doc.id,

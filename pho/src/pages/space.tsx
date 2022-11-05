@@ -1,26 +1,25 @@
-import { Heading } from '@chakra-ui/react';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import DrawerComponent from '@/components/DrawerComponent';
+import Pomodoro from '@/components/Pomodoro/Pomodoro';
+import Toolbar from '@/components/Toolbar/Toolbar';
+import Video from '@/components/VideoContainer/Video';
 import { isNumeric } from '@/lib/number';
-import { WebSocketContext } from '@/modules/ws/WebSocketProvider';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
 import { fetchSpaceDetail } from '@/states/spaceDetail/slice';
+
+import './space.css';
 
 const SpacePage: React.FC<{}> = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
-  // WebSocket
-  const { socket } = useContext(WebSocketContext);
-
   // Space Slice
   const { data, error, status } = useAppSelector(
     (state) => state.spaceDetailSlice
   );
-  const { name } = data;
-
-  // SpaceSpeaker Slice
+  const { name, members, urlVideo, startTime } = data;
 
   /**
    * Assume that you'll be assigned the pageId when u first access
@@ -36,13 +35,40 @@ const SpacePage: React.FC<{}> = () => {
     void dispatch(fetchSpaceDetail(Number(id)));
   }, []);
 
+  const [isMusicMuted, setIsMusicMuted] = useState(true);
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
+
   return (
     <div>
-      <Heading>
-        Space #{id} - {name}
-      </Heading>
-      <p>#Bg-Video-Component</p>
-      <p>Socket ID: {socket.id}</p>
+      <DrawerComponent />
+      {isVideoVisible && (
+        <>
+          <div className="location-name-box">
+            <div className="location-text">{name}</div>
+          </div>
+          <div style={{ position: 'absolute' }}>
+            <Pomodoro
+              shortBreakDuration={2}
+              pomodoroDuration={5}
+              longBreakDuration={10}
+              timestamp={new Date(startTime ?? '').getTime()}
+              serverTime={Date.now()} // TODO: get server time from API
+            />
+          </div>
+        </>
+      )}
+
+      <Toolbar
+        numberOfParticipants={(members ?? []).length}
+        isMuted={isMusicMuted}
+        setIsMuted={() => setIsMusicMuted(!isMusicMuted)}
+        visible={isVideoVisible}
+      />
+      <Video
+        url={urlVideo ?? ''}
+        isMuted={isMusicMuted}
+        enableToolbar={() => setIsVideoVisible(true)}
+      />
     </div>
   );
 };

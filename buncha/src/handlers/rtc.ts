@@ -64,6 +64,13 @@ export const registerRtcHandlers = (
   ) => {
     const { spaceSpeakerId } = payload;
     logger.info(`User (socketId: ${socket.id}) retrieved RTP Capabilities`);
+    if (!spaceSpeakerId) {
+      return callback({
+        params: {
+          error: 'Invalid SpaceSpeaker ID',
+        },
+      });
+    }
     const { router } = spaceSpeakerCollection[spaceSpeakerId];
     const transport = await createWebRtcTransport(router, callback);
     if (!transport) throw new Error('WebRTC Transport cannot be created');

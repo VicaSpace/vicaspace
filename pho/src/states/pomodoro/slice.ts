@@ -1,17 +1,17 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import pomodoroConfig from '@/config/pomodoro.json';
-
 interface PomodoroState {
   sessionId: number;
   startTime: number;
   isBreak: boolean;
+  isLongBreak: boolean;
 }
 
 const initialState: PomodoroState = {
-  sessionId: pomodoroConfig.length - 1,
+  sessionId: 0,
   startTime: 0,
   isBreak: false,
+  isLongBreak: false,
 };
 
 const pomodoroSlice = createSlice({
@@ -27,9 +27,14 @@ const pomodoroSlice = createSlice({
     setBreak(state, action: PayloadAction<boolean>) {
       state.isBreak = action.payload;
     },
+    setLongBreak(state, action: PayloadAction<boolean>) {
+      state.isLongBreak = action.payload;
+      state.isBreak = action.payload;
+    },
   },
 });
 
-export const { setSessionId, setStartTime, setBreak } = pomodoroSlice.actions;
+export const { setSessionId, setStartTime, setBreak, setLongBreak } =
+  pomodoroSlice.actions;
 
 export default pomodoroSlice.reducer;

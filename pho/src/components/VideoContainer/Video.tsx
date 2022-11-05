@@ -18,6 +18,7 @@ const Video: React.FC<{
         url={url}
         playing={true}
         muted={isMuted}
+        loop={true}
         config={{
           youtube: {
             playerVars: {

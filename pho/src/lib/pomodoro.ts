@@ -1,51 +1,47 @@
-import pomodoroConfig from '@/config/pomodoro.json';
-
-export interface PomodoroSessionInfo {
-  sessionId: number;
-  minutes: number;
-  seconds: number;
-  isBreak: boolean;
-}
-
-export interface PomodoroSessionConfig {
-  sessionInterval: number;
-  breakInterval: number;
-  sessionName: string;
-}
+import { PomodoroSessionInfo } from '@/types/pomodoro';
 
 export const calculatePomodoroSession = (
   startTime: number,
-  serverTime: number
+  serverTime: number,
+  pomodoroDuration: number,
+  shortBreakDuration: number,
+  longBreakDuration: number
 ): PomodoroSessionInfo => {
-  const circleTime = (pomodoroConfig as PomodoroSessionConfig[])
-    .map((elm) => elm.sessionInterval + elm.breakInterval)
-    .reduce((a, b) => a + b);
+  const circleTime =
+    (pomodoroDuration + shortBreakDuration) * 4 + longBreakDuration;
   let deltaTime = (serverTime - startTime) % (circleTime * 1000);
-  let sessionId = 0;
+  let sessionId = -1;
+  let isLongBreak = false;
 
   // get delta time of current session - in milliseconds
-  for (let i = pomodoroConfig.length - 1; i >= 0; i--) {
-    const phraseTime =
-      pomodoroConfig[i].sessionInterval * 1000 +
-      pomodoroConfig[i].breakInterval * 1000;
-    if (deltaTime < phraseTime) {
-      sessionId = i;
-      break;
-    } else deltaTime -= phraseTime;
+  const sessionDuration = (pomodoroDuration + shortBreakDuration) * 1000;
+  sessionId = Math.floor(deltaTime / sessionDuration);
+  deltaTime = deltaTime % sessionDuration;
+  if (sessionId >= 4) sessionId = -1;
+
+  if (sessionId === -1) {
+    isLongBreak = true;
   }
 
   // time left to next session - in seconds
+  let timeToGo = 0;
+  let isBreak = false;
   deltaTime = Math.floor(deltaTime / 1000);
-  const isBreak = deltaTime >= pomodoroConfig[sessionId].sessionInterval;
-  const timeToGo = isBreak
-    ? pomodoroConfig[sessionId].breakInterval -
-      (deltaTime - pomodoroConfig[sessionId].sessionInterval)
-    : pomodoroConfig[sessionId].sessionInterval - deltaTime;
+  if (isLongBreak) {
+    timeToGo = longBreakDuration - deltaTime;
+    isBreak = true;
+  } else {
+    isBreak = deltaTime >= pomodoroDuration;
+    timeToGo = isBreak
+      ? shortBreakDuration - (deltaTime - pomodoroDuration)
+      : pomodoroDuration - deltaTime;
+  }
 
   return {
     isBreak,
     sessionId,
     minutes: Math.floor(timeToGo / 60),
     seconds: timeToGo % 60,
+    isLongBreak,
   };
 };

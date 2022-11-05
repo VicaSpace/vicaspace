@@ -5,15 +5,23 @@ import { Button, Flex, Input } from '@chakra-ui/react';
 import { useState } from 'react';
 
 import db from '@/lib/init-firebase';
+import { useAppSelector } from '@/states/hooks';
 
 import './ChatEditor.css';
 
-const ChatEditor: React.FC<{ username: string }> = ({ username }) => {
+const ChatEditor: React.FC<{}> = () => {
+  // Space Slice
+  const { username } = useAppSelector((state) => state.authSlice);
+
+  const spaceId = useAppSelector((state) =>
+    state.spaceDetailSlice.data.id?.toString()
+  );
+
   const [message, setMessage] = useState('');
 
   const handleSendMessage = async () => {
-    if (message.trim().length === 0) return;
-    await addDoc(collection(db, '1'), {
+    if (message.trim().length === 0 || !spaceId) return;
+    await addDoc(collection(db, spaceId), {
       date: Timestamp.fromDate(new Date()),
       message,
       username,
@@ -23,7 +31,7 @@ const ChatEditor: React.FC<{ username: string }> = ({ username }) => {
   };
 
   return (
-    <Flex w="95%" mt="5" align="center" justify="center">
+    <Flex w="95%" mt="5" mb="5" align="center" justify="center">
       <Input
         placeholder="Type Something..."
         border="none"
@@ -58,10 +66,6 @@ const ChatEditor: React.FC<{ username: string }> = ({ username }) => {
       </Button>
     </Flex>
   );
-};
-
-ChatEditor.propTypes = {
-  username: PropTypes.string.isRequired,
 };
 
 export default ChatEditor;

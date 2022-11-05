@@ -50,3 +50,7 @@
 
   color: #333333;
 }
+
+.register-text:hover {
+  cursor: pointer;
+}

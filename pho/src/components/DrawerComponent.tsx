@@ -8,8 +8,12 @@ import {
   IconButton,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { matchPath, useLocation } from 'react-router-dom';
 
+import ChatContainer from '@/components/ChatArea/ChatContainer/ChatContainer';
+import PopularSpace from '@/components/PopularSpace/PopularSpace';
+import Register from '@/components/RegisterContainer/Register';
 import SignInComponent from '@/components/SignInContainer/SignInComponent';
 import SpaceSpeakerSection from '@/components/SpaceSpeaker/SpaceSpeakerSection';
 import { getUserInfoViaAPI } from '@/lib/apis/auth';
@@ -17,15 +21,24 @@ import { signIn, signOut } from '@/states/auth/slice';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
 
 function DrawerComponent() {
+  const { pathname } = useLocation();
+  const isAllSpacesURL = matchPath(
+    {
+      path: '/',
+    },
+    pathname
+  );
+  const isSpecificSpaceURL = matchPath(
+    {
+      path: '/spaces/:id',
+    },
+    pathname
+  );
+
   const { isOpen, onOpen, onClose } = useDisclosure();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(
     (state) => state.authSlice.isAuthenticated
-  );
-  const username = useAppSelector((state) => state.authSlice.username);
-
-  const { id: spaceId } = useAppSelector(
-    (state) => state.spaceDetailSlice.data
   );
 
   useEffect(() => {
@@ -43,19 +56,37 @@ function DrawerComponent() {
     }
   }, []);
 
+  const [isRegistering, setIsRegistering] = useState(false);
+
   const renderContent = () => {
     // Protected route
     if (!isAuthenticated) {
-      return <SignInComponent />;
+      if (isRegistering) {
+        return (
+          <Register
+            onOpenLogin={() => {
+              setIsRegistering(false);
+            }}
+          />
+        );
+      } else {
+        return (
+          <SignInComponent
+            onOpenRegister={() => {
+              setIsRegistering(true);
+            }}
+          />
+        );
+      }
     }
-    // Space ID is allocated or not
-    if (spaceId) {
-      return <SpaceSpeakerSection />;
-    }
-    return !isAuthenticated && <SignInComponent />;
-    // return !isAuthenticated && <SignInComponent />;
-    // if (!isAuthenticated) return <SignInComponent />;
-    // else return <ChatArea username={username} />;
+    if (isAllSpacesURL) return <PopularSpace />;
+    else if (isSpecificSpaceURL)
+      return (
+        <>
+          <SpaceSpeakerSection />
+          <ChatContainer />
+        </>
+      );
   };
 
   return (
@@ -77,6 +108,7 @@ function DrawerComponent() {
         placement="left"
         onClose={onClose}
         size="md"
+        variant="interactOutside"
       >
         <DrawerContent backgroundColor="#EEF1FF">
           <Box position="absolute" top="50vh" left="520px">
