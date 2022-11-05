@@ -1,0 +1,15 @@
+.map-tile-loading {
+  height: 100vh;
+  background-image: url('./world.gif');
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 1;
+  transition: opacity 2s;
+  transform: scale(0.5);
+  background-position: center;
+}
+
+.map-title-loading-hide {
+  opacity: 0;
+  pointer-events: none;
+}
