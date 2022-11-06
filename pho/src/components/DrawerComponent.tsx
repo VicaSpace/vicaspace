@@ -1,13 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
 
-import {
-  Box,
-  Center,
-  Drawer,
-  DrawerContent,
-  IconButton,
-  useDisclosure,
-} from '@chakra-ui/react';
+import { Box, Drawer, DrawerContent, IconButton } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { matchPath, useLocation } from 'react-router-dom';
 
@@ -19,6 +12,8 @@ import SpaceSpeakerSection from '@/components/SpaceSpeaker/SpaceSpeakerSection';
 import { getUserInfoViaAPI } from '@/lib/apis/auth';
 import { signIn, signOut } from '@/states/auth/slice';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
+
+import './DrawerComponent.css';
 
 function DrawerComponent() {
   const { pathname } = useLocation();
@@ -35,7 +30,7 @@ function DrawerComponent() {
     pathname
   );
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isOpenDrawer, setIsOpenDrawer] = useState(true);
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(
     (state) => state.authSlice.isAuthenticated
@@ -89,24 +84,36 @@ function DrawerComponent() {
       );
   };
 
+  const toggleDrawer = () => {
+    const drawer = document.getElementById('chakra-modal-drawer-container');
+    setIsOpenDrawer((prev) => {
+      return !prev;
+    });
+
+    const drawerCssClasses = drawer?.className;
+
+    // First loading
+    if (
+      !drawerCssClasses?.includes('drawer-open') &&
+      !drawerCssClasses?.includes('drawer-close')
+    ) {
+      return drawer?.classList.add('drawer-close');
+    }
+
+    // Toggle
+    if (drawerCssClasses?.includes('drawer-open'))
+      return drawer?.classList.replace('drawer-open', 'drawer-close');
+    else return drawer?.classList.add('drawer-close', 'drawer-open');
+  };
+
   return (
     <Box top={0} zIndex={99} position="absolute">
-      <Center width="40px" height="100vh">
-        <IconButton
-          marginLeft="15px"
-          backgroundColor="#EEF1FF"
-          aria-label="drawer opener"
-          icon={<ChevronRightIcon />}
-          onClick={onOpen}
-        />
-      </Center>
-      {/* Drawer Container */}
       <Drawer
         id="drawer-container"
-        isOpen={isOpen}
+        isOpen={true}
         closeOnOverlayClick={false}
         placement="left"
-        onClose={onClose}
+        onClose={() => {}}
         size="md"
         variant="interactOutside"
       >
@@ -114,9 +121,9 @@ function DrawerComponent() {
           <Box position="absolute" top="50vh" left="520px">
             <IconButton
               backgroundColor="#EEF1FF"
-              aria-label="drawer closer"
-              icon={<ChevronLeftIcon />}
-              onClick={onClose}
+              aria-label="drawer btn"
+              icon={isOpenDrawer ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              onClick={toggleDrawer}
             />
           </Box>
           {/* Drawer's Content */}

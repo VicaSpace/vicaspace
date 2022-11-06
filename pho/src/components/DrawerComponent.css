@@ -1,0 +1,11 @@
+#chakra-modal-drawer-container{
+    transition: all 300ms ease-in-out !important;
+}
+
+.drawer-close {
+    transform:  translateX(-425px) !important
+}
+
+.drawer-open {
+    transform:  translateX(0px) !important
+}
