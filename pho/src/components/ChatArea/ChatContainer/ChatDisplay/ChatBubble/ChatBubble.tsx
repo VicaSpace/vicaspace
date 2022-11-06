@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 
 import { Avatar, Flex, Text } from '@chakra-ui/react';
 
+import { buildUserAvatarURL } from '@/lib/ui-avatars';
+
 import './ChatBubble.css';
 
 const ChatBubble: React.FC<{
@@ -31,7 +33,7 @@ const ChatBubble: React.FC<{
       <Flex w="100%">
         <Avatar
           name="Computer"
-          src={`https://i.pravatar.cc/150?u=${username}`}
+          src={buildUserAvatarURL(username)}
           bg="blue.300"
         ></Avatar>
         <Flex
@@ -46,10 +48,8 @@ const ChatBubble: React.FC<{
           fontSize="13"
           borderRadius="10px"
         >
-          <Text>
-            <Text fontWeight="bold">{username}:</Text>
-            {message}
-          </Text>
+          <Text fontWeight="bold">{username}:</Text>
+          {message}
         </Flex>
       </Flex>
     );

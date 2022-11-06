@@ -16,11 +16,24 @@ const AppRouter: React.FC = () => {
   return (
     <>
       <Router>
-        <DrawerComponent />
+        {/* <DrawerComponent /> */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/spaces/:id" element={<SpacePage />} />
+          <Route
+            path="/pomo"
+            element={
+              <Pomodoro
+                timestamp={1666794382000}
+                serverTime={Date.now()}
+                pomodoroDuration={5}
+                shortBreakDuration={2}
+                longBreakDuration={10}
+              />
+            }
+          />
+          <Route path="/video" element={<VideoContainer />} />
           <Route path="*" element={<NotFound404 />} />
         </Routes>
       </Router>

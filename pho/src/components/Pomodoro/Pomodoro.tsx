@@ -1,11 +1,8 @@
 import { Box, Center } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Draggable from 'react-draggable';
 
-import pomodoroConfig from '@/config/pomodoro.json';
-import { calculatePomodoroSession } from '@/lib/pomodoro';
-import { useAppDispatch, useAppSelector } from '@/states/hooks';
-import { setBreak, setSessionId, setStartTime } from '@/states/pomodoro/slice';
+import { usePomodoro } from '@/hooks/usePomodoro';
 
 import sessionIcon from '../Pomodoro/session.png';
 import './Pomodoro.css';
@@ -13,52 +10,22 @@ import './Pomodoro.css';
 const Pomodoro: React.FC<{
   timestamp: number;
   serverTime: number;
-}> = ({ timestamp, serverTime }) => {
-  const { sessionId, startTime, isBreak } = useAppSelector(
-    (state) => state.pomodoroSlice
-  );
-  const dispatch = useAppDispatch();
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
-
-  useEffect(() => {
-    dispatch(setStartTime(timestamp));
-    const sessionInfo = calculatePomodoroSession(startTime, serverTime);
-    dispatch(setBreak(sessionInfo.isBreak));
-    dispatch(setSessionId(sessionInfo.sessionId));
-    setMinutes(sessionInfo.minutes);
-    setSeconds(sessionInfo.seconds);
-  }, []);
-
-  const onSessionEnded = () => {
-    let interval = 0;
-    if (isBreak) {
-      const newSessionId =
-        sessionId > 0 ? sessionId - 1 : pomodoroConfig.length - 1;
-      dispatch(setSessionId(newSessionId));
-      interval = pomodoroConfig[newSessionId].sessionInterval;
-    } else {
-      interval = pomodoroConfig[sessionId].breakInterval;
-    }
-    dispatch(setBreak(!isBreak));
-    setMinutes(Math.floor(interval / 60));
-    setSeconds(interval % 60);
-  };
-
-  useEffect(() => {
-    const pomodorpInterval = setInterval(() => {
-      if (seconds === 0 && minutes === 0) {
-        clearInterval(pomodorpInterval);
-        onSessionEnded();
-        return;
-      }
-      if (seconds > 0) {
-        setSeconds(seconds - 1);
-      }
-    }, 1000);
-    return () => {
-      clearInterval(pomodorpInterval);
-    };
+  pomodoroDuration: number;
+  shortBreakDuration: number;
+  longBreakDuration: number;
+}> = ({
+  timestamp,
+  serverTime,
+  pomodoroDuration,
+  shortBreakDuration,
+  longBreakDuration,
+}) => {
+  const { sessionId, minutes, seconds, isBreak, isLongBreak } = usePomodoro({
+    startTime: timestamp,
+    serverTime,
+    shortBreakDuration,
+    pomodoroDuration,
+    longBreakDuration,
   });
 
   return (
@@ -74,6 +41,13 @@ const Pomodoro: React.FC<{
         borderRadius="lg"
         overflow="hidden"
         className="handle"
+        style={{
+          background: isLongBreak
+            ? 'rgb(250, 247, 210)'
+            : isBreak
+            ? 'rgb(181, 245, 225)'
+            : 'rgb(210, 218, 255)',
+        }}
       >
         <Box display="flex" alignItems="baseline">
           <div className="sessionTitle">Timer</div>
@@ -99,7 +73,7 @@ const Pomodoro: React.FC<{
           )}
         </Center>
         <Center className="sessionName">
-          {isBreak ? 'Break!!!' : pomodoroConfig[sessionId].sessionName}
+          {isLongBreak ? 'Long Break!!!' : isBreak ? 'Break!!!' : 'In Pomodoro'}
         </Center>
       </Box>
     </Draggable>

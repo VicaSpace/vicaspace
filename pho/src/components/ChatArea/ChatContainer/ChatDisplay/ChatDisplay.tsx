@@ -2,6 +2,7 @@ import { collection, onSnapshot } from 'firebase/firestore';
 
 import { Flex } from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 
 import ChatBubble from '@/components/ChatArea/ChatContainer/ChatDisplay/ChatBubble/ChatBubble';
 import db from '@/lib/init-firebase';
@@ -12,6 +13,10 @@ import './ChatDisplay.css';
 const ChatDisplay: React.FC<{}> = () => {
   // Space Slice
   const { username } = useAppSelector((state) => state.authSlice);
+
+  const { id } = useParams();
+  const spaceId = id?.toString();
+  if (!spaceId) return null;
 
   const AlwaysScrollToBottom = () => {
     const elementRef = useRef<null | HTMLDivElement>(null);
@@ -37,7 +42,7 @@ const ChatDisplay: React.FC<{}> = () => {
 
   // Listen to real-time update
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, '1'), (snapshot) => {
+    const unsubscribe = onSnapshot(collection(db, spaceId), (snapshot) => {
       const chatListSnapshot: any[] = snapshot.docs.map((doc) => {
         return {
           id: doc.id,
@@ -64,17 +69,18 @@ const ChatDisplay: React.FC<{}> = () => {
       p="3"
       className="chat-display"
     >
-      {chatList.map((item) => {
-        return (
-          <ChatBubble
-            key={item.id}
-            sender={item.username === username ? 'me' : item.username}
-            // username={item.username === username ? 'me' : item.username}
-            username={item.username}
-            message={item.message}
-          />
-        );
-      })}
+      {username &&
+        chatList.map((item) => {
+          return (
+            <ChatBubble
+              key={item.id}
+              sender={item.username === username ? 'me' : item.username}
+              // username={item.username === username ? 'me' : item.username}
+              username={item.username}
+              message={item.message}
+            />
+          );
+        })}
       <AlwaysScrollToBottom />
     </Flex>
   );

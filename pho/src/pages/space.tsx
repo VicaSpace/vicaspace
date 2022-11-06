@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import DrawerComponent from '@/components/DrawerComponent';
 import Pomodoro from '@/components/Pomodoro/Pomodoro';
 import Toolbar from '@/components/Toolbar/Toolbar';
 import Video from '@/components/VideoContainer/Video';
@@ -15,8 +16,9 @@ const SpacePage: React.FC<{}> = () => {
   const dispatch = useAppDispatch();
 
   // Space Slice
-  const { data } = useAppSelector((state) => state.spaceDetailSlice);
-
+  const { data, error, status } = useAppSelector(
+    (state) => state.spaceDetailSlice
+  );
   const { name, members, urlVideo, startTime } = data;
 
   /**
@@ -38,6 +40,7 @@ const SpacePage: React.FC<{}> = () => {
 
   return (
     <div>
+      <DrawerComponent />
       {isVideoVisible && (
         <>
           <div className="location-name-box">
@@ -45,6 +48,9 @@ const SpacePage: React.FC<{}> = () => {
           </div>
           <div style={{ position: 'absolute' }}>
             <Pomodoro
+              shortBreakDuration={2}
+              pomodoroDuration={5}
+              longBreakDuration={10}
               timestamp={new Date(startTime ?? '').getTime()}
               serverTime={Date.now()} // TODO: get server time from API
             />

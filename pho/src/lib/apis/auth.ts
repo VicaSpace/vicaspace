@@ -28,3 +28,21 @@ export const getUserInfoViaAPI = async (accessToken: string) => {
   const res = await axios.get(`${URL}/api/auth/info`, config);
   return res;
 };
+
+export const getRegisterSaltViaAPI = async () => {
+  const res = await axios.get(`${URL}/api/auth/salt`);
+  return res.data.salt;
+};
+
+export const registerViaAPI = async (
+  username: string,
+  salt: string,
+  hashedPassword: string
+) => {
+  const res = await axios.post(`${URL}/api/auth/register`, {
+    username,
+    salt,
+    hashedPassword,
+  });
+  return res.data;
+};

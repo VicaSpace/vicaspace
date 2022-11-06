@@ -6,4 +6,19 @@ export const theme = extendTheme({
     heading: `'Inconsolata', monospace`,
     body: `'Inconsolata', monospace`,
   },
+  components: {
+    Drawer: {
+      variants: {
+        interactOutside: {
+          parts: ['dialog, dialogContainer'],
+          dialog: {
+            pointerEvents: 'auto',
+          },
+          dialogContainer: {
+            pointerEvents: 'none',
+          },
+        },
+      },
+    },
+  },
 });

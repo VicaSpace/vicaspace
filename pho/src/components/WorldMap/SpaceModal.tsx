@@ -14,6 +14,9 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { calculatePomodoroSession } from '@/lib/pomodoro';
+import { buildUserAvatarURL } from '@/lib/ui-avatars';
+
 interface Member {
   id: number;
   username: string;
@@ -42,20 +45,45 @@ const SpaceModal: React.FC<{
   const [currentLocalTime, setCurrentLocalTime] = useState<string>('');
 
   const [isBreak, setBreak] = useState<boolean>(false);
+  const [isLongBreak, setLongBreak] = useState<boolean>(false);
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
+  const [sessionId, setSessionId] = useState<number>(0);
 
   const navigate = useNavigate();
 
   const onSessionEnded = () => {
     if (!spaceDetail) return;
+
     let interval = 0;
-    if (isBreak) {
+    let newSessionId = sessionId;
+
+    if (isLongBreak) {
+      // end of long break session
+      newSessionId = 0;
+      setSessionId(newSessionId);
+      setLongBreak(false);
       interval = spaceDetail.pomodoroDuration;
     } else {
-      interval = spaceDetail.shortBreakDuration;
+      if (isBreak) {
+        if (sessionId === 3) {
+          // next is long break
+          setLongBreak(true);
+          newSessionId = -1;
+          interval = spaceDetail.longBreakDuration;
+        } else {
+          // turn to next session
+          newSessionId = sessionId + 1;
+          interval = spaceDetail.pomodoroDuration;
+        }
+        setSessionId(newSessionId);
+      } else {
+        // switch to short break
+        interval = spaceDetail.shortBreakDuration;
+      }
+      setBreak(!isBreak);
     }
-    setBreak(!isBreak);
+
     setMinutes(Math.floor(interval / 60));
     setSeconds(interval % 60);
   };
@@ -67,7 +95,32 @@ const SpaceModal: React.FC<{
       )
       .then((res) => setSpaceDetail(res.data))
       .catch(console.log);
-  }, []);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!spaceDetail) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      setCurrentLocalTime(
+        new Date().toLocaleTimeString('en-US', {
+          timeZone: spaceDetail.timezone,
+          hour: '2-digit',
+          minute: '2-digit',
+        })
+      );
+    }, 1000);
+
+    // On Modal close -> clear interval!
+    if (!isOpen) {
+      clearInterval(interval);
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (typeof spaceDetail === 'undefined') return;
@@ -84,39 +137,74 @@ const SpaceModal: React.FC<{
     setBreak(false);
     setMinutes(Math.floor(interval / 60));
     setSeconds(interval % 60);
+
+    const { sessionId, isBreak, minutes, seconds, isLongBreak } =
+      calculatePomodoroSession(
+        new Date(spaceDetail.startTime).getTime(),
+        new Date(spaceDetail.serverTime).getTime(),
+        spaceDetail.pomodoroDuration,
+        spaceDetail.shortBreakDuration,
+        spaceDetail.longBreakDuration
+      );
+
+    setBreak(isBreak);
+    setMinutes(minutes);
+    setSeconds(seconds);
+    setLongBreak(isLongBreak);
+    setSessionId(sessionId);
   }, [spaceDetail]);
 
   useEffect(() => {
     if (!spaceDetail) return;
-    const pomodoroInterval = setInterval(() => {
-      if (seconds === 0 && minutes === 0) {
-        clearInterval(pomodoroInterval);
-        onSessionEnded();
-        return;
-      }
-      if (seconds > 0) {
-        setSeconds(seconds - 1);
+
+    let pomodoroInterval: NodeJS.Timer | null = null;
+
+    if (isOpen) {
+      if (seconds === 0) {
+        if (minutes === 0) {
+          pomodoroInterval = setInterval(() => {
+            onSessionEnded();
+          }, 1000);
+        } else {
+          pomodoroInterval = setInterval(() => {
+            setMinutes(minutes - 1);
+            setSeconds(59);
+          }, 1000);
+        }
       } else {
-        setSeconds(59);
-        setMinutes(minutes - 1);
+        pomodoroInterval = setInterval(() => {
+          setSeconds(seconds - 1);
+        }, 1000);
       }
-      setCurrentLocalTime(
-        new Date().toLocaleTimeString('en-US', {
-          timeZone: spaceDetail.timezone,
-          hour: '2-digit',
-          minute: '2-digit',
-        })
-      );
-    }, 1000);
+    } else {
+      if (pomodoroInterval) {
+        clearInterval(pomodoroInterval);
+      }
+    }
+
     return () => {
-      clearInterval(pomodoroInterval);
+      if (pomodoroInterval) {
+        clearInterval(pomodoroInterval);
+      }
     };
-  });
+  }, [minutes, seconds, isOpen]);
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
-      <ModalContent pb="5" pt="5" textAlign="center" fontFamily="Inconsolata">
+      <ModalContent
+        pb="5"
+        pt="5"
+        textAlign="center"
+        fontFamily="Inconsolata"
+        style={{
+          background: isLongBreak
+            ? 'rgb(250, 247, 210)'
+            : isBreak
+            ? 'rgb(181, 245, 225)'
+            : 'rgb(210, 218, 255)',
+        }}
+      >
         {typeof spaceDetail === 'undefined' ? (
           <>Error</>
         ) : (
@@ -139,11 +227,10 @@ const SpaceModal: React.FC<{
             >
               {spaceDetail.members.length < 5 ? (
                 spaceDetail.members.map((member: Member) => {
-                  const imgSrc = `https://ui-avatars.com/api/?background=random&name=${member.username}`;
                   return (
                     <Image
                       key={member.id}
-                      src={imgSrc}
+                      src={buildUserAvatarURL(member.username)}
                       borderRadius="100"
                       mr="5"
                     />
@@ -152,11 +239,10 @@ const SpaceModal: React.FC<{
               ) : (
                 <>
                   {spaceDetail.members.slice(0, 4).map((member: Member) => {
-                    const imgSrc = `https://ui-avatars.com/api/?background=random&name=${member.username}`;
                     return (
                       <Image
                         key={member.id}
-                        src={imgSrc}
+                        src={buildUserAvatarURL(member.username)}
                         borderRadius="100"
                         mr="5"
                       />
@@ -170,7 +256,11 @@ const SpaceModal: React.FC<{
               )}
             </ModalBody>
             <ModalBody fontSize="32" pb="0">
-              {isBreak ? <>Short Break</> : <>Focus Session</>}
+              {isLongBreak
+                ? 'Long Break'
+                : isBreak
+                ? 'Short Break'
+                : 'Focus Session'}
             </ModalBody>
             <ModalBody fontSize="40" fontWeight="bold" pt="0">
               {minutes === 0 && seconds === 0 ? (

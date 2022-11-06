@@ -48,6 +48,11 @@ export interface RecentUserLeavePayload {
   socketId: string;
 }
 
+export interface RecentUserSpeechPayload {
+  socketId: string;
+  event: 'speaking' | 'stopped_speaking';
+}
+
 export interface ParticipantInfo {
   socketId: string;
   producerId: string;
@@ -59,6 +64,7 @@ export interface SpeakerDetails {
     userId: number;
     username: string;
     producerId: string;
+    isSpeaking: boolean;
   };
 }
 

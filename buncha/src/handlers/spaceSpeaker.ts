@@ -16,6 +16,7 @@ import {
   JoinPayload,
   LeavePayload,
   SpeakerDetails,
+  SpeechEventPayload,
 } from '@/lib/types/handlers/spaceSpeaker';
 import { IOConnection, SocketConnection } from '@/lib/types/ws';
 
@@ -59,6 +60,7 @@ export const registerSpaceSpeakerHandlers = (
       `User (${user.username} w/ sId: ${socket.id}) has joined a space (spaceId: ${spaceSpeakerId})`
     );
 
+    // Parse to string
     const spaceIdStr = spaceSpeakerId.toString();
 
     // Assign socket to a specific space
@@ -79,7 +81,7 @@ export const registerSpaceSpeakerHandlers = (
       }
     );
 
-    callback({
+    return callback({
       status: 'OK',
     });
   };
@@ -199,5 +201,44 @@ export const registerSpaceSpeakerHandlers = (
   socket.on(
     `${handlerNamespace.spaceSpeaker}:get-speakers`,
     getSpeakersHandler
+  );
+
+  /**
+   * Handle Speech Event to SpaceSpeaker session
+   * @param payload Payload
+   * @param callback Callback
+   * @returns Callback response
+   */
+  const speechEventHandler = (
+    payload: SpeechEventPayload,
+    callback: (payload?: unknown) => void
+  ) => {
+    const { socketId, spaceSpeakerId, event } = payload;
+
+    // Check for event specified
+    if (!event || !spaceSpeakerId || !socketId) {
+      return callback({
+        status: 'NOK',
+        error: 'Invalid parameters specified.',
+      });
+    }
+
+    // Broadcast to all speakers in the session
+    const spaceSpeakerIdStr = spaceSpeakerId.toString();
+    io.to(spaceSpeakerIdStr).emit(
+      `${handlerNamespace.spaceSpeaker}:recent-user-speech`,
+      {
+        socketId,
+        event,
+      }
+    );
+
+    return callback({
+      status: 'OK',
+    });
+  };
+  socket.on(
+    `${handlerNamespace.spaceSpeaker}:speech-event`,
+    speechEventHandler
   );
 };

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import axios from 'axios';
-import PropTypes from 'prop-types';
 
 import {
   Avatar,
@@ -75,7 +74,7 @@ const PopularSpace: React.FC<{}> = () => {
           alignItems="center"
         >
           <Heading fontFamily="Inconsolata" size="lg" fontWeight="medium">
-            NEW
+            LATEST
           </Heading>
         </Box>
       </Flex>
