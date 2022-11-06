@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useBeforeunload } from 'react-beforeunload';
 import { useParams } from 'react-router-dom';
 
 import DrawerComponent from '@/components/DrawerComponent';
 import Pomodoro from '@/components/Pomodoro/Pomodoro';
 import Toolbar from '@/components/Toolbar/Toolbar';
 import Video from '@/components/VideoContainer/Video';
+import { updateUserSpaceId } from '@/lib/apis/user';
 import { isNumeric } from '@/lib/number';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
 import { fetchSpaceDetail } from '@/states/spaceDetail/slice';
@@ -31,9 +33,19 @@ const SpacePage: React.FC<{}> = () => {
       console.error('Space ID is not a valid.');
       return;
     }
-    // fetch Space here
-    void dispatch(fetchSpaceDetail(Number(id)));
+    updateUserSpaceId(parseInt(id))
+      .then(() => {
+        void dispatch(fetchSpaceDetail(Number(id)));
+      })
+      .catch(console.log);
+    return () => {
+      updateUserSpaceId(null).catch(console.log);
+    };
   }, []);
+
+  useBeforeunload(() => {
+    updateUserSpaceId(null).catch(console.log);
+  });
 
   const [isMusicMuted, setIsMusicMuted] = useState(true);
   const [isVideoVisible, setIsVideoVisible] = useState(false);
