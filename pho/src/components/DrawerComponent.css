@@ -3,9 +3,11 @@
 }
 
 .drawer-close {
-    transform:  translateX(-425px) !important
+    align-items: flex-end !important;
+    transform:  translateX(-350px) !important;
 }
 
 .drawer-open {
+    /* align-items: inl !important; */
     transform:  translateX(0px) !important
 }

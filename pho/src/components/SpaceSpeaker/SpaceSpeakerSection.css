@@ -13,6 +13,17 @@
   width: 100%;
 }
 
+.space-speaker-action-container-close {
+  display: none !important;
+}
+
+.space-speaker-participant-list-close {
+  /* width: 25% !important; */
+  padding-left: 370px !important;
+  transition: all 500ms !important;
+  gap: 10px !important;
+}
+
 .space-speaker-participant-list {
   position: relative;
   flex-grow: 1;

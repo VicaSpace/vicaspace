@@ -7,6 +7,11 @@
   border-radius: 48px;
 }
 
+.space-speaker-participant-img-close {
+  width: 30px !important;
+  height: 30px !important;
+}
+
 .audio-active {
   outline: 5px solid #b1b2ff;
 }

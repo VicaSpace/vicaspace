@@ -30,7 +30,7 @@ function DrawerComponent() {
     pathname
   );
 
-  const [isOpenDrawer, setIsOpenDrawer] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(
     (state) => state.authSlice.isAuthenticated
@@ -78,7 +78,7 @@ function DrawerComponent() {
     else if (isSpecificSpaceURL)
       return (
         <>
-          <SpaceSpeakerSection />
+          <SpaceSpeakerSection isDrawerOpen={isDrawerOpen} />
           <ChatContainer />
         </>
       );
@@ -86,7 +86,7 @@ function DrawerComponent() {
 
   const toggleDrawer = () => {
     const drawer = document.getElementById('chakra-modal-drawer-container');
-    setIsOpenDrawer((prev) => {
+    setIsDrawerOpen((prev) => {
       return !prev;
     });
 
@@ -122,7 +122,7 @@ function DrawerComponent() {
             <IconButton
               backgroundColor="#EEF1FF"
               aria-label="drawer btn"
-              icon={isOpenDrawer ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              icon={isDrawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
               onClick={toggleDrawer}
             />
           </Box>
