@@ -1,14 +1,14 @@
-import { Consumer } from 'mediasoup/node/lib/Consumer';
+import {Consumer} from 'mediasoup/node/lib/Consumer';
 
 import config from '@/config';
 import {
   consumerCollection,
   producerCollection,
   spaceSpeakerCollection,
-  transportCollection,
+  transportCollection
 } from '@/data/collections';
-import { logger } from '@/lib/logger';
-import { createWebRtcTransport } from '@/lib/mediasoup/utils';
+import {logger} from '@/lib/logger';
+import {createWebRtcTransport} from '@/lib/mediasoup/utils';
 import {
   ConnectWebRtcTransportPayload,
   CreateConsumerPayload,
@@ -18,9 +18,9 @@ import {
   CreateWebRtcTransportPayload,
   CreateWebRtcTransportResponse,
   GetRtpCapabilitiesPayload,
-  GetRtpCapabilitiesResponse,
+  GetRtpCapabilitiesResponse
 } from '@/lib/types/handlers/rtc';
-import { IOConnection, SocketConnection } from '@/lib/types/ws';
+import {IOConnection, SocketConnection} from '@/lib/types/ws';
 
 const { handlerNamespace } = config;
 

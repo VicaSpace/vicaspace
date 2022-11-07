@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 
+import SpaceSpeakerActions from '@/components/SpaceSpeaker/SpaceSpeakerActions';
 import SpaceSpeakerUserAvatar from '@/components/SpaceSpeaker/SpaceSpeakerUserAvatar';
 import useSpaceSpeaker from '@/hooks/useSpaceSpeaker';
 import { WebSocketContext } from '@/modules/ws/WebSocketProvider';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
-import { joinSpaceSpeaker } from '@/states/spaceSpeaker/slice';
 
 import './SpaceSpeakerSection.css';
 
@@ -33,12 +33,8 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
   const { spaceSpeakerId, speakers } = spaceSpeakerData;
 
   // Use hook for setup SpaceSpeaker
-  const { localAudioRef, peerAudioRefs, isLocalSpeaking } = useSpaceSpeaker(
-    spaceSpeakerId,
-    speakers
-  );
-
-  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const { localAudioRef, peerAudioRefs, isLocalSpeaking, setMicStatus } =
+    useSpaceSpeaker(spaceSpeakerId, speakers);
 
   return (
     <section className="space-speaker-section">
@@ -78,34 +74,12 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
             })}
         </div>
         <div className="space-speaker-action-container">
-          {!spaceSpeakerId ? (
-            <div
-              className="space-speaker-action-btn"
-              onClick={() => {
-                // NOTE: Join with the same spaceId
-                dispatch(joinSpaceSpeaker(spaceId as number));
-              }}
-            >
-              JOIN SPACESPEAKER 🗣
-            </div>
-          ) : !isMuted ? (
-            <div
-              className="space-speaker-action-btn"
-              onClick={() => {
-                setIsMuted(true);
-              }}
-            >
-              MUTE 🔇
-            </div>
-          ) : (
-            <div
-              className="space-speaker-action-btn"
-              onClick={() => {
-                setIsMuted(false);
-              }}
-            >
-              UNMUTE 🔊
-            </div>
+          {spaceId && (
+            <SpaceSpeakerActions
+              spaceId={spaceId}
+              spaceSpeakerId={spaceSpeakerId}
+              setMicStatus={setMicStatus}
+            />
           )}
         </div>
       </div>

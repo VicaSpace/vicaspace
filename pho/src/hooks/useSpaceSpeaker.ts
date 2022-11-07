@@ -54,6 +54,7 @@ export const useSpaceSpeaker = (
   const {
     audioParams,
     getLocalUserMedia,
+    setMicStatus,
     localAudioRef,
     isSpeaking: isLocalSpeaking,
   } = useLocalAudio();
@@ -69,9 +70,6 @@ export const useSpaceSpeaker = (
   >(null);
   const [recvTransports, setRecvTransports] = useState<RecvTransports>({});
   const [delSpeakerId, setDelSpeakerId] = useState<string | null>(null);
-  const [recentSpeechSpeakerId, setRecentSpeechSpeakerId] = useState<
-    string | null
-  >(null);
 
   /* * Refs * */
   const peerAudioRefs = useRef<PeerAudioRefs>({});
@@ -110,7 +108,7 @@ export const useSpaceSpeaker = (
       socket.off(`${handlerNamespace.spaceSpeaker}:recent-user-leave`);
       socket.off(`${handlerNamespace.spaceSpeaker}:recent-user-speech`);
     };
-  }, [socket, audioParams]);
+  }, [socket]);
 
   /// Socket setup handlers
   useEffect(() => {
@@ -657,7 +655,7 @@ export const useSpaceSpeaker = (
     });
   });
 
-  return { localAudioRef, peerAudioRefs, isLocalSpeaking };
+  return { localAudioRef, peerAudioRefs, isLocalSpeaking, setMicStatus };
 };
 
 export default useSpaceSpeaker;
