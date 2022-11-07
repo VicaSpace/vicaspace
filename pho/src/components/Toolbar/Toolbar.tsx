@@ -19,25 +19,22 @@ const Toolbar: React.FC<{
         {numberOfParticipants}
         <FaUsers style={{ paddingLeft: '5px' }} />
       </div>
-      <div className="toolbar-item">
-        {isMuted ? (
-          <FaVolumeMute onClick={() => setIsMuted()} />
-        ) : (
-          <FaVolumeUp onClick={() => setIsMuted()} />
-        )}
-      </div>
-      <div className="toolbar-item">
-        <FaCompress
-          onClick={() => {
-            if (isFullscreen) {
-              document.exitFullscreen().catch(console.log);
-            } else {
-              document.body.requestFullscreen().catch(console.log);
-            }
-            setIsFullscreen(!isFullscreen);
-          }}
-        />
-      </div>
+      <button className="toolbar-item" onClick={() => setIsMuted()}>
+        {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+      </button>
+      <button
+        className="toolbar-item"
+        onClick={() => {
+          if (isFullscreen) {
+            document.exitFullscreen().catch(console.log);
+          } else {
+            document.body.requestFullscreen().catch(console.log);
+          }
+          setIsFullscreen(!isFullscreen);
+        }}
+      >
+        <FaCompress />
+      </button>
     </div>
   );
 };

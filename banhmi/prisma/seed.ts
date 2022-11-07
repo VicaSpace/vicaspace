@@ -164,7 +164,7 @@ async function createSpaces() {
       shortBreakDuration: 300,
       longBreakDuration: 1800,
       urlVideo: 'https://www.youtube.com/watch?v=HbHAMzv1bUs',
-      urlSpotify: '',
+      urlSpotify: 'https://open.spotify.com/embed/playlist/31FWVQBp3WQydWLNhO0ACi?utm_source=generator&theme=0',
       timezone: 'Asia/Bangkok',
     },
   });
@@ -180,7 +180,7 @@ async function createSpaces() {
       shortBreakDuration: 300,
       longBreakDuration: 1800,
       urlVideo: 'https://www.youtube.com/watch?v=NtaQfZ1Jaf0',
-      urlSpotify: '',
+      urlSpotify: 'https://open.spotify.com/embed/playlist/31FWVQBp3WQydWLNhO0ACi?utm_source=generator&theme=0',
       timezone: 'Asia/Bangkok',
     },
   });
@@ -196,7 +196,7 @@ async function createSpaces() {
       shortBreakDuration: 300,
       longBreakDuration: 1800,
       urlVideo: 'https://www.youtube.com/watch?v=cR7OV00wDGk',
-      urlSpotify: '',
+      urlSpotify: 'https://open.spotify.com/embed/playlist/31FWVQBp3WQydWLNhO0ACi?utm_source=generator&theme=0',
       timezone: 'Asia/Kolkata',
     },
   });
@@ -212,7 +212,7 @@ async function createSpaces() {
       shortBreakDuration: 300,
       longBreakDuration: 1800,
       urlVideo: 'https://www.youtube.com/watch?v=XVvYXBTSuaA',
-      urlSpotify: '',
+      urlSpotify: 'https://open.spotify.com/embed/playlist/31FWVQBp3WQydWLNhO0ACi?utm_source=generator&theme=0',
       timezone: 'Asia/Kolkata',
     },
   });
@@ -228,7 +228,7 @@ async function createSpaces() {
       shortBreakDuration: 300,
       longBreakDuration: 1800,
       urlVideo: 'https://www.youtube.com/watch?v=FQINAGuleoU',
-      urlSpotify: '',
+      urlSpotify: 'https://open.spotify.com/embed/playlist/31FWVQBp3WQydWLNhO0ACi?utm_source=generator&theme=0',
       timezone: 'Asia/Kolkata',
     },
   });

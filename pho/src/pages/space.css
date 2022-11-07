@@ -28,3 +28,9 @@
   font-size: 24px;
   line-height: 25px;
 }
+
+.music-player-container {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
