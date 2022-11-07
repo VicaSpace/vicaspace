@@ -34,8 +34,13 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
   const { spaceSpeakerId, speakers } = spaceSpeakerData;
 
   // Use hook for setup SpaceSpeaker
-  const { localAudioRef, peerAudioRefs, isLocalSpeaking, setMicStatus } =
-    useSpaceSpeaker(spaceSpeakerId, speakers);
+  const {
+    localAudioRef,
+    peerAudioRefs,
+    isLocalSpeaking,
+    setMicStatus,
+    setPeerAudioStatus,
+  } = useSpaceSpeaker(spaceSpeakerId, speakers);
 
   return (
     <section className="space-speaker-section">
@@ -80,6 +85,7 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
               spaceId={spaceId}
               spaceSpeakerId={spaceSpeakerId}
               setMicStatus={setMicStatus}
+              setPeerAudioStatus={setPeerAudioStatus}
               joinSpaceSpeaker={() => dispatch(joinSpaceSpeaker(spaceId))}
             />
           )}
