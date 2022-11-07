@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BiMicrophone, BiMicrophoneOff } from 'react-icons/bi';
-import { HiSpeakerWave, HiSpeakerXMark } from 'react-icons/hi2';
+import { GiSpeaker, GiSpeakerOff } from 'react-icons/gi';
 
 import './SpaceSpeakerActions.css';
 
@@ -66,7 +66,11 @@ const SpaceSpeakerActions: React.FC<SpaceSpeakerActionsProps> = ({
               }
             }}
           >
-            {isAudioMuted ? <HiSpeakerXMark /> : <HiSpeakerWave />}
+            {isAudioMuted ? (
+              <GiSpeakerOff fontSize={26} />
+            ) : (
+              <GiSpeaker fontSize={26} />
+            )}
           </div>
         </div>
       ) : (
