@@ -16,6 +16,7 @@ export interface SpaceDetail {
     username: string;
   }>;
   urlVideo: string;
+  urlSpotify: string;
 }
 
 export interface SpaceDetailState {

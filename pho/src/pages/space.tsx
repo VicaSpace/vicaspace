@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 
 import DrawerComponent from '@/components/DrawerComponent';
 import Pomodoro from '@/components/Pomodoro/Pomodoro';
+import SpotifyPlayer from '@/components/SpotifyPlayer';
 import Toolbar from '@/components/Toolbar/Toolbar';
 import Video from '@/components/VideoContainer/Video';
 import { updateUserSpaceId } from '@/lib/apis/user';
@@ -21,7 +22,7 @@ const SpacePage: React.FC<{}> = () => {
   const { data, error, status } = useAppSelector(
     (state) => state.spaceDetailSlice
   );
-  const { name, members, urlVideo, startTime } = data;
+  const { name, members, urlVideo, startTime, urlSpotify } = data;
 
   /**
    * Assume that you'll be assigned the pageId when u first access
@@ -66,6 +67,9 @@ const SpacePage: React.FC<{}> = () => {
               timestamp={new Date(startTime ?? '').getTime()}
               serverTime={Date.now()} // TODO: get server time from API
             />
+          </div>
+          <div className="music-player-container">
+            <SpotifyPlayer url={urlSpotify ?? ''} />
           </div>
         </>
       )}
