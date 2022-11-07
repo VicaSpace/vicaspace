@@ -5,6 +5,7 @@ import SpaceSpeakerUserAvatar from '@/components/SpaceSpeaker/SpaceSpeakerUserAv
 import useSpaceSpeaker from '@/hooks/useSpaceSpeaker';
 import { WebSocketContext } from '@/modules/ws/WebSocketProvider';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
+import { joinSpaceSpeaker } from '@/states/spaceSpeaker/slice';
 
 import './SpaceSpeakerSection.css';
 
@@ -79,6 +80,7 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = () => {
               spaceId={spaceId}
               spaceSpeakerId={spaceSpeakerId}
               setMicStatus={setMicStatus}
+              joinSpaceSpeaker={() => dispatch(joinSpaceSpeaker(spaceId))}
             />
           )}
         </div>

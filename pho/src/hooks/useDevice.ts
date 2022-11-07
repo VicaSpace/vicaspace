@@ -1,4 +1,4 @@
-import * as mediasoupClient from 'mediasoup-client';
+import { Device, types } from 'mediasoup-client';
 
 import { useState } from 'react';
 
@@ -6,16 +6,14 @@ import { useState } from 'react';
  * useDeviceHook for creating MediaSoup device
  * @returns Device
  */
-export const useDevice = (
-  rtpCapabilities: mediasoupClient.types.RtpCapabilities | null
-) => {
-  const [device, setDevice] = useState<mediasoupClient.Device | undefined>();
+export const useDevice = (rtpCapabilities: types.RtpCapabilities | null) => {
+  const [device, setDevice] = useState<Device | undefined>();
 
   /**
    * Initialize new device
    */
   const initDevice = () => {
-    const createdDevice = new mediasoupClient.Device();
+    const createdDevice = new Device();
     setDevice(createdDevice);
   };
 

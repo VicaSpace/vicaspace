@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from 'react';
 
-import { useAppDispatch } from '@/states/hooks';
-import { joinSpaceSpeaker } from '@/states/spaceSpeaker/slice';
-
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface SpaceSpeakerActionsProps {
   spaceId: number;
   spaceSpeakerId: number | undefined;
   setMicStatus: (status: 'enabled' | 'disabled') => void;
+  joinSpaceSpeaker: () => void;
 }
 
 const SpaceSpeakerActions: React.FC<SpaceSpeakerActionsProps> = ({
-  spaceId,
   spaceSpeakerId,
   setMicStatus,
+  joinSpaceSpeaker,
 }) => {
-  const dispatch = useAppDispatch();
-
   // Pure states
   const [isMuted, setIsMuted] = useState<boolean>(false);
 
@@ -62,13 +58,7 @@ const SpaceSpeakerActions: React.FC<SpaceSpeakerActionsProps> = ({
   return (
     <div className="space-speaker-action-container">
       {!spaceSpeakerId && (
-        <div
-          className="space-speaker-action-btn"
-          onClick={() => {
-            // NOTE: Join with the same spaceId
-            dispatch(joinSpaceSpeaker(spaceId));
-          }}
-        >
+        <div className="space-speaker-action-btn" onClick={joinSpaceSpeaker}>
           JOIN SPACESPEAKER 🗣
         </div>
       )}
