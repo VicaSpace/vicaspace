@@ -4,18 +4,18 @@
 
 .drawer-close-inside-space {
     align-items: flex-end !important;
-    transform:  translateX(-420px) !important;
+    transform: translateX(-420px) !important;
 }
 
 .drawer-close-popular-spaces {
     align-items: flex-end !important;
-    transform:  translateX(-350px) !important;
+    transform: translateX(-350px) !important;
 }
 
 .drawer-close-login-register {
-    transform:  translateX(-520px) !important;
+    transform: translateX(-520px) !important;
 }
 
 .drawer-open {
-    transform:  translateX(0px) !important
+    transform: translateX(0px) !important
 }
