@@ -68,7 +68,7 @@ export const getSpaceDetails = async (spaceId) => {
     });
     return {
       ...spaceDetails,
-      serverTime: new Date(),
+      serverTime: Date.now(),
     };
   } catch (error) {
     logger.error(error);

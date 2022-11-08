@@ -10,6 +10,7 @@ import Video from '@/components/VideoContainer/Video';
 import { updateUserSpaceId } from '@/lib/apis/user';
 import { isNumeric } from '@/lib/number';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
+import { calculateTimeGap } from '@/states/pomodoro/slice';
 import { fetchSpaceDetail } from '@/states/spaceDetail/slice';
 
 import './space.css';
@@ -19,14 +20,14 @@ const SpacePage: React.FC<{}> = () => {
   const dispatch = useAppDispatch();
 
   // Space Slice
-  const { data, error, status } = useAppSelector(
-    (state) => state.spaceDetailSlice
-  );
+  const { data } = useAppSelector((state) => state.spaceDetailSlice);
   const { name, members, urlVideo, startTime, urlSpotify } = data;
 
   const isAuthenticated = useAppSelector(
     (state) => state.authSlice.isAuthenticated
   );
+
+  const timeGap = useAppSelector((state) => state.pomodoroSlice.timeGap);
 
   const [updatedSpaceId, setUpdatedSpaceId] = useState<boolean>(false);
 
@@ -44,6 +45,7 @@ const SpacePage: React.FC<{}> = () => {
       updateUserSpaceId(parseInt(id))
         .then(() => {
           setUpdatedSpaceId(true);
+          void dispatch(calculateTimeGap(0));
           void dispatch(fetchSpaceDetail(Number(id)));
         })
         .catch(console.log);
@@ -74,6 +76,7 @@ const SpacePage: React.FC<{}> = () => {
       updateUserSpaceId(parseInt(id))
         .then(() => {
           setUpdatedSpaceId(true);
+          void dispatch(calculateTimeGap(0));
           void dispatch(fetchSpaceDetail(Number(id)));
         })
         .catch(console.log);
@@ -91,15 +94,17 @@ const SpacePage: React.FC<{}> = () => {
           <div className="location-name-box">
             <div className="location-text">{name}</div>
           </div>
-          <div style={{ position: 'absolute' }}>
-            <Pomodoro
-              shortBreakDuration={2}
-              pomodoroDuration={5}
-              longBreakDuration={10}
-              timestamp={new Date(startTime ?? '').getTime()}
-              serverTime={Date.now()} // TODO: get server time from API
-            />
-          </div>
+          {isVideoVisible && (
+            <div style={{ position: 'absolute' }}>
+              <Pomodoro
+                shortBreakDuration={2}
+                pomodoroDuration={5}
+                longBreakDuration={10}
+                timestamp={new Date(startTime ?? '').getTime()}
+                serverTime={Date.now() + timeGap}
+              />
+            </div>
+          )}
           <div className="music-player-container">
             <SpotifyPlayer url={urlSpotify ?? ''} />
           </div>
