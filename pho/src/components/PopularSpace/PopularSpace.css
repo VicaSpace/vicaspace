@@ -1,0 +1,23 @@
+.popular-spaces-container-close {
+    width: 32% !important;
+    
+    transition: all 400ms ease-in-out;
+}
+
+.popular-spaces-heading-close {
+    text-align: center !important;
+    width: 100% !important;
+    font-size: 21px !important;
+    transition: all 400ms ease-in-out;
+}
+
+.popular-spaces-latest-close {
+    display: none !important;
+    transition: all 400ms ease-in-out;
+}
+
+.popular-spaces-list-close {
+    padding: 0% 4% !important;
+    transition: all 400ms ease-in-out;
+
+}

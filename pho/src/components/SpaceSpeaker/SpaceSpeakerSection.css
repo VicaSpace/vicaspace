@@ -4,6 +4,13 @@
   padding: 20px;
 }
 
+.space-speaker-section-close{
+  width: 18% !important;
+  padding: 8px !important;
+  min-height: 80% !important;
+  transition: all 400ms !important;
+}
+
 .space-speaker-container {
   background-color: #d2daff;
   display: flex;
@@ -11,6 +18,17 @@
   border-radius: 12px;
   min-height: 100%;
   width: 100%;
+}
+
+.space-speaker-action-container-close {
+  display: none !important;
+}
+
+.space-speaker-participant-list-close {
+  padding-left: 0px !important;
+  transition: all 400ms !important;
+  gap: 5px !important;
+  padding: 0px !important;
 }
 
 .space-speaker-participant-list {
@@ -23,6 +41,7 @@
   padding: 24px;
   overflow-y: auto;
   padding-left: 51px;
+  transition: all 400ms !important;
 }
 
 .space-speaker-participant-img {

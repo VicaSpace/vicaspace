@@ -1,0 +1,32 @@
+.space-cell-discription-close {
+    display: none !important;
+    
+}
+
+.space-cell-container-close {
+    height: 60px !important;
+    padding: 5px 10px !important;
+
+    transition: all 400ms ease-in-out;
+}
+
+.space-cell-upper-close{
+    height: 100% !important;
+    flex-direction: column !important;
+    transition: all 400ms ease-in-out;
+
+}
+
+.space-cell-upper-heading-close {
+    text-align: center;
+    width: 100% !important;
+    font-size: 20px !important;
+    flex-grow: 1 !important;
+    transition: all 400ms ease-in-out;
+
+}
+
+.space-cell-members-icon-close {
+    width: 100% !important;
+    justify-content: center !important;
+}

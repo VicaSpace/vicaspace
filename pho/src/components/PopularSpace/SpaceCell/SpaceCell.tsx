@@ -17,7 +17,14 @@ import noOnlUsersIcon from '@/asset/noOnlUsersIcon.png';
 import SpaceModal from '@/components/WorldMap/SpaceModal';
 import { GetSpaceDetailResponse } from '@/lib/apis/space';
 
-const SpaceCell: React.FC<{ space: GetSpaceDetailResponse }> = ({ space }) => {
+import './SpaceCell.css';
+
+interface SpaceCellProps {
+  isDrawerOpen: boolean;
+  space: GetSpaceDetailResponse;
+}
+
+const SpaceCell: React.FC<SpaceCellProps> = ({ isDrawerOpen, space }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const URL = process.env.REACT_APP_BACKEND_URL ?? '';
   const [spaceInfo, setSpaceInfo] = useState<GetSpaceDetailResponse>();
@@ -25,6 +32,8 @@ const SpaceCell: React.FC<{ space: GetSpaceDetailResponse }> = ({ space }) => {
   useEffect(() => {
     const fetchSpaceInfo = async () => {
       const spaceInfo = (await axios.get(`${URL}/api/spaces/${space.id}`)).data;
+      console.log(spaceInfo);
+
       setSpaceInfo(spaceInfo);
     };
 
@@ -45,17 +54,38 @@ const SpaceCell: React.FC<{ space: GetSpaceDetailResponse }> = ({ space }) => {
         border: '1px solid black',
       }}
       onClick={onOpen}
+      className={`${!isDrawerOpen ? 'space-cell-container-close' : ''}`}
     >
-      <HStack w="100%" h="50%">
-        <Heading w="70%" size="md" fontFamily="Inconsolata" float="left">
+      <HStack
+        w="100%"
+        h="50%"
+        className={`${!isDrawerOpen ? 'space-cell-upper-close' : ''}`}
+      >
+        <Heading
+          w="70%"
+          size="md"
+          fontFamily="Inconsolata"
+          float="left"
+          className={`${!isDrawerOpen ? 'space-cell-upper-heading-close' : ''}`}
+        >
           {spaceInfo ? spaceInfo.name : ''}
         </Heading>
-        <HStack w="30%" justify="right">
+        <HStack
+          w="30%"
+          justify="right"
+          className={`${!isDrawerOpen ? 'space-cell-members-icon-close' : ''}`}
+        >
           <Image src={noOnlUsersIcon} />
           <Text>{spaceInfo ? spaceInfo.members.length : 0}</Text>
         </HStack>
       </HStack>
-      <Box w="100%" h="50%" fontFamily="Inconsolata" fontSize="16px">
+      <Box
+        w="100%"
+        h="50%"
+        fontFamily="Inconsolata"
+        fontSize="16px"
+        className={`${!isDrawerOpen ? 'space-cell-discription-close' : ''}`}
+      >
         <LinesEllipsis
           text="No description yet!"
           maxLine="1"
@@ -70,6 +100,7 @@ const SpaceCell: React.FC<{ space: GetSpaceDetailResponse }> = ({ space }) => {
 };
 
 SpaceCell.propTypes = {
+  isDrawerOpen: PropTypes.bool.isRequired,
   space: PropTypes.any.isRequired,
 };
 

@@ -11,6 +11,7 @@ interface SpaceSpeakerActionsProps {
   setMicStatus: (status: 'enabled' | 'disabled') => void;
   setPeerAudioStatus: (status: 'enabled' | 'disabled') => void;
   joinSpaceSpeaker: () => void;
+  isDrawerOpen: boolean;
 }
 
 const SpaceSpeakerActions: React.FC<SpaceSpeakerActionsProps> = ({
@@ -18,6 +19,7 @@ const SpaceSpeakerActions: React.FC<SpaceSpeakerActionsProps> = ({
   setMicStatus,
   setPeerAudioStatus,
   joinSpaceSpeaker,
+  isDrawerOpen,
 }) => {
   // Pure states
   const [isMuted, setIsMuted] = useState<boolean>(false);
@@ -75,8 +77,13 @@ const SpaceSpeakerActions: React.FC<SpaceSpeakerActionsProps> = ({
         </div>
       ) : (
         // Join SpaceSpeaker
-        <div className="space-speaker-actions-btn" onClick={joinSpaceSpeaker}>
-          JOIN SPACESPEAKER 🗣
+        <div
+          className={`space-speaker-actions-btn ${
+            !isDrawerOpen ? 'space-speaker-actions-btn-close' : ''
+          }`}
+          onClick={joinSpaceSpeaker}
+        >
+          {isDrawerOpen ? `JOIN SPACESPEAKER 🗣` : `JOIN`}
         </div>
       )}
     </div>
