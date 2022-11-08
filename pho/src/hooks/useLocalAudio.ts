@@ -2,6 +2,7 @@ import hark from 'hark';
 
 import { MutableRefObject, useRef, useState } from 'react';
 
+import { connectAudioGainNode } from '@/lib/gain-node';
 import { AudioParams } from '@/types/spaceSpeaker';
 
 export interface UseLocalAudio {
@@ -9,6 +10,7 @@ export interface UseLocalAudio {
     onSpeaking?: () => void,
     onStoppedSpeaking?: () => void
   ) => Promise<void>;
+  setMicStatus: (status: 'enabled' | 'disabled') => void;
   localAudioRef: MutableRefObject<HTMLAudioElement | null>;
   audioParams: AudioParams | null;
   isSpeaking: boolean;
@@ -63,18 +65,10 @@ export const useLocalAudio = (): UseLocalAudio => {
         localAudioRef.current.srcObject = stream;
         localAudioRef.current.volume = 0;
 
-        // Create Audio Context from MediaStream
-        const audioCtx = new AudioContext();
-        const source = audioCtx.createMediaStreamSource(stream);
+        // Connect audio stream to gain node
+        const { source, gainNode } = connectAudioGainNode(stream);
 
-        // Create gain node
-        const gainNode = audioCtx.createGain();
-
-        // Connect AudioBufferSourceNode to Gain Node
-        source.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-
-        // Set local audio volume to 0 (avoid echo)
+        // Set local audio volume to 0 (avoid client-side echo)
         gainNode.gain.value = 0;
 
         // Update audio params from stream track
@@ -89,8 +83,25 @@ export const useLocalAudio = (): UseLocalAudio => {
       );
     }
   };
+
+  /**
+   * Toggle microphone of audio params from stream
+   */
+  const setMicStatus = (status: 'enabled' | 'disabled') => {
+    setAudioParams((params) => {
+      if (!params?.track) return null;
+      if (status === 'enabled') {
+        params.track.enabled = true;
+      } else {
+        params.track.enabled = false;
+      }
+      return params;
+    });
+  };
+
   return {
     getLocalUserMedia,
+    setMicStatus,
     localAudioRef,
     audioParams,
     isSpeaking,
