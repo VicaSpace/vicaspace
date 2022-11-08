@@ -24,6 +24,12 @@ const SpacePage: React.FC<{}> = () => {
   );
   const { name, members, urlVideo, startTime, urlSpotify } = data;
 
+  const isAuthenticated = useAppSelector(
+    (state) => state.authSlice.isAuthenticated
+  );
+
+  const [updatedSpaceId, setUpdatedSpaceId] = useState<boolean>(false);
+
   /**
    * Assume that you'll be assigned the pageId when u first access
    * the parameterized route of space
@@ -36,17 +42,45 @@ const SpacePage: React.FC<{}> = () => {
     }
     updateUserSpaceId(parseInt(id))
       .then(() => {
+        setUpdatedSpaceId(true);
         void dispatch(fetchSpaceDetail(Number(id)));
       })
       .catch(console.log);
     return () => {
-      updateUserSpaceId(null).catch(console.log);
+      if (updatedSpaceId) {
+        updateUserSpaceId(null)
+          .then(() => {
+            setUpdatedSpaceId(false);
+          })
+          .catch(console.log);
+      }
     };
   }, []);
 
   useBeforeunload(() => {
-    updateUserSpaceId(null).catch(console.log);
+    if (updatedSpaceId) {
+      updateUserSpaceId(null)
+        .then(() => {
+          setUpdatedSpaceId(false);
+        })
+        .catch(console.log);
+    }
   });
+
+  useEffect(() => {
+    if (!id || !isNumeric(id)) {
+      console.error('Space ID is not a valid.');
+      return;
+    }
+    if (isAuthenticated) {
+      updateUserSpaceId(parseInt(id))
+        .then(() => {
+          setUpdatedSpaceId(true);
+          void dispatch(fetchSpaceDetail(Number(id)));
+        })
+        .catch(console.log);
+    }
+  }, [isAuthenticated]);
 
   const [isMusicMuted, setIsMusicMuted] = useState(true);
   const [isVideoVisible, setIsVideoVisible] = useState(false);

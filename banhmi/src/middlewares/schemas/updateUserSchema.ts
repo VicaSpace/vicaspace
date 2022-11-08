@@ -5,7 +5,7 @@ const checkUpdateUserRequest = async (req, _res, next) => {
   try {
     const updateUserRequestSchema = Joi.object({
       socketId: Joi.string(),
-      spaceId: Joi.number().integer()
+      spaceId: Joi.number().integer().allow(null)
     });
     await updateUserRequestSchema.validateAsync(req.body);
     next();

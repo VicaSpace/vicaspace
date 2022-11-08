@@ -34,6 +34,7 @@ const WorldMapTile: React.FC<{}> = () => {
         })}
       />
       <ReactMapGL
+        id="map-gl"
         initialViewState={{
           longitude: 105.8067,
           latitude: 15.9031,
