@@ -21,7 +21,11 @@ const SpaceSpeakerUserAvatar: React.FC<SpaceSpeakerUserAvatarProps> = ({
   isDrawerOpen,
 }) => {
   return (
-    <div className="space-speaker-user-avatar-container">
+    <div
+      className={`space-speaker-user-avatar-container ${
+        !isDrawerOpen ? 'space-speaker-user-avatar-container-close' : ''
+      }`}
+    >
       <img
         // Dummy key
         className={clsx({
@@ -32,7 +36,13 @@ const SpaceSpeakerUserAvatar: React.FC<SpaceSpeakerUserAvatarProps> = ({
         src={buildUserAvatarURL(name)}
         alt="speaker-avatar"
       />
-      <div>{name}</div>
+      <div
+        className={`space-speaker-participant-username ${
+          !isDrawerOpen ? 'space-speaker-participant-username-close' : ''
+        }`}
+      >
+        {name}
+      </div>
     </div>
   );
 };

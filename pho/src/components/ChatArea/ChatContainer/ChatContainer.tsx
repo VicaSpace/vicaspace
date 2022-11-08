@@ -1,4 +1,4 @@
-import { Flex } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
 import React from 'react';
 
 import ChatDisplay from '@/components/ChatArea/ChatContainer/ChatDisplay/ChatDisplay';
@@ -6,7 +6,11 @@ import ChatEditor from '@/components/ChatArea/ChatContainer/ChatEditor/ChatEdito
 
 import './ChatContainer.css';
 
-const ChatContainer: React.FC<{}> = () => {
+interface ChatContainerProps {
+  isDrawerOpen: boolean;
+}
+
+const ChatContainer: React.FC<ChatContainerProps> = ({ isDrawerOpen }) => {
   return (
     <Flex
       w="100%"
@@ -14,6 +18,7 @@ const ChatContainer: React.FC<{}> = () => {
       p="0px 20px 20px 20px"
       justify="center"
       align="center"
+      className={`${!isDrawerOpen ? 'chat-container-placeholder' : ''}`}
     >
       <Flex
         w="100%"
@@ -24,8 +29,14 @@ const ChatContainer: React.FC<{}> = () => {
         backgroundColor="#D2DAFF"
         borderRadius="10px"
       >
-        <ChatDisplay />
-        <ChatEditor />
+        {isDrawerOpen ? (
+          <>
+            <ChatDisplay />
+            <ChatEditor />
+          </>
+        ) : (
+          <Box>Chat</Box>
+        )}
       </Flex>
     </Flex>
   );

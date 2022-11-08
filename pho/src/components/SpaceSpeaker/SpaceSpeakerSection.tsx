@@ -45,7 +45,11 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = ({
   const [isMuted, setIsMuted] = useState<boolean>(false);
 
   return (
-    <section className="space-speaker-section">
+    <section
+      className={`space-speaker-section ${
+        !isDrawerOpen ? 'space-speaker-section-close' : ''
+      }`}
+    >
       {/* Inner container */}
       <div className="space-speaker-container">
         {/* Participants list */}
@@ -55,7 +59,7 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = ({
           }`}
         >
           {/* Client Audio */}
-          <div>
+          {/* <div>
             {speakers ? (
               <SpaceSpeakerUserAvatar
                 name={username}
@@ -64,11 +68,11 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = ({
               />
             ) : (
               <div>Join to see others!</div>
-            )}
+            )} */}
 
-            {/* Local Audio */}
-            <audio ref={localAudioRef} autoPlay muted />
-          </div>
+          {/* Local Audio */}
+          {/* <audio ref={localAudioRef} autoPlay muted /> */}
+          {/* </div> */}
           {/* Peer Audios */}
           {speakers &&
             Object.values(speakers).map((spk) => {
@@ -86,6 +90,37 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = ({
                 <div key={spk.id} style={{ display: 'none' }} />
               );
             })}
+
+          <SpaceSpeakerUserAvatar
+            name={'trungngo'}
+            isSpeaking={false}
+            isDrawerOpen={isDrawerOpen}
+          />
+          <SpaceSpeakerUserAvatar
+            name={'minh'}
+            isSpeaking={true}
+            isDrawerOpen={isDrawerOpen}
+          />
+          <SpaceSpeakerUserAvatar
+            name={'richard'}
+            isSpeaking={false}
+            isDrawerOpen={isDrawerOpen}
+          />
+          <SpaceSpeakerUserAvatar
+            name={'chau'}
+            isSpeaking={false}
+            isDrawerOpen={isDrawerOpen}
+          />
+          <SpaceSpeakerUserAvatar
+            name={'chau'}
+            isSpeaking={false}
+            isDrawerOpen={isDrawerOpen}
+          />
+          <SpaceSpeakerUserAvatar
+            name={'chau'}
+            isSpeaking={false}
+            isDrawerOpen={isDrawerOpen}
+          />
         </div>
         <div
           className={`space-speaker-action-container ${

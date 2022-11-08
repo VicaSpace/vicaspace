@@ -79,7 +79,7 @@ function DrawerComponent() {
       return (
         <>
           <SpaceSpeakerSection isDrawerOpen={isDrawerOpen} />
-          <ChatContainer />
+          <ChatContainer isDrawerOpen={isDrawerOpen} />
         </>
       );
   };

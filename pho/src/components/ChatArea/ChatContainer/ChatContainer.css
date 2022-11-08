@@ -1,0 +1,5 @@
+.chat-container-placeholder {
+    width: 18% !important;
+    padding: 8px !important;
+    transition: all 400ms ease-in-out;
+}

@@ -10,6 +10,7 @@
 .space-speaker-participant-img-close {
   width: 30px !important;
   height: 30px !important;
+  transition: all 400ms ease-out;
 }
 
 .audio-active {
@@ -20,4 +21,16 @@
   flex-direction: column;
   display: flex;
   align-items: center;
+}
+
+.space-speaker-user-avatar-container-close{
+  flex-grow: 1 !important;
+  width: 100% !important;
+  justify-content: center;
+  transition: all 400ms ease-out;
+
+}
+
+.space-speaker-participant-username-close {
+  display: none !important;
 }
