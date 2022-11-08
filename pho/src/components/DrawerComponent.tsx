@@ -74,7 +74,7 @@ function DrawerComponent() {
         );
       }
     }
-    if (isAllSpacesURL) return <PopularSpace />;
+    if (isAllSpacesURL) return <PopularSpace isDrawerOpen={isDrawerOpen} />;
     else if (isSpecificSpaceURL)
       return (
         <>
@@ -95,15 +95,39 @@ function DrawerComponent() {
     // First loading
     if (
       !drawerCssClasses?.includes('drawer-open') &&
-      !drawerCssClasses?.includes('drawer-close')
+      !drawerCssClasses?.includes('drawer-close-popular-spaces') &&
+      !drawerCssClasses?.includes('drawer-close-inside-space')
     ) {
-      return drawer?.classList.add('drawer-close');
+      if (isAllSpacesURL)
+        return drawer?.classList.add('drawer-close-popular-spaces');
+      else if (isSpecificSpaceURL)
+        return drawer?.classList.add('drawer-close-inside-space');
     }
 
     // Toggle
-    if (drawerCssClasses?.includes('drawer-open'))
-      return drawer?.classList.replace('drawer-open', 'drawer-close');
-    else return drawer?.classList.add('drawer-close', 'drawer-open');
+    if (drawerCssClasses?.includes('drawer-open')) {
+      if (isAllSpacesURL)
+        return drawer?.classList.replace(
+          'drawer-open',
+          'drawer-close-popular-spaces'
+        );
+      else if (isSpecificSpaceURL)
+        return drawer?.classList.replace(
+          'drawer-open',
+          'drawer-close-inside-space'
+        );
+    } else {
+      if (isAllSpacesURL)
+        return drawer?.classList.replace(
+          'drawer-close-popular-spaces',
+          'drawer-open'
+        );
+      else if (isSpecificSpaceURL)
+        return drawer?.classList.replace(
+          'drawer-close-inside-space',
+          'drawer-open'
+        );
+    }
   };
 
   return (

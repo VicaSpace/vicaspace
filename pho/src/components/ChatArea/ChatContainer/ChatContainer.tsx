@@ -1,5 +1,6 @@
 import { Box, Flex } from '@chakra-ui/react';
 import React from 'react';
+import { AiOutlineMessage } from 'react-icons/ai';
 
 import ChatDisplay from '@/components/ChatArea/ChatContainer/ChatDisplay/ChatDisplay';
 import ChatEditor from '@/components/ChatArea/ChatContainer/ChatEditor/ChatEditor';
@@ -35,7 +36,9 @@ const ChatContainer: React.FC<ChatContainerProps> = ({ isDrawerOpen }) => {
             <ChatEditor />
           </>
         ) : (
-          <Box>Chat</Box>
+          <Box>
+            <AiOutlineMessage size={30} />
+          </Box>
         )}
       </Flex>
     </Flex>

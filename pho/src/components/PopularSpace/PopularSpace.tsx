@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 import {
   Avatar,
@@ -18,7 +19,13 @@ import SpaceCell from '@/components/PopularSpace/SpaceCell/SpaceCell';
 import { GetSpaceDetailResponse } from '@/lib/apis/space';
 import { useAppSelector } from '@/states/hooks';
 
-const PopularSpace: React.FC<{}> = () => {
+import './PopularSpace.css';
+
+interface PopularSpaceProps {
+  isDrawerOpen: boolean;
+}
+
+const PopularSpace: React.FC<PopularSpaceProps> = ({ isDrawerOpen }) => {
   const username = useAppSelector((state) => state.authSlice.username);
 
   const URL = process.env.REACT_APP_BACKEND_URL ?? '';
@@ -45,13 +52,19 @@ const PopularSpace: React.FC<{}> = () => {
   }, []);
 
   return (
-    <VStack w="100%" h="100%" spacing="0">
+    <VStack
+      w="100%"
+      h="100%"
+      spacing="0"
+      className={`${!isDrawerOpen ? 'popular-spaces-container-close' : ''}`}
+    >
       <Flex
         w="100%"
         h="10%"
         bgColor="red"
         padding="2% 5%"
         backgroundColor="#EEF1FF"
+        className={`${!isDrawerOpen ? 'popular-spaces-list-close' : ''}`}
       >
         <HStack w="100%" h="100%">
           <Avatar src={`https://i.pravatar.cc/150?u=${username}`} size="lg" />
@@ -67,6 +80,7 @@ const PopularSpace: React.FC<{}> = () => {
           size="lg"
           fontWeight="semibold"
           fontFamily="Inconsolata"
+          className={`${!isDrawerOpen ? 'popular-spaces-heading-close' : ''}`}
         >
           Popular Spaces
         </Heading>
@@ -80,6 +94,7 @@ const PopularSpace: React.FC<{}> = () => {
           display="flex"
           justifyContent="center"
           alignItems="center"
+          className={`${!isDrawerOpen ? 'popular-spaces-latest-close' : ''}`}
         >
           <Heading fontFamily="Inconsolata" size="lg" fontWeight="medium">
             LATEST
@@ -96,7 +111,13 @@ const PopularSpace: React.FC<{}> = () => {
       >
         <VStack w="100%" h="90%" spacing="8">
           {spaces.map((space) => {
-            return <SpaceCell key={space.id} space={space} />;
+            return (
+              <SpaceCell
+                key={space.id}
+                space={space}
+                isDrawerOpen={isDrawerOpen}
+              />
+            );
           })}
         </VStack>
       </Flex>
@@ -111,6 +132,10 @@ const PopularSpace: React.FC<{}> = () => {
       </Box>
     </VStack>
   );
+};
+
+PopularSpace.propTypes = {
+  isDrawerOpen: PropTypes.bool.isRequired,
 };
 
 export default PopularSpace;

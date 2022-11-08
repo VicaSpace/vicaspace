@@ -2,12 +2,16 @@
     transition: all 400ms ease-in-out !important;
 }
 
-.drawer-close {
+.drawer-close-inside-space {
     align-items: flex-end !important;
     transform:  translateX(-420px) !important;
 }
 
+.drawer-close-popular-spaces {
+    align-items: flex-end !important;
+    transform:  translateX(-350px) !important;
+}
+
 .drawer-open {
-    /* align-items: inl !important; */
     transform:  translateX(0px) !important
 }
