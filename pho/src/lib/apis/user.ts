@@ -30,9 +30,7 @@ export const updateUserSocketId = async (socketId: string) => {
 export const updateUserSpaceId = async (spaceId: number | null) => {
   const accessToken = localStorage.getItem('accessToken');
   if (!accessToken) {
-    throw new Error(
-      'Unauthorized called to update accessToken, please login first!'
-    );
+    return;
   }
 
   await axios.patch(

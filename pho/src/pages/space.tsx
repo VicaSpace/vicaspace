@@ -23,6 +23,10 @@ const SpacePage: React.FC<{}> = () => {
   );
   const { name, members, urlVideo, startTime } = data;
 
+  const isAuthenticated = useAppSelector(
+    (state) => state.authSlice.isAuthenticated
+  );
+
   const [updatedSpaceId, setUpdatedSpaceId] = useState<boolean>(false);
 
   /**
@@ -61,6 +65,21 @@ const SpacePage: React.FC<{}> = () => {
         .catch(console.log);
     }
   });
+
+  useEffect(() => {
+    if (!id || !isNumeric(id)) {
+      console.error('Space ID is not a valid.');
+      return;
+    }
+    if (isAuthenticated) {
+      updateUserSpaceId(parseInt(id))
+        .then(() => {
+          setUpdatedSpaceId(true);
+          void dispatch(fetchSpaceDetail(Number(id)));
+        })
+        .catch(console.log);
+    }
+  }, [isAuthenticated]);
 
   const [isMusicMuted, setIsMusicMuted] = useState(true);
   const [isVideoVisible, setIsVideoVisible] = useState(false);
