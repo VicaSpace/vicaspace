@@ -3,17 +3,10 @@ import React, { useState } from 'react';
 import Draggable from 'react-draggable';
 
 import { usePomodoro } from '@/hooks/usePomodoro';
+import getWindowDimensions from '@/lib/window';
 
 import sessionIcon from '../Pomodoro/session.png';
 import './Pomodoro.css';
-
-const getWindowDimensions = () => {
-  const { innerWidth: width, innerHeight: height } = window;
-  return {
-    width,
-    height,
-  };
-};
 
 const pomodoroWidthPixels = 250;
 const toolbarRightPosition = 62;

@@ -71,7 +71,7 @@ export default function Register({ onOpenLogin }: RegisterProps) {
         description:
           "We've created your account for you. Please sign in to continue",
         status: 'success',
-        duration: 9000,
+        duration: 3000,
         isClosable: true,
       });
 
