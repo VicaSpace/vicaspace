@@ -2,7 +2,7 @@
   box-sizing: border-box;
 
   position: absolute;
-  width: 200px;
+  width: 250px;
   height: 46px;
   top: 34px;
   right: 62px;
@@ -41,4 +41,9 @@
 
 .toolbar-item+.toolbar-item {
   border-left: 1px solid black;
+}
+
+.toolbar-item:hover {
+  cursor: pointer;
+  color: grey;
 }

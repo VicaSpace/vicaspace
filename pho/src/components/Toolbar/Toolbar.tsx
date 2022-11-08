@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { FaCompress, FaUsers, FaVolumeMute, FaVolumeUp } from 'react-icons/fa';
+import {
+  FaCompress,
+  FaHome,
+  FaUsers,
+  FaVolumeMute,
+  FaVolumeUp,
+} from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 import './Toolbar.css';
 
@@ -9,6 +16,7 @@ const Toolbar: React.FC<{
   isMuted: boolean;
   visible: boolean;
 }> = ({ numberOfParticipants, setIsMuted, isMuted, visible }) => {
+  const navigate = useNavigate();
   const [isFullscreen, setIsFullscreen] = useState(false);
   return (
     <div
@@ -34,6 +42,14 @@ const Toolbar: React.FC<{
         }}
       >
         <FaCompress />
+      </button>
+      <button
+        onClick={() => {
+          navigate('/');
+        }}
+        className="toolbar-item"
+      >
+        <FaHome />
       </button>
     </div>
   );

@@ -1,11 +1,15 @@
 import { Box, Center } from '@chakra-ui/react';
-import React from 'react';
+import React, { useState } from 'react';
 import Draggable from 'react-draggable';
 
 import { usePomodoro } from '@/hooks/usePomodoro';
+import getWindowDimensions from '@/lib/window';
 
 import sessionIcon from '../Pomodoro/session.png';
 import './Pomodoro.css';
+
+const pomodoroWidthPixels = 250;
+const toolbarRightPosition = 62;
 
 const Pomodoro: React.FC<{
   timestamp: number;
@@ -27,11 +31,15 @@ const Pomodoro: React.FC<{
     pomodoroDuration,
     longBreakDuration,
   });
+  const [windowDimensions] = useState(getWindowDimensions());
 
   return (
     <Draggable
       handle=".handle"
-      defaultPosition={{ x: 100, y: 100 }}
+      defaultPosition={{
+        x: windowDimensions.width - pomodoroWidthPixels - toolbarRightPosition,
+        y: 100,
+      }}
       grid={[25, 25]}
       scale={1}
     >
