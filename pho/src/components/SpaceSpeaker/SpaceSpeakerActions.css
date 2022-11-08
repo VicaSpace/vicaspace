@@ -37,3 +37,8 @@
   background: rgb(139, 140, 211);
   cursor: pointer;
 }
+
+.space-speaker-actions-btn-close {
+  font-size: 14px !important;
+  transition: all 400ms ease-in-out;
+}
