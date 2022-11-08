@@ -52,10 +52,12 @@ function DrawerComponent() {
   }, []);
 
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isLoginOrRegisterRoute, setIsLoginOrRegisterRoute] = useState(false);
 
   const renderContent = () => {
     // Protected route
     if (!isAuthenticated) {
+      if (!isLoginOrRegisterRoute) setIsLoginOrRegisterRoute(true);
       if (isRegistering) {
         return (
           <Register
@@ -73,6 +75,8 @@ function DrawerComponent() {
           />
         );
       }
+    } else {
+      if (isLoginOrRegisterRoute) setIsLoginOrRegisterRoute(false);
     }
     if (isAllSpacesURL) return <PopularSpace isDrawerOpen={isDrawerOpen} />;
     else if (isSpecificSpaceURL)
@@ -96,9 +100,12 @@ function DrawerComponent() {
     if (
       !drawerCssClasses?.includes('drawer-open') &&
       !drawerCssClasses?.includes('drawer-close-popular-spaces') &&
-      !drawerCssClasses?.includes('drawer-close-inside-space')
+      !drawerCssClasses?.includes('drawer-close-inside-space') &&
+      !drawerCssClasses?.includes('drawer-close-login-register')
     ) {
-      if (isAllSpacesURL)
+      if (isLoginOrRegisterRoute)
+        return drawer?.classList.add('drawer-close-login-register');
+      else if (isAllSpacesURL)
         return drawer?.classList.add('drawer-close-popular-spaces');
       else if (isSpecificSpaceURL)
         return drawer?.classList.add('drawer-close-inside-space');
@@ -106,7 +113,12 @@ function DrawerComponent() {
 
     // Toggle
     if (drawerCssClasses?.includes('drawer-open')) {
-      if (isAllSpacesURL)
+      if (isLoginOrRegisterRoute)
+        return drawer?.classList.replace(
+          'drawer-open',
+          'drawer-close-login-register'
+        );
+      else if (isAllSpacesURL)
         return drawer?.classList.replace(
           'drawer-open',
           'drawer-close-popular-spaces'
@@ -117,7 +129,12 @@ function DrawerComponent() {
           'drawer-close-inside-space'
         );
     } else {
-      if (isAllSpacesURL)
+      if (isLoginOrRegisterRoute)
+        return drawer?.classList.replace(
+          'drawer-close-login-register',
+          'drawer-open'
+        );
+      else if (isAllSpacesURL)
         return drawer?.classList.replace(
           'drawer-close-popular-spaces',
           'drawer-open'

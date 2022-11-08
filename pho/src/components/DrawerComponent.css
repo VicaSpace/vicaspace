@@ -12,6 +12,10 @@
     transform:  translateX(-350px) !important;
 }
 
+.drawer-close-login-register {
+    transform:  translateX(-520px) !important;
+}
+
 .drawer-open {
     transform:  translateX(0px) !important
 }
