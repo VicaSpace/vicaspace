@@ -32,16 +32,19 @@ export const updateUserSpaceId = async (spaceId: number | null) => {
   if (!accessToken) {
     return;
   }
-
-  await axios.patch(
-    `${config.endpoint.banhmi}/api/users`,
-    {
-      spaceId,
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+  try {
+    await axios.patch(
+      `${config.endpoint.banhmi}/api/users`,
+      {
+        spaceId,
       },
-    }
-  );
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
