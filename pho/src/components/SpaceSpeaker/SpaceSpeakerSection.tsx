@@ -93,39 +93,6 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = ({
               );
             })}
         </div>
-        {/* <div
-          className={`space-speaker-action-container ${
-            !isDrawerOpen ? 'space-speaker-action-container-close' : ''
-          }`}
-        >
-          {!spaceSpeakerId ? (
-            <div
-              className="space-speaker-action-btn"
-              onClick={() => {
-                // NOTE: Join with the same spaceId
-                dispatch(joinSpaceSpeaker(spaceId as number));
-              }}
-            >
-              JOIN SPACESPEAKER 🗣
-            </div>
-          ) : !isMuted ? (
-            <div
-              className="space-speaker-action-btn"
-              onClick={() => {
-                setIsMuted(true);
-              }}
-            >
-              MUTE 🔇
-            </div>
-          ) : (
-            <div
-              className="space-speaker-action-btn"
-              onClick={() => {
-                setIsMuted(false);
-              }}
-            >
-              UNMUTE 🔊
-            </div> */}
         <div className="space-speaker-action-container">
           {spaceId && (
             <SpaceSpeakerActions
