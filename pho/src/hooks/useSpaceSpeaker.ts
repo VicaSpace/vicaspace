@@ -54,6 +54,7 @@ export const useSpaceSpeaker = (
   const {
     audioParams,
     getLocalUserMedia,
+    setMicStatus,
     localAudioRef,
     isSpeaking: isLocalSpeaking,
   } = useLocalAudio();
@@ -69,12 +70,29 @@ export const useSpaceSpeaker = (
   >(null);
   const [recvTransports, setRecvTransports] = useState<RecvTransports>({});
   const [delSpeakerId, setDelSpeakerId] = useState<string | null>(null);
-  const [recentSpeechSpeakerId, setRecentSpeechSpeakerId] = useState<
-    string | null
-  >(null);
 
   /* * Refs * */
   const peerAudioRefs = useRef<PeerAudioRefs>({});
+
+  /**
+   * Set the whole peer's audio status
+   * @param status Status
+   */
+  const setPeerAudioStatus = (status: 'enabled' | 'disabled') => {
+    Object.keys(peerAudioRefs.current).forEach((peerSocketId: string) => {
+      const { ref: peerRef } = peerAudioRefs.current[peerSocketId];
+      if (!peerRef.current) {
+        throw new Error('Cannot find audio ref for peer');
+      }
+      if (status === 'enabled') {
+        (peerRef.current.srcObject as MediaStream).getAudioTracks()[0].enabled =
+          true;
+      } else {
+        (peerRef.current.srcObject as MediaStream).getAudioTracks()[0].enabled =
+          false;
+      }
+    });
+  };
 
   // On component unmount
   useEffect(() => {
@@ -201,7 +219,7 @@ export const useSpaceSpeaker = (
       };
     });
 
-    // Delete speaker from list
+    // Delete speaker from slice list
     dispatch(deleteSpeaker(delSpeakerId));
 
     // Delete audio ref of leaving speaker
@@ -307,10 +325,10 @@ export const useSpaceSpeaker = (
     // If RecvTransports has been set without deleteSpeakerId -> Connect
     if (!delSpeakerId) {
       connectPeerTransport().catch(console.error);
-      return;
+    } else {
+      // Reset deleteSpeakerId after setting RecvTransports
+      setDelSpeakerId(null);
     }
-    // Reset deleteSpeakerId after setting RecvTransports
-    setDelSpeakerId(null);
   }, [recvTransports, recentRecvTransportId]);
 
   /**
@@ -641,6 +659,7 @@ export const useSpaceSpeaker = (
             );
           }
           peerRef.current.srcObject = new MediaStream([track]);
+          // peerRef.current.srcObject.getAudioTracks()[0].enabled
           console.log('Attached consumer to peer successfully ✅');
           resolve();
         }
@@ -657,7 +676,13 @@ export const useSpaceSpeaker = (
     });
   });
 
-  return { localAudioRef, peerAudioRefs, isLocalSpeaking };
+  return {
+    localAudioRef,
+    peerAudioRefs,
+    isLocalSpeaking,
+    setMicStatus,
+    setPeerAudioStatus,
+  };
 };
 
 export default useSpaceSpeaker;

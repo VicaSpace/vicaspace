@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useBeforeunload } from 'react-beforeunload';
 import { useParams } from 'react-router-dom';
 
 import DrawerComponent from '@/components/DrawerComponent';
 import Pomodoro from '@/components/Pomodoro/Pomodoro';
+import SpotifyPlayer from '@/components/SpotifyPlayer';
 import Toolbar from '@/components/Toolbar/Toolbar';
 import Video from '@/components/VideoContainer/Video';
+import { updateUserSpaceId } from '@/lib/apis/user';
 import { isNumeric } from '@/lib/number';
 import { useAppDispatch, useAppSelector } from '@/states/hooks';
 import { fetchSpaceDetail } from '@/states/spaceDetail/slice';
@@ -19,7 +22,13 @@ const SpacePage: React.FC<{}> = () => {
   const { data, error, status } = useAppSelector(
     (state) => state.spaceDetailSlice
   );
-  const { name, members, urlVideo, startTime } = data;
+  const { name, members, urlVideo, startTime, urlSpotify } = data;
+
+  const isAuthenticated = useAppSelector(
+    (state) => state.authSlice.isAuthenticated
+  );
+
+  const [updatedSpaceId, setUpdatedSpaceId] = useState<boolean>(false);
 
   /**
    * Assume that you'll be assigned the pageId when u first access
@@ -31,9 +40,45 @@ const SpacePage: React.FC<{}> = () => {
       console.error('Space ID is not a valid.');
       return;
     }
-    // fetch Space here
-    void dispatch(fetchSpaceDetail(Number(id)));
-  }, []);
+    if (!updatedSpaceId) {
+      updateUserSpaceId(parseInt(id))
+        .then(() => {
+          setUpdatedSpaceId(true);
+          void dispatch(fetchSpaceDetail(Number(id)));
+        })
+        .catch(console.log);
+    }
+    return () => {
+      if (updatedSpaceId) {
+        updateUserSpaceId(null).catch(console.log);
+      }
+    };
+  }, [updatedSpaceId]);
+
+  useBeforeunload(() => {
+    if (updatedSpaceId) {
+      updateUserSpaceId(null)
+        .then(() => {
+          setUpdatedSpaceId(false);
+        })
+        .catch(console.log);
+    }
+  });
+
+  useEffect(() => {
+    if (!id || !isNumeric(id)) {
+      console.error('Space ID is not a valid.');
+      return;
+    }
+    if (isAuthenticated) {
+      updateUserSpaceId(parseInt(id))
+        .then(() => {
+          setUpdatedSpaceId(true);
+          void dispatch(fetchSpaceDetail(Number(id)));
+        })
+        .catch(console.log);
+    }
+  }, [isAuthenticated]);
 
   const [isMusicMuted, setIsMusicMuted] = useState(true);
   const [isVideoVisible, setIsVideoVisible] = useState(false);
@@ -54,6 +99,9 @@ const SpacePage: React.FC<{}> = () => {
               timestamp={new Date(startTime ?? '').getTime()}
               serverTime={Date.now()} // TODO: get server time from API
             />
+          </div>
+          <div className="music-player-container">
+            <SpotifyPlayer url={urlSpotify ?? ''} />
           </div>
         </>
       )}

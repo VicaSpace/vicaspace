@@ -15,9 +15,28 @@ export const updateUserSocketId = async (socketId: string) => {
   }
 
   await axios.patch(
-    `${config.endpoint.banhmi}/api/users/socketId`,
+    `${config.endpoint.banhmi}/api/users`,
     {
       socketId,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+};
+
+export const updateUserSpaceId = async (spaceId: number | null) => {
+  const accessToken = localStorage.getItem('accessToken');
+  if (!accessToken) {
+    return;
+  }
+
+  await axios.patch(
+    `${config.endpoint.banhmi}/api/users`,
+    {
+      spaceId,
     },
     {
       headers: {

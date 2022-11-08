@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { FaCompress, FaUsers, FaVolumeMute, FaVolumeUp } from 'react-icons/fa';
+import {
+  FaCompress,
+  FaHome,
+  FaUsers,
+  FaVolumeMute,
+  FaVolumeUp,
+} from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 import './Toolbar.css';
 
@@ -9,6 +16,7 @@ const Toolbar: React.FC<{
   isMuted: boolean;
   visible: boolean;
 }> = ({ numberOfParticipants, setIsMuted, isMuted, visible }) => {
+  const navigate = useNavigate();
   const [isFullscreen, setIsFullscreen] = useState(false);
   return (
     <div
@@ -19,25 +27,30 @@ const Toolbar: React.FC<{
         {numberOfParticipants}
         <FaUsers style={{ paddingLeft: '5px' }} />
       </div>
-      <div className="toolbar-item">
-        {isMuted ? (
-          <FaVolumeMute onClick={() => setIsMuted()} />
-        ) : (
-          <FaVolumeUp onClick={() => setIsMuted()} />
-        )}
-      </div>
-      <div className="toolbar-item">
-        <FaCompress
-          onClick={() => {
-            if (isFullscreen) {
-              document.exitFullscreen().catch(console.log);
-            } else {
-              document.body.requestFullscreen().catch(console.log);
-            }
-            setIsFullscreen(!isFullscreen);
-          }}
-        />
-      </div>
+      <button className="toolbar-item" onClick={() => setIsMuted()}>
+        {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+      </button>
+      <button
+        className="toolbar-item"
+        onClick={() => {
+          if (isFullscreen) {
+            document.exitFullscreen().catch(console.log);
+          } else {
+            document.body.requestFullscreen().catch(console.log);
+          }
+          setIsFullscreen(!isFullscreen);
+        }}
+      >
+        <FaCompress />
+      </button>
+      <button
+        onClick={() => {
+          navigate('/');
+        }}
+        className="toolbar-item"
+      >
+        <FaHome />
+      </button>
     </div>
   );
 };

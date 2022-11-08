@@ -141,9 +141,15 @@ function DrawerComponent() {
         size="md"
         variant="interactOutside"
       >
-        <DrawerContent backgroundColor="#EEF1FF">
+        <DrawerContent
+          backgroundColor="#EEF1FF"
+          borderRightRadius="12px"
+          border="2px solid #B1B2FF"
+        >
           <Box position="absolute" top="50vh" left="520px">
             <IconButton
+              borderRadius="12px"
+              border="2px solid #B1B2FF"
               backgroundColor="#EEF1FF"
               aria-label="drawer btn"
               icon={isDrawerOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}

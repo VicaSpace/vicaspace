@@ -1,15 +1,30 @@
+#map-gl {
+  top: 0;
+  left: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  position: absolute;
+}
+
 .map-tile-loading {
-  height: 100vh;
   background-image: url('./world.gif');
   background-size: contain;
   background-repeat: no-repeat;
   opacity: 1;
   transition: opacity 2s;
-  transform: scale(0.5);
   background-position: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+  background-color: white;
 }
 
 .map-title-loading-hide {
   opacity: 0;
   pointer-events: none;
+  display: none;
+  z-index: 0;
 }

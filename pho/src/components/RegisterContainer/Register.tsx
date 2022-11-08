@@ -8,6 +8,7 @@ import {
   FormLabel,
   Input,
   Text,
+  useToast,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 
@@ -21,6 +22,8 @@ interface RegisterProps {
 
 export default function Register({ onOpenLogin }: RegisterProps) {
   const [registerError, setRegisterError] = useState('');
+
+  const toast = useToast();
 
   const extractFormData = (name: string) => {
     switch (name) {
@@ -63,6 +66,15 @@ export default function Register({ onOpenLogin }: RegisterProps) {
       const hashedPassword = sha256(password + salt);
 
       await registerViaAPI(username, salt, hashedPassword);
+      await toast({
+        title: 'Account created successfully.',
+        description:
+          "We've created your account for you. Please sign in to continue",
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
       onOpenLogin();
     } catch (error: any) {
       console.log(error.response);

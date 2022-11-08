@@ -1,5 +1,6 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 
+import SpaceSpeakerActions from '@/components/SpaceSpeaker/SpaceSpeakerActions';
 import SpaceSpeakerUserAvatar from '@/components/SpaceSpeaker/SpaceSpeakerUserAvatar';
 import useSpaceSpeaker from '@/hooks/useSpaceSpeaker';
 import { WebSocketContext } from '@/modules/ws/WebSocketProvider';
@@ -37,12 +38,13 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = ({
   const { spaceSpeakerId, speakers } = spaceSpeakerData;
 
   // Use hook for setup SpaceSpeaker
-  const { localAudioRef, peerAudioRefs, isLocalSpeaking } = useSpaceSpeaker(
-    spaceSpeakerId,
-    speakers
-  );
-
-  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const {
+    localAudioRef,
+    peerAudioRefs,
+    isLocalSpeaking,
+    setMicStatus,
+    setPeerAudioStatus,
+  } = useSpaceSpeaker(spaceSpeakerId, speakers);
 
   return (
     <section
@@ -91,7 +93,7 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = ({
               );
             })}
         </div>
-        <div
+        {/* <div
           className={`space-speaker-action-container ${
             !isDrawerOpen ? 'space-speaker-action-container-close' : ''
           }`}
@@ -123,7 +125,17 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = ({
               }}
             >
               UNMUTE 🔊
-            </div>
+            </div> */}
+        <div className="space-speaker-action-container">
+          {spaceId && (
+            <SpaceSpeakerActions
+              spaceId={spaceId}
+              spaceSpeakerId={spaceSpeakerId}
+              setMicStatus={setMicStatus}
+              setPeerAudioStatus={setPeerAudioStatus}
+              joinSpaceSpeaker={() => dispatch(joinSpaceSpeaker(spaceId))}
+              isDrawerOpen={isDrawerOpen}
+            />
           )}
         </div>
       </div>
