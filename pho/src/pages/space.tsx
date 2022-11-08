@@ -40,22 +40,20 @@ const SpacePage: React.FC<{}> = () => {
       console.error('Space ID is not a valid.');
       return;
     }
-    updateUserSpaceId(parseInt(id))
-      .then(() => {
-        setUpdatedSpaceId(true);
-        void dispatch(fetchSpaceDetail(Number(id)));
-      })
-      .catch(console.log);
+    if (!updatedSpaceId) {
+      updateUserSpaceId(parseInt(id))
+        .then(() => {
+          setUpdatedSpaceId(true);
+          void dispatch(fetchSpaceDetail(Number(id)));
+        })
+        .catch(console.log);
+    }
     return () => {
       if (updatedSpaceId) {
-        updateUserSpaceId(null)
-          .then(() => {
-            setUpdatedSpaceId(false);
-          })
-          .catch(console.log);
+        updateUserSpaceId(null).catch(console.log);
       }
     };
-  }, []);
+  }, [updatedSpaceId]);
 
   useBeforeunload(() => {
     if (updatedSpaceId) {
