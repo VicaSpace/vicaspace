@@ -25,10 +25,18 @@ const PopularSpace: React.FC<{}> = () => {
 
   const [spaces, setSpaces] = useState<GetSpaceDetailResponse[]>([]);
 
+  const sortDescendingByNoMembers = (spaces: GetSpaceDetailResponse[]) => {
+    return spaces.sort(
+      (a: GetSpaceDetailResponse, b: GetSpaceDetailResponse) => {
+        return b.members.length - a.members.length;
+      }
+    );
+  };
+
   useEffect(() => {
     const fetchSpaces = async () => {
       const spaces = (await axios.get(`${URL}/api/spaces/`)).data;
-      setSpaces(spaces);
+      setSpaces(sortDescendingByNoMembers(spaces));
     };
 
     fetchSpaces().catch((e) => {
