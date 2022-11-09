@@ -32,6 +32,8 @@ const SpaceCell: React.FC<SpaceCellProps> = ({ isDrawerOpen, space }) => {
   useEffect(() => {
     const fetchSpaceInfo = async () => {
       const spaceInfo = (await axios.get(`${URL}/api/spaces/${space.id}`)).data;
+      console.log(spaceInfo);
+
       setSpaceInfo(spaceInfo);
     };
 
