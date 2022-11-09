@@ -38,9 +38,13 @@ const SpacePage: React.FC<{}> = () => {
 
   useEffect(() => {
     // fetch Space every 5 seconds
-    setInterval(() => {
+    const intervalId = setInterval(() => {
       void dispatch(fetchSpaceDetail(Number(id)));
     }, 5000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
   }, []);
 
   useEffect(() => {
