@@ -44,10 +44,18 @@ const SpaceSpeakerActions: React.FC<SpaceSpeakerActionsProps> = ({
   });
 
   return (
-    <div className="space-speaker-actions-container">
+    <div
+      className={`space-speaker-actions-container ${
+        !isDrawerOpen ? 'space-speaker-actions-container-close' : ''
+      }`}
+    >
       {spaceSpeakerId ? (
         // Action buttons
-        <div className="space-speaker-actions-btn-container">
+        <div
+          className={`space-speaker-actions-btn-container ${
+            !isDrawerOpen ? 'space-speaker-actions-btn-container-close' : ''
+          }`}
+        >
           {/* Mic */}
           <div
             className="space-speaker-actions-btn"
