@@ -53,7 +53,11 @@ const SpaceSpeakerSection: React.FC<SpaceSpeakerSectionProps> = ({
       }`}
     >
       {/* Inner container */}
-      <div className="space-speaker-container">
+      <div
+        className={`space-speaker-container ${
+          !isDrawerOpen ? 'space-speaker-container-close' : ''
+        }`}
+      >
         {/* Participants list */}
         <div
           className={`space-speaker-participant-list ${

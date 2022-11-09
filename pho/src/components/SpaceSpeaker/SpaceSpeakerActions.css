@@ -7,6 +7,16 @@
   padding-left: 20px;
 }
 
+.space-speaker-actions-container-close {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.space-speaker-actions-btn-container-close {
+  flex-direction: column !important;
+  gap: 0px !important;
+}
+
 .space-speaker-actions-btn-container {
   display: flex;
   flex-direction: row;
