@@ -16,8 +16,12 @@ export const calculatePomodoroSession = (
   // get delta time of current session - in milliseconds
   const sessionDuration = (pomodoroDuration + shortBreakDuration) * 1000;
   sessionId = Math.floor(deltaTime / sessionDuration);
-  deltaTime = deltaTime % sessionDuration;
-  if (sessionId >= 4) sessionId = -1;
+  if (sessionId >= 4) {
+    sessionId = -1;
+    deltaTime = deltaTime - sessionDuration * 4;
+  } else {
+    deltaTime = deltaTime % sessionDuration;
+  }
 
   if (sessionId === -1) {
     isLongBreak = true;

@@ -93,10 +93,11 @@ const SpacePage: React.FC<{}> = () => {
           {isVideoVisible && (
             <div style={{ position: 'absolute' }}>
               <Pomodoro
-                shortBreakDuration={2}
-                pomodoroDuration={5}
-                longBreakDuration={10}
+                shortBreakDuration={300}
+                pomodoroDuration={1500}
+                longBreakDuration={1800}
                 timestamp={new Date(startTime ?? '').getTime()}
+                // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
                 serverTime={Date.now() + timeGap}
               />
             </div>
