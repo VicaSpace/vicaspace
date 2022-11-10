@@ -59,11 +59,7 @@ const SpacePage: React.FC<{}> = () => {
 
   useBeforeunload(() => {
     if (updatedSpaceId) {
-      updateUserSpaceId(null)
-        .then(() => {
-          setUpdatedSpaceId(false);
-        })
-        .catch(console.log);
+      updateUserSpaceId(null).catch(console.log);
     }
   });
 
