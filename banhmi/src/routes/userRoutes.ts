@@ -4,6 +4,7 @@ import asyncHandler from 'express-async-handler';
 import {
   getUserFromSocketIdHandler,
   partialUpdateUserHandler,
+  updateSpaceBySocketIdHandler,
 } from '@/controllers/user';
 import authenticate from '@/middlewares/auth';
 import checkUpdateUserRequest from '@/middlewares/schemas/updateUserSchema';
@@ -16,5 +17,6 @@ router.patch(
   [authenticate, checkUpdateUserRequest],
   asyncHandler(partialUpdateUserHandler)
 );
+router.patch('/spaceId', asyncHandler(updateSpaceBySocketIdHandler));
 
 export { router as userRouter };

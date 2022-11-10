@@ -57,11 +57,15 @@ const SpacePage: React.FC<{}> = () => {
     };
   }, [updatedSpaceId]);
 
-  useBeforeunload(() => {
-    if (updatedSpaceId) {
-      updateUserSpaceId(null).catch(console.log);
-    }
-  });
+  useEffect(() => {
+    const handleUnload = () => {
+      if (updatedSpaceId) {
+        updateUserSpaceId(null).catch(console.log);
+      }
+    };
+    window.addEventListener('beforeunload', handleUnload);
+    return () => window.removeEventListener('beforeunload', handleUnload);
+  }, [updatedSpaceId]);
 
   useEffect(() => {
     if (!id || !isNumeric(id)) {
