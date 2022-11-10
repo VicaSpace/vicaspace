@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+
+/* eslint-disable import/no-webpack-loader-syntax */
 import clsx from 'clsx';
+import mapboxgl from 'mapbox-gl';
 
 import React, { useEffect, useState } from 'react';
 import ReactMapGL from 'react-map-gl';
@@ -13,6 +17,10 @@ import {
 } from '@/states/spaces/slice';
 
 import './WorldMapTile.css';
+
+// @ts-expect-error
+mapboxgl.workerClass =
+  require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 const WorldMapTile: React.FC<{}> = () => {
   const spaceState: SpaceState = useAppSelector((state) => state.spacesSlice);
