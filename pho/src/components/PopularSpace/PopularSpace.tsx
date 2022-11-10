@@ -109,7 +109,7 @@ const PopularSpace: React.FC<PopularSpaceProps> = ({ isDrawerOpen }) => {
         pt="10"
         backgroundColor="#AAC4FF"
       >
-        <VStack w="100%" h="90%" spacing="8">
+        <VStack w="100%" h="90%" spacing="8" overflowY="auto">
           {spaces.map((space) => {
             return (
               <SpaceCell
