@@ -40,7 +40,8 @@ export const createWebRtcTransport = async (
     listenIps: [
       {
         // Replace with relevant IP address
-        ip: config.app.ip as string,
+        ip: '0.0.0.0',
+        announcedIp: config.app.ip,
       },
     ],
     enableUdp: true,
