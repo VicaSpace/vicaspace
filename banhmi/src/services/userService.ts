@@ -74,3 +74,19 @@ export const updateSpaceId = async (userId: number, spaceId: number) => {
     throw new Error('error updating socket id');
   }
 };
+
+export const updateSpaceBySocketId = async (socketId: string, spaceId: number | null) => {
+  try {
+    await prisma.user.updateMany({
+      where: {
+        socketId,
+      },
+      data: {
+        spaceId,
+      },
+    });
+  } catch (error) {
+    logger.error(error);
+    throw new Error('error updating space id');
+  }
+}
